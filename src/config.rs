@@ -178,7 +178,6 @@ fn header_value(setting: &str, value: &str) -> crate::Result<()> {
 
 /// Emits the six [`ConfigBuilder`] setters on a client builder whose
 /// `config: ConfigBuilder` field holds the settings.
-#[allow(unused_macros)] // used by the blocking and async clients
 macro_rules! builder_setters {
     ($t:ty) => {
         impl $t {

@@ -1,7 +1,6 @@
 //! The sans-io core: an [`Endpoint`] becomes an `http::Request`, an
 //! `http::Response` becomes a typed value or an [`Error`], and the cache sits
 //! between them. Transports only move bytes.
-#![allow(dead_code)] // used by the blocking and async clients
 
 use std::time::SystemTime;
 
@@ -62,13 +61,43 @@ pub(crate) fn to_request<E: Endpoint>(e: &E, cfg: &Config) -> Request<()> {
         .expect("the URL and header values were validated by ConfigBuilder::build")
 }
 
+/// The URL of an arbitrary GET under the server root, for `get_json` and
+/// `get_raw`; query pairs are form-encoded, none means no `?`.
+pub(crate) fn raw_url(cfg: &Config, path: &str, query: &[(&str, &str)]) -> String {
+    let mut url = format!("{}{path}", cfg.base_url());
+    if !query.is_empty() {
+        url.push('?');
+        url.push_str(&serde_urlencoded::to_string(query).expect("string pairs always encode"));
+    }
+    url
+}
+
+/// The request for an arbitrary GET, with the same headers as [`to_request`].
+pub(crate) fn raw_request(cfg: &Config, url: &str) -> Request<()> {
+    let mut builder = Request::get(url)
+        .header(header::ACCEPT, "application/json")
+        .header(header::USER_AGENT, cfg.user_agent());
+    if let Some(key) = cfg.api_key() {
+        builder = builder.header("x-api-key", key);
+    }
+    builder
+        .body(())
+        .expect("the header values were validated by ConfigBuilder::build")
+}
+
 /// Maps a response onto the endpoint's output or an [`Error`].
 pub(crate) fn execute<E: Endpoint>(url: &str, resp: Response<Bytes>) -> Result<E::Output> {
+    let body = execute_raw(url, resp)?;
+    decode_at::<E>(url, &body)
+}
+
+/// Maps a response onto its 2xx body or an [`Error`].
+pub(crate) fn execute_raw(url: &str, resp: Response<Bytes>) -> Result<Bytes> {
     let (parts, body) = resp.into_parts();
-    let status = parts.status.as_u16();
     if parts.status.is_success() {
-        return decode_at::<E>(url, &body);
+        return Ok(body);
     }
+    let status = parts.status.as_u16();
     let url = url.to_owned();
     Err(match status {
         429 => Error::RateLimited {

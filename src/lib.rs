@@ -7,9 +7,45 @@
 //! match. For the complete generated surface of the API see the official
 //! [`deadlock-api/openapi-clients`](https://github.com/deadlock-api/openapi-clients).
 //!
+//! # Quick start
+//!
+//! ```toml
+//! [dependencies]
+//! deadlock-api = "0.1"
+//! ```
+//!
+//! ```no_run
+//! use deadlock_api::blocking::Client;
+//! use deadlock_api::{AccountId, Error, MatchId};
+//!
+//! # fn main() -> deadlock_api::Result<()> {
+//! let api = Client::builder()
+//!     .api_key(std::env::var("DEADLOCK_API_KEY").ok())
+//!     .build()?;
+//!
+//! let meta = api.match_metadata(MatchId(122539002))?;
+//! let ids: Vec<AccountId> = meta.match_info.players.iter().map(|p| p.account_id).collect();
+//! let profiles = api.steam_profiles(&ids)?;
+//! for p in &profiles {
+//!     println!("{}: {}", p.account_id, p.personaname.as_deref().unwrap_or("?"));
+//! }
+//!
+//! match api.player_rank(AccountId(167576350)) {
+//!     Err(e @ (Error::RateLimited { .. } | Error::Overloaded { .. })) => {
+//!         let wait = e.retry_after().unwrap_or(std::time::Duration::from_secs(60));
+//!         eprintln!("try again in {wait:?}");
+//!     }
+//!     other => {
+//!         let rank = other?;
+//!         println!("badge {:?}", rank.badge);
+//!     }
+//! }
+//! # Ok(()) }
+//! ```
+//!
 //! # Features
 //!
-//! - `blocking` (default): the synchronous `blocking::Client` on ureq.
+//! - `blocking` (default): the synchronous [`blocking::Client`] on ureq.
 //! - `async`: the asynchronous `Client` on reqwest; pulls in tokio.
 //! - `rustls` (default) / `native-tls`: the TLS stack for both clients. With
 //!   both enabled `rustls` wins; disable default features to use `native-tls`
@@ -30,6 +66,8 @@
 
 #[macro_use]
 mod config;
+#[cfg(feature = "blocking")]
+pub mod blocking;
 mod cache;
 mod endpoint;
 mod endpoints;
