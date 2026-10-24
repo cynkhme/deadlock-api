@@ -28,8 +28,13 @@
 #![deny(missing_docs)]
 #![deny(rustdoc::broken_intra_doc_links)]
 
+#[macro_use]
+mod config;
+mod cache;
 mod error;
 mod ids;
 
+pub use cache::Cache;
+pub use config::{Config, ConfigBuilder};
 pub use error::{Error, Result};
 pub use ids::{AccountId, HeroId, MatchId};
