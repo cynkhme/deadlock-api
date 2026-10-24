@@ -1,6 +1,6 @@
 # deadlock-api
 
-A Rust client for the Deadlock match data API at [deadlock-api.com](https://deadlock-api.com). It gives typed match metadata, 18 typed endpoints for matches, players, Steam profiles, leaderboards and server info, a blocking and an async client, and a cache trait so an immutable match is fetched once.
+An unofficial Rust client for the Deadlock match data API at [deadlock-api.com](https://deadlock-api.com), not affiliated with deadlock-api.com or Valve. It gives typed match metadata, 18 typed endpoints for matches, players, Steam profiles, leaderboards and server info, a blocking and an async client, and a cache trait so an immutable match is fetched once.
 
 For every endpoint of the API as generated code, see the official [`deadlock-api/openapi-clients`](https://github.com/deadlock-api/openapi-clients). This crate types the match metadata from real responses (the OpenAPI document describes it as a plain object), works without an async runtime, and leaves the rest of the API reachable through `get_json` and `get_raw`.
 

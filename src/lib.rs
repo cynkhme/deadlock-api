@@ -1,4 +1,5 @@
-//! Client for the [deadlock-api.com](https://deadlock-api.com) Deadlock match data API.
+//! Unofficial client for the [deadlock-api.com](https://deadlock-api.com) Deadlock match data API,
+//! not affiliated with deadlock-api.com or Valve.
 //!
 //! Typed models for match metadata and the core match, player, Steam,
 //! leaderboard and info endpoints; a blocking client (feature `blocking`,
