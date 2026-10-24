@@ -115,7 +115,7 @@ A 404 is `Error::NotFound`, other statuses are `Error::Status` with the server's
 
 ## Tests
 
-`cargo test` runs offline, against responses recorded from the live server in `tests/fixtures/`. The smoke tests in `tests/live.rs` call every typed route once on the live server, one request per second, and report a change in the server's schema as a failed decode:
+`cargo test` runs offline, against responses recorded from the live server in `tests/fixtures/`; every recorded success response must decode into its model and serialize back with all of its fields. The smoke tests in `tests/live.rs` request every typed route once on the live server, 19 requests at one per second, and run the same check on each response, so a field the server renames or retypes fails the test instead of decoding to `None`. They are ignored by default and fail without `DEADLOCK_API_LIVE=1`:
 
 ```sh
 DEADLOCK_API_LIVE=1 cargo test --test live -- --ignored

@@ -39,3 +39,18 @@ pub fn compare_shape(
         _ => {}
     }
 }
+
+/// Decodes `raw` into `T`, serializes it back and compares the two with
+/// [`compare_shape`]: empty when the model carries every field of `raw`.
+pub fn drift<T: serde::de::DeserializeOwned + serde::Serialize>(
+    raw: &serde_json::Value,
+) -> Vec<String> {
+    let decoded: T = match serde_json::from_value(raw.clone()) {
+        Ok(decoded) => decoded,
+        Err(e) => return vec![format!(": does not decode: {e}")],
+    };
+    let back = serde_json::to_value(&decoded).unwrap();
+    let mut diffs = Vec::new();
+    compare_shape("", raw, &back, &mut diffs);
+    diffs
+}

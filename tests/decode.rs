@@ -4,7 +4,7 @@
 mod shape;
 
 use deadlock_api::{AbilityStat, AccountId, MatchId, MatchMetadata};
-use shape::compare_shape;
+use shape::drift;
 
 fn fixture(name: &str) -> Vec<u8> {
     std::fs::read(format!(
@@ -40,17 +40,58 @@ fn match_metadata_decodes() {
     assert_eq!(m.match_info.mid_boss[0].team_killed, Some(0));
 }
 
-/// Drift guard for the tolerant typing: the decoded fixture,
-/// serialized back, must carry every key of the raw fixture with a value
-/// where the raw has one. A `None` or empty list where the sample has data
-/// means a field was renamed or mistyped upstream, or mistyped here.
+/// Drift guard for the tolerant typing, over every recorded
+/// response: each fixture, decoded and serialized back, must carry every key
+/// of the raw fixture with a value where the raw has one. A `None` or empty
+/// list where the sample has data means a field was renamed or mistyped
+/// upstream, or mistyped here. A fixture added without a model fails too.
 #[test]
-fn tolerant_fields_are_all_present_in_the_sample() {
-    let raw: serde_json::Value = serde_json::from_slice(&fixture("match_metadata.json")).unwrap();
-    let decoded: MatchMetadata = serde_json::from_value(raw.clone()).unwrap();
-    let back = serde_json::to_value(&decoded).unwrap();
+fn every_fixture_round_trips_without_shape_drift() {
+    use deadlock_api::*;
+    type Check = fn(&serde_json::Value) -> Vec<String>;
+    let checks: [(&str, Check); 17] = [
+        ("match_metadata.json", drift::<MatchMetadata>),
+        ("match_salts.json", drift::<MatchSalts>),
+        ("active_matches.json", drift::<Vec<ActiveMatch>>),
+        ("recently_fetched.json", drift::<Vec<RecentMatch>>),
+        ("match_history.json", drift::<Vec<MatchHistoryEntry>>),
+        ("player_rank.json", drift::<RankResponse>),
+        ("player_ranks.json", drift::<Vec<AccountRank>>),
+        (
+            "rank_distribution.json",
+            drift::<Vec<RankDistributionEntry>>,
+        ),
+        ("hero_stats.json", drift::<Vec<HeroStats>>),
+        ("mate_stats.json", drift::<Vec<MateStats>>),
+        ("enemy_stats.json", drift::<Vec<EnemyStats>>),
+        ("steam_profiles.json", drift::<Vec<SteamProfile>>),
+        ("steam_search.json", drift::<Vec<SteamProfile>>),
+        ("leaderboard.json", drift::<Leaderboard>),
+        ("hero_leaderboard.json", drift::<Leaderboard>),
+        ("info.json", drift::<ApiInfo>),
+        ("health.json", drift::<Health>),
+    ];
+    // An error body, not a model.
+    let not_models = ["spectate_url_400.json"];
+
+    let dir = format!("{}/tests/fixtures", env!("CARGO_MANIFEST_DIR"));
+    let unchecked: Vec<String> = std::fs::read_dir(dir)
+        .unwrap()
+        .map(|entry| entry.unwrap().file_name().into_string().unwrap())
+        .filter(|name| name.ends_with(".json"))
+        .filter(|name| !not_models.contains(&name.as_str()))
+        .filter(|name| !checks.iter().any(|(checked, _)| checked == name))
+        .collect();
+    assert!(
+        unchecked.is_empty(),
+        "fixtures without a check: {unchecked:?}"
+    );
+
     let mut diffs = Vec::new();
-    compare_shape("", &raw, &back, &mut diffs);
+    for (name, check) in checks {
+        let raw: serde_json::Value = serde_json::from_slice(&fixture(name)).unwrap();
+        diffs.extend(check(&raw).into_iter().map(|d| format!("{name}{d}")));
+    }
     assert!(diffs.is_empty(), "shape drift:\n{}", diffs.join("\n"));
 }
 
