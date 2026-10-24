@@ -28,7 +28,7 @@ fn main() -> deadlock_api::Result<()> {
 }
 ```
 
-The async client has the same methods; enable the `async` feature and add `.await`:
+The async client has the same methods; enable the `async` feature and add `.await`. It must run inside a tokio runtime, which your application starts (for example with `#[tokio::main]`, as `examples/async_match_summary.rs` does); outside one, the first request panics.
 
 ```rust,ignore
 let api = deadlock_api::Client::builder().build()?;
