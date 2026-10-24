@@ -96,6 +96,30 @@ fn every_fixture_round_trips_without_shape_drift() {
 }
 
 #[test]
+fn drift_reports_carry_no_response_values() {
+    use deadlock_api::SteamProfile;
+    let mut diffs = Vec::new();
+    shape::compare_shape(
+        "",
+        &serde_json::json!({"name": "secret-name", "id": 4000000001u64, "flag": "secret-flag"}),
+        &serde_json::json!({"name": "other-name", "id": 4000000002u64, "flag": true}),
+        &mut diffs,
+    );
+    let retyped = serde_json::json!({"account_id": 7, "personaname": 4000000003u64});
+    diffs.extend(drift::<SteamProfile>(&retyped));
+    let escaped = serde_json::json!({"account_id": "a \"secret\" tail"});
+    diffs.extend(drift::<SteamProfile>(&escaped));
+    diffs.extend(drift::<SteamProfile>(&serde_json::json!({})));
+    let report = diffs.join("\n");
+    for value in ["secret", "other", "4000000001", "4000000002", "4000000003"] {
+        assert!(!report.contains(value), "{value} in:\n{report}");
+    }
+    assert!(report.contains("/name: "), "{report}");
+    assert!(report.contains("/flag: "), "{report}");
+    assert!(report.contains("`account_id`"), "{report}");
+}
+
+#[test]
 fn wrong_typed_sub_object_degrades_to_none_not_a_decode_error() {
     let json = r#"{"match_info":{"match_id":1,"duration_s":2,"players":[{"account_id":3,"player_slot":4,
         "stats":[{"time_stamp_s":"nope"},{"time_stamp_s":180}],"items":"not a list","death_details":[{"game_time_s":[]}]}],
