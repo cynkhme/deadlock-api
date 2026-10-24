@@ -14,7 +14,7 @@
 //! - `rustls` (default) / `native-tls`: the TLS stack for both clients. With
 //!   both enabled `rustls` wins; disable default features to use `native-tls`
 //!   alone.
-//! - `fs-cache`: `FileCache`, a cache that stores one file per response.
+//! - `fs-cache`: [`FileCache`], a cache that stores one file per response.
 //!
 //! # Minimum supported Rust version
 //!
@@ -35,6 +35,8 @@ mod error;
 mod ids;
 
 pub use cache::Cache;
+#[cfg(feature = "fs-cache")]
+pub use cache::FileCache;
 pub use config::{Config, ConfigBuilder};
 pub use error::{Error, Result};
 pub use ids::{AccountId, HeroId, MatchId};
