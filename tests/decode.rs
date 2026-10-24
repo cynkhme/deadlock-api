@@ -106,3 +106,138 @@ fn match_paths_helpers_match_the_old_formulas() {
     };
     assert_eq!(a.distance(&b), 5.0);
 }
+
+mod other_endpoints {
+    use super::fixture;
+    use deadlock_api::{
+        AccountId, AccountRank, ActiveMatch, ApiInfo, EnemyStats, Health, HeroId, HeroStats,
+        Leaderboard, MatchHistoryEntry, MatchSalts, MateStats, RankDistributionEntry, RankResponse,
+        RecentMatch, Region, SteamProfile,
+    };
+
+    fn decode<T: serde::de::DeserializeOwned>(name: &str) -> T {
+        serde_json::from_slice(&fixture(name)).unwrap()
+    }
+
+    #[test]
+    fn match_salts_decodes() {
+        let s: MatchSalts = decode("match_salts.json");
+        assert_eq!(s.match_id, 122539002);
+        assert_eq!(s.cluster_id, Some(429));
+        assert_eq!(s.metadata_salt, Some(1910618982));
+        assert_eq!(s.replay_salt, Some(1130965774));
+        assert!(s.metadata_url.as_deref().unwrap().ends_with(".meta.bz2"));
+    }
+
+    #[test]
+    fn active_matches_decode() {
+        let v: Vec<ActiveMatch> = decode("active_matches.json");
+        assert_eq!(v.len(), 3);
+        let m = &v[0];
+        assert_eq!(m.match_mode, Some(1));
+        assert_eq!(m.match_mode_parsed.as_deref(), Some("Unranked"));
+        assert_eq!(m.region_mode_parsed.as_deref(), Some("row"));
+        assert_eq!(m.winning_team, None);
+        assert_eq!(m.duration_s, None);
+        assert!(m.lobby_id.unwrap() > u64::from(u32::MAX));
+        assert_eq!(m.players[0].team_parsed.as_deref(), Some("Team0"));
+        assert_eq!(m.team_stats.len(), 2);
+    }
+
+    #[test]
+    fn recently_fetched_decode() {
+        let v: Vec<RecentMatch> = decode("recently_fetched.json");
+        assert_eq!(v.len(), 3);
+        assert!(v[0].match_id > 0);
+        assert_eq!(v[0].average_badge, None);
+        assert!(!v[0].players.is_empty());
+    }
+
+    #[test]
+    fn match_history_decodes() {
+        let v: Vec<MatchHistoryEntry> = decode("match_history.json");
+        assert_eq!(v[0].account_id, AccountId(167576350));
+        assert_eq!(v[0].match_id, 123971228);
+        assert_eq!(v[0].hero_id, Some(HeroId(80)));
+        assert_eq!(v[0].player_kills, Some(7));
+        assert_eq!(v[0].brawl_score_team0, None);
+        assert_eq!(v[0].low_pri_pool, Some(false));
+    }
+
+    #[test]
+    fn ranks_decode() {
+        let r: RankResponse = decode("player_rank.json");
+        assert_eq!((r.badge, r.rank, r.subrank), (Some(91), Some(9), Some(1)));
+        let v: Vec<AccountRank> = decode("player_ranks.json");
+        assert_eq!(v.len(), 2);
+        assert_eq!(v[0].account_id, AccountId(167576350));
+        let d: Vec<RankDistributionEntry> = decode("rank_distribution.json");
+        assert_eq!(d[0].badge, Some(11));
+        assert_eq!(d[0].players, Some(2006));
+    }
+
+    #[test]
+    fn hero_mate_enemy_stats_decode() {
+        let h: Vec<HeroStats> = decode("hero_stats.json");
+        assert_eq!(h[0].hero_id, HeroId(1));
+        assert_eq!(h[0].matches_played, Some(380));
+        assert!(h[0].ending_level.unwrap() > 30.0);
+        assert_eq!(h[0].matches.len(), 380);
+        let m: Vec<MateStats> = decode("mate_stats.json");
+        assert_eq!(m[0].mate_id, AccountId(1180548075));
+        assert_eq!((m[0].wins, m[0].matches_played), (Some(67), Some(126)));
+        let e: Vec<EnemyStats> = decode("enemy_stats.json");
+        assert_eq!(e[0].enemy_id, AccountId(4028775));
+    }
+
+    #[test]
+    fn steam_profiles_decode() {
+        let v: Vec<SteamProfile> = decode("steam_profiles.json");
+        assert_eq!(v[0].account_id, AccountId(167576350));
+        assert_eq!(v[0].personaname.as_deref(), Some("player-1"));
+        assert_eq!(v[0].last_updated.as_deref(), Some("2026-10-19T22:01:03Z"));
+        assert_eq!(v[0].friends[0].account_id, AccountId(4000001000));
+        let s: Vec<SteamProfile> = decode("steam_search.json");
+        assert_eq!(s.len(), 1);
+        assert_eq!(s[0].last_team_avg_badge, None);
+    }
+
+    #[test]
+    fn leaderboards_decode() {
+        let l: Leaderboard = decode("leaderboard.json");
+        assert_eq!(l.entries.len(), 3);
+        assert_eq!(l.entries[0].rank, Some(1));
+        assert_eq!(l.entries[0].top_hero_ids, vec![HeroId(13)]);
+        let h: Leaderboard = decode("hero_leaderboard.json");
+        assert_eq!(
+            h.entries[0].possible_account_ids,
+            vec![AccountId(1277112179)]
+        );
+    }
+
+    #[test]
+    fn info_and_health_decode() {
+        let i: ApiInfo = decode("info.json");
+        assert_eq!(i.fetched_matches_per_day, Some(487713));
+        assert!(i.table_sizes["player_match_roster"].rows.unwrap() > 1_000_000);
+        let h: Health = decode("health.json");
+        assert!(h.services["clickhouse"]);
+    }
+
+    #[test]
+    fn region_round_trips_and_keeps_unknown_values() {
+        assert_eq!(
+            serde_json::from_str::<Region>(r#""Europe""#).unwrap(),
+            Region::Europe
+        );
+        assert_eq!(
+            serde_json::to_string(&Region::NAmerica).unwrap(),
+            r#""NAmerica""#
+        );
+        let unknown: Region = serde_json::from_str(r#""Mars""#).unwrap();
+        assert_eq!(unknown, Region::Unknown("Mars".into()));
+        assert_eq!(serde_json::to_string(&unknown).unwrap(), r#""Mars""#);
+        assert_eq!(Region::SAmerica.as_path_segment(), "SAmerica");
+        assert_eq!(unknown.as_path_segment(), "Mars");
+    }
+}

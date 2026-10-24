@@ -32,6 +32,7 @@
 mod config;
 mod cache;
 mod endpoint;
+mod endpoints;
 mod error;
 mod ids;
 pub mod types;
@@ -42,7 +43,18 @@ pub use cache::FileCache;
 pub use config::{Config, ConfigBuilder};
 pub use error::{Error, Result};
 pub use ids::{AccountId, HeroId, MatchId};
+pub use types::filters::{ActiveMatchesQuery, MatchFilter, SteamSearchQuery};
+pub use types::info::{ApiInfo, Health, TableSize};
+pub use types::leaderboard::{Leaderboard, LeaderboardEntry, Region};
 pub use types::match_metadata::{
     DamageDealer, DamageMatrix, Death, Item, MatchInfo, MatchMetadata, MatchPaths, MidBoss,
     Objective, Pause, Player, PlayerPath, PlayerStats, Pos, Team,
 };
+pub use types::matches::{
+    ActiveMatch, ActiveMatchPlayer, MatchSalts, RecentMatch, RecentMatchPlayer, SpectateUrl,
+};
+pub use types::players::{
+    AccountRank, EnemyStats, HeroStats, MatchHistoryEntry, MateStats, RankDistributionEntry,
+    RankResponse,
+};
+pub use types::steam::{SteamFriend, SteamProfile};
