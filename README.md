@@ -111,6 +111,14 @@ match api.player_rank(AccountId(167576350)) {
 
 A 404 is `Error::NotFound`, other statuses are `Error::Status` with the server's error message and the start of the body. Redirects are not followed, so the API key never reaches another host.
 
+## Tests
+
+`cargo test` runs offline, against responses recorded from the live server in `tests/fixtures/`. The smoke tests in `tests/live.rs` call every typed route once on the live server, one request per second, and report a change in the server's schema as a failed decode:
+
+```sh
+DEADLOCK_API_LIVE=1 cargo test --test live -- --ignored
+```
+
 ## Minimum supported Rust version
 
 Rust 1.98. Raising it is a minor-version change and is listed in the [changelog](CHANGELOG.md).

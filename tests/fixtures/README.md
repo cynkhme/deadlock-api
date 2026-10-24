@@ -32,3 +32,8 @@ Facts measured while recording (2026-10-24): `account_ids=1,2` and
 responses fits `u32`; `/v1/leaderboard/europe` answers 400 (`unknown variant
 europe, expected one of Europe, Asia, NAmerica, SAmerica, Oceania`); no 429
 or 503 was seen.
+
+Live smoke run (2026-10-24,
+`DEADLOCK_API_LIVE=1 cargo test --test live -- --ignored`): 18 of 18 passed
+in 22 s, 19 requests, no 429 or 503; the shape guard found no drift on the
+full 12-player metadata response.
