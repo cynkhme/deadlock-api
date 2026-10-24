@@ -16,10 +16,11 @@
 //! ```
 //!
 //! ```no_run
+//! # #[cfg(feature = "blocking")]
+//! # fn main() -> deadlock_api::Result<()> {
 //! use deadlock_api::blocking::Client;
 //! use deadlock_api::{AccountId, Error, MatchId};
 //!
-//! # fn main() -> deadlock_api::Result<()> {
 //! let api = Client::builder()
 //!     .api_key(std::env::var("DEADLOCK_API_KEY").ok())
 //!     .build()?;
@@ -42,6 +43,8 @@
 //!     }
 //! }
 //! # Ok(()) }
+//! # #[cfg(not(feature = "blocking"))]
+//! # fn main() {}
 //! ```
 //!
 //! # Models

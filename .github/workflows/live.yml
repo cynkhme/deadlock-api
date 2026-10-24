@@ -1,0 +1,21 @@
+name: Live
+
+# Smoke tests against the live server, by hand only: 19 requests from a
+# shared runner IP, kept out of CI so a CI run never spends them.
+on:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_BUILD_WARNINGS: deny
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    env:
+      DEADLOCK_API_LIVE: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo test --locked --test live -- --ignored
