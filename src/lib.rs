@@ -54,8 +54,8 @@
 //!
 //! # Minimum supported Rust version
 //!
-//! Rust 1.85 (edition 2024). An MSRV bump is a minor-version change and is
-//! listed in the changelog.
+//! Rust 1.98. An MSRV bump is a minor-version change and is listed in the
+//! changelog.
 //!
 //! # License
 //!
@@ -63,6 +63,15 @@
 //!
 #![deny(missing_docs)]
 #![deny(rustdoc::broken_intra_doc_links)]
+#![cfg_attr(
+    not(any(feature = "blocking", feature = "async")),
+    allow(
+        dead_code,
+        unused_imports,
+        unused_macros,
+        reason = "without a client feature only the models are used"
+    )
+)]
 
 #[macro_use]
 mod config;

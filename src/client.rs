@@ -188,11 +188,11 @@ impl Client {
         let req = to_request(endpoint, &self.config)?;
         let url = req.uri().to_string();
         let resp = self.transport(req).await?;
-        if let Some(key) = key {
-            if resp.status().is_success() {
-                let (cfg, body) = (self.config.clone(), resp.body().clone());
-                let _ = tokio::task::spawn_blocking(move || cache_store(&cfg, &key, &body)).await;
-            }
+        if let Some(key) = key
+            && resp.status().is_success()
+        {
+            let (cfg, body) = (self.config.clone(), resp.body().clone());
+            let _ = tokio::task::spawn_blocking(move || cache_store(&cfg, &key, &body)).await;
         }
         execute::<E>(&url, resp)
     }

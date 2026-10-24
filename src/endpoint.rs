@@ -196,21 +196,21 @@ where
     F: FnOnce(Request<()>) -> Result<Response<Bytes>>,
 {
     let key = e.cache_key();
-    if let Some(key) = &key {
-        if let Some(body) = cache_lookup(cfg, key) {
-            if is_json(&body) {
-                return decode_at::<E>(key, &body);
-            }
-            log::warn!("cached body for {key} is not JSON, fetching instead");
+    if let Some(key) = &key
+        && let Some(body) = cache_lookup(cfg, key)
+    {
+        if is_json(&body) {
+            return decode_at::<E>(key, &body);
         }
+        log::warn!("cached body for {key} is not JSON, fetching instead");
     }
     let req = to_request(e, cfg)?;
     let url = req.uri().to_string();
     let resp = transport(req)?;
-    if let Some(key) = &key {
-        if resp.status().is_success() {
-            cache_store(cfg, key, resp.body());
-        }
+    if let Some(key) = &key
+        && resp.status().is_success()
+    {
+        cache_store(cfg, key, resp.body());
     }
     execute::<E>(&url, resp)
 }
