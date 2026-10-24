@@ -5,13 +5,73 @@
 //! recorded match (122539002, 2026-10-24). To survive drift, only the fields
 //! a match cannot lack are required; everything else is `Option` or a `Vec`
 //! that defaults to empty, so an unexpected shape in one sub-object costs one
-//! `None`, not the whole decode. Fields whose structure the sample does not
-//! reveal are kept as [`serde_json::Value`].
+//! `None`, not the whole decode. The large sub-objects and lists (`stats`,
+//! `items`, `death_details`, `objectives`, `mid_boss`, `match_pauses`,
+//! `match_paths`, `damage_matrix`, `teams`, `ability_stats`) are decoded
+//! leniently: an element or object of an unexpected shape is dropped with a
+//! warning instead of failing the match. Scalar fields stay strict, so a
+//! changed type on a plain field is loud. Fields whose structure the sample
+//! does not reveal are kept as [`serde_json::Value`].
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::{AccountId, HeroId};
+
+/// Deserializers that drop a malformed sub-object or list element with a
+/// warning instead of failing the whole response.
+mod lenient {
+    use serde::de::{Deserialize, DeserializeOwned, Deserializer};
+    use serde_json::Value;
+
+    pub(super) fn option<'de, D, T>(d: D) -> Result<Option<T>, D::Error>
+    where
+        D: Deserializer<'de>,
+        T: DeserializeOwned,
+    {
+        let value = Value::deserialize(d)?;
+        if value.is_null() {
+            return Ok(None);
+        }
+        match T::deserialize(value) {
+            Ok(t) => Ok(Some(t)),
+            Err(e) => {
+                log::warn!(
+                    "dropping a {} that did not decode: {e}",
+                    std::any::type_name::<T>()
+                );
+                Ok(None)
+            }
+        }
+    }
+
+    pub(super) fn vec<'de, D, T>(d: D) -> Result<Vec<T>, D::Error>
+    where
+        D: Deserializer<'de>,
+        T: DeserializeOwned,
+    {
+        let Value::Array(items) = Value::deserialize(d)? else {
+            log::warn!(
+                "dropping a non-list where a list of {} was expected",
+                std::any::type_name::<T>()
+            );
+            return Ok(Vec::new());
+        };
+        Ok(items
+            .into_iter()
+            .filter_map(|item| match T::deserialize(item) {
+                Ok(t) => Some(t),
+                Err(e) => {
+                    log::warn!(
+                        "dropping a {} that did not decode: {e}",
+                        std::any::type_name::<T>()
+                    );
+                    None
+                }
+            })
+            .collect())
+    }
+}
 
 /// The response: the match plus the hero selections around it.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -59,22 +119,22 @@ pub struct MatchInfo {
     #[serde(default)]
     pub game_mode_version: Option<u32>,
     /// Objectives destroyed during the match.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::vec")]
     pub objectives: Vec<Objective>,
     /// Mid-boss kills.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::vec")]
     pub mid_boss: Vec<MidBoss>,
     /// Pauses during the match.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::vec")]
     pub match_pauses: Vec<Pause>,
     /// Sampled player positions, see [`MatchPaths`].
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::option")]
     pub match_paths: Option<MatchPaths>,
     /// Sampled damage dealt, see [`DamageMatrix`].
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::option")]
     pub damage_matrix: Option<DamageMatrix>,
     /// Per-team entries.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::vec")]
     pub teams: Vec<Team>,
     /// Empty in the sample; shape unknown.
     #[serde(default)]
@@ -189,17 +249,17 @@ pub struct Player {
     #[serde(default)]
     pub rewards_eligible: Option<bool>,
     /// Statistics sampled through the match.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::vec")]
     pub stats: Vec<PlayerStats>,
     /// Items bought, with the time of purchase.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::vec")]
     pub items: Vec<Item>,
     /// The player's deaths.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::vec")]
     pub death_details: Vec<Death>,
-    /// Empty in the sample; shape unknown.
-    #[serde(default)]
-    pub ability_stats: Vec<Value>,
+    /// Per-ability statistics; present for 5 of 12 players in the sample.
+    #[serde(default, deserialize_with = "lenient::vec")]
+    pub ability_stats: Vec<AbilityStat>,
     /// Pings (`{"ping_type", "ping_data", "game_time_s"}` entries); semantics unknown.
     #[serde(default)]
     pub pings: Vec<Value>,
@@ -209,9 +269,9 @@ pub struct Player {
     /// `null` in the sample; structure unknown.
     #[serde(default)]
     pub player_rank_data: Option<Value>,
-    /// `null` in the sample; structure unknown.
+    /// `1`–`3` for the match's three MVP places, `null` for everyone else.
     #[serde(default)]
-    pub mvp_rank: Option<Value>,
+    pub mvp_rank: Option<u32>,
     /// `null` in the sample; structure unknown.
     #[serde(default)]
     pub earned_holiday_award_2025: Option<Value>,
@@ -233,6 +293,18 @@ pub struct Player {
     /// Shape unknown.
     #[serde(default)]
     pub hero_xp_rewards: Vec<Value>,
+}
+
+/// One entry of [`Player::ability_stats`].
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[non_exhaustive]
+pub struct AbilityStat {
+    /// The ability id.
+    #[serde(default)]
+    pub ability_id: Option<u64>,
+    /// The statistic's value; semantics undocumented upstream.
+    #[serde(default)]
+    pub ability_value: Option<u64>,
 }
 
 /// A sample of one player's statistics at [`PlayerStats::time_stamp_s`].

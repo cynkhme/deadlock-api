@@ -7,6 +7,14 @@ pub(crate) mod matches;
 pub(crate) mod players;
 pub(crate) mod steam;
 
+/// The `# Errors` section shared by every convenience method.
+macro_rules! errors_doc {
+    () => {
+        "# Errors\n\n[`Error::NotFound`](crate::Error::NotFound) when the server has no data for the request; [`Error::RateLimited`](crate::Error::RateLimited) and [`Error::Overloaded`](crate::Error::Overloaded) on 429 and 503, with the server's `Retry-After` when it sent one; [`Error::Status`](crate::Error::Status) on any other non-2xx; [`Error::Transport`](crate::Error::Transport) when no response arrived; [`Error::Decode`](crate::Error::Decode) when the body is not the expected JSON; [`Error::InvalidRequest`](crate::Error::InvalidRequest) when an argument does not form a URL."
+    };
+}
+pub(crate) use errors_doc;
+
 /// Emits the typed convenience methods on a client.
 ///
 /// `endpoint_methods!(sync)` emits `fn name(&self, ..) -> Result<T>` calling
@@ -46,20 +54,20 @@ macro_rules! endpoint_methods {
             plain rank_distribution(filter: &MatchFilter) -> Vec<RankDistributionEntry> = $crate::endpoints::players::GetRankDistribution { filter: filter.clone() };
                 "How many players hold each badge, over the matches the filter selects."
                 "&MatchFilter::default()"
-            list hero_stats(ids: &[AccountId]) -> Vec<HeroStats> = $crate::endpoints::players::GetHeroStats { ids: ids.to_vec() };
-                "Per-hero statistics of several players."
-                "&[AccountId(167576350)]"
-            plain mate_stats(account: AccountId) -> Vec<MateStats> = $crate::endpoints::players::GetMateStats { account };
-                "A player's results with each teammate."
-                "AccountId(167576350)"
-            plain enemy_stats(account: AccountId) -> Vec<EnemyStats> = $crate::endpoints::players::GetEnemyStats { account };
-                "A player's results against each opponent."
-                "AccountId(167576350)"
+            list hero_stats(ids: &[AccountId], query: &HeroStatsQuery) -> Vec<HeroStats> = $crate::endpoints::players::GetHeroStats { ids: ids.to_vec(), query: query.clone() };
+                "Per-hero statistics of several players over the matches the query selects."
+                "&[AccountId(167576350)], &HeroStatsQuery::default()"
+            plain mate_stats(account: AccountId, query: &MateStatsQuery) -> Vec<MateStats> = $crate::endpoints::players::GetMateStats { account, query: query.clone() };
+                "A player's results with each teammate over the matches the query selects."
+                "AccountId(167576350), &MateStatsQuery::default()"
+            plain enemy_stats(account: AccountId, query: &EnemyStatsQuery) -> Vec<EnemyStats> = $crate::endpoints::players::GetEnemyStats { account, query: query.clone() };
+                "A player's results against each opponent over the matches the query selects."
+                "AccountId(167576350), &EnemyStatsQuery::default()"
             list steam_profiles(ids: &[AccountId]) -> Vec<SteamProfile> = $crate::endpoints::steam::GetSteamProfiles { ids: ids.to_vec() };
                 "Steam profiles (names, avatars, friends) of several players."
                 "&[AccountId(167576350)]"
             plain steam_search(search_query: &str, query: &SteamSearchQuery) -> Vec<SteamProfile> = $crate::endpoints::steam::SearchSteam { search_query: search_query.to_owned(), query: query.clone() };
-                "Steam profiles whose name matches `search_query`."
+                "Steam profiles whose name matches `search_query`; an empty query is sent as is and the server decides."
                 "\"deadlock\", &SteamSearchQuery::default()"
             plain leaderboard(region: Region) -> Leaderboard = $crate::endpoints::leaderboard::GetLeaderboard { region };
                 "The ranked leaderboard of a region."
@@ -88,22 +96,22 @@ macro_rules! endpoint_methods {
     (@one_sync plain $name:ident($($arg:ident: $ty:ty),*) -> $out:ty = $ctor:expr; $summary:literal $example:literal) => {
         #[doc = $summary]
         #[doc = ""]
-        #[doc = "# Errors\n\n[`Error::NotFound`](crate::Error::NotFound) when the server has no data for the id; [`Error::RateLimited`](crate::Error::RateLimited) and [`Error::Overloaded`](crate::Error::Overloaded) on 429 and 503, with the server's `Retry-After` when it sent one; [`Error::Status`](crate::Error::Status) on any other non-2xx; [`Error::Transport`](crate::Error::Transport) when no response arrived; [`Error::Decode`](crate::Error::Decode) when the body is not the expected JSON."]
+        #[doc = $crate::endpoints::errors_doc!()]
         #[doc = ""]
-        #[doc = concat!("# Examples\n\n```no_run\n# fn main() -> deadlock_api::Result<()> {\n# use deadlock_api::*;\nlet api = deadlock_api::blocking::Client::new()?;\nlet value = api.", stringify!($name), "(", $example, ")?;\n# let _ = value;\n# Ok(()) }\n```")]
+        #[doc = concat!("# Examples\n\n```no_run\n# fn main() -> deadlock_api::Result<()> {\nuse deadlock_api::*;\nlet api = deadlock_api::blocking::Client::new()?;\nlet value = api.", stringify!($name), "(", $example, ")?;\n# let _ = value;\n# Ok(()) }\n```")]
         pub fn $name(&self, $($arg: $ty),*) -> $crate::Result<$out> {
             self.send(&$ctor)
         }
     };
-    (@one_sync list $name:ident($ids:ident: $ty:ty) -> $out:ty = $ctor:expr; $summary:literal $example:literal) => {
+    (@one_sync list $name:ident($ids:ident: $ty:ty $(, $arg:ident: $aty:ty)*) -> $out:ty = $ctor:expr; $summary:literal $example:literal) => {
         #[doc = $summary]
         #[doc = ""]
         #[doc = "An empty `ids` returns an empty `Vec` without a request."]
         #[doc = ""]
-        #[doc = "# Errors\n\n[`Error::NotFound`](crate::Error::NotFound) when the server has no data for the id; [`Error::RateLimited`](crate::Error::RateLimited) and [`Error::Overloaded`](crate::Error::Overloaded) on 429 and 503, with the server's `Retry-After` when it sent one; [`Error::Status`](crate::Error::Status) on any other non-2xx; [`Error::Transport`](crate::Error::Transport) when no response arrived; [`Error::Decode`](crate::Error::Decode) when the body is not the expected JSON."]
+        #[doc = $crate::endpoints::errors_doc!()]
         #[doc = ""]
-        #[doc = concat!("# Examples\n\n```no_run\n# fn main() -> deadlock_api::Result<()> {\n# use deadlock_api::*;\nlet api = deadlock_api::blocking::Client::new()?;\nlet value = api.", stringify!($name), "(", $example, ")?;\n# let _ = value;\n# Ok(()) }\n```")]
-        pub fn $name(&self, $ids: $ty) -> $crate::Result<$out> {
+        #[doc = concat!("# Examples\n\n```no_run\n# fn main() -> deadlock_api::Result<()> {\nuse deadlock_api::*;\nlet api = deadlock_api::blocking::Client::new()?;\nlet value = api.", stringify!($name), "(", $example, ")?;\n# let _ = value;\n# Ok(()) }\n```")]
+        pub fn $name(&self, $ids: $ty $(, $arg: $aty)*) -> $crate::Result<$out> {
             if $ids.is_empty() {
                 return Ok(Vec::new());
             }
@@ -113,9 +121,9 @@ macro_rules! endpoint_methods {
     (@one_sync optional $name:ident($($arg:ident: $ty:ty),*) -> $out:ty = $ctor:expr; $summary:literal $example:literal) => {
         #[doc = $summary]
         #[doc = ""]
-        #[doc = "# Errors\n\n[`Error::NotFound`](crate::Error::NotFound) when the server has no data for the id; [`Error::RateLimited`](crate::Error::RateLimited) and [`Error::Overloaded`](crate::Error::Overloaded) on 429 and 503, with the server's `Retry-After` when it sent one; [`Error::Status`](crate::Error::Status) on any other non-2xx; [`Error::Transport`](crate::Error::Transport) when no response arrived; [`Error::Decode`](crate::Error::Decode) when the body is not the expected JSON."]
+        #[doc = $crate::endpoints::errors_doc!()]
         #[doc = ""]
-        #[doc = concat!("# Examples\n\n```no_run\n# fn main() -> deadlock_api::Result<()> {\n# use deadlock_api::*;\nlet api = deadlock_api::blocking::Client::new()?;\nlet value = api.", stringify!($name), "(", $example, ")?;\n# let _ = value;\n# Ok(()) }\n```")]
+        #[doc = concat!("# Examples\n\n```no_run\n# fn main() -> deadlock_api::Result<()> {\nuse deadlock_api::*;\nlet api = deadlock_api::blocking::Client::new()?;\nlet value = api.", stringify!($name), "(", $example, ")?;\n# let _ = value;\n# Ok(()) }\n```")]
         pub fn $name(&self, $($arg: $ty),*) -> $crate::Result<Option<$out>> {
             $crate::endpoints::optional(self.send(&$ctor))
         }
@@ -123,22 +131,22 @@ macro_rules! endpoint_methods {
     (@one_async plain $name:ident($($arg:ident: $ty:ty),*) -> $out:ty = $ctor:expr; $summary:literal $example:literal) => {
         #[doc = $summary]
         #[doc = ""]
-        #[doc = "# Errors\n\n[`Error::NotFound`](crate::Error::NotFound) when the server has no data for the id; [`Error::RateLimited`](crate::Error::RateLimited) and [`Error::Overloaded`](crate::Error::Overloaded) on 429 and 503, with the server's `Retry-After` when it sent one; [`Error::Status`](crate::Error::Status) on any other non-2xx; [`Error::Transport`](crate::Error::Transport) when no response arrived; [`Error::Decode`](crate::Error::Decode) when the body is not the expected JSON."]
+        #[doc = $crate::endpoints::errors_doc!()]
         #[doc = ""]
-        #[doc = concat!("# Examples\n\n```no_run\n# async fn run() -> deadlock_api::Result<()> {\n# use deadlock_api::*;\nlet api = deadlock_api::Client::new()?;\nlet value = api.", stringify!($name), "(", $example, ").await?;\n# let _ = value;\n# Ok(()) }\n```")]
+        #[doc = concat!("# Examples\n\n```no_run\n# async fn run() -> deadlock_api::Result<()> {\nuse deadlock_api::*;\nlet api = deadlock_api::Client::new()?;\nlet value = api.", stringify!($name), "(", $example, ").await?;\n# let _ = value;\n# Ok(()) }\n```")]
         pub async fn $name(&self, $($arg: $ty),*) -> $crate::Result<$out> {
             self.send(&$ctor).await
         }
     };
-    (@one_async list $name:ident($ids:ident: $ty:ty) -> $out:ty = $ctor:expr; $summary:literal $example:literal) => {
+    (@one_async list $name:ident($ids:ident: $ty:ty $(, $arg:ident: $aty:ty)*) -> $out:ty = $ctor:expr; $summary:literal $example:literal) => {
         #[doc = $summary]
         #[doc = ""]
         #[doc = "An empty `ids` returns an empty `Vec` without a request."]
         #[doc = ""]
-        #[doc = "# Errors\n\n[`Error::NotFound`](crate::Error::NotFound) when the server has no data for the id; [`Error::RateLimited`](crate::Error::RateLimited) and [`Error::Overloaded`](crate::Error::Overloaded) on 429 and 503, with the server's `Retry-After` when it sent one; [`Error::Status`](crate::Error::Status) on any other non-2xx; [`Error::Transport`](crate::Error::Transport) when no response arrived; [`Error::Decode`](crate::Error::Decode) when the body is not the expected JSON."]
+        #[doc = $crate::endpoints::errors_doc!()]
         #[doc = ""]
-        #[doc = concat!("# Examples\n\n```no_run\n# async fn run() -> deadlock_api::Result<()> {\n# use deadlock_api::*;\nlet api = deadlock_api::Client::new()?;\nlet value = api.", stringify!($name), "(", $example, ").await?;\n# let _ = value;\n# Ok(()) }\n```")]
-        pub async fn $name(&self, $ids: $ty) -> $crate::Result<$out> {
+        #[doc = concat!("# Examples\n\n```no_run\n# async fn run() -> deadlock_api::Result<()> {\nuse deadlock_api::*;\nlet api = deadlock_api::Client::new()?;\nlet value = api.", stringify!($name), "(", $example, ").await?;\n# let _ = value;\n# Ok(()) }\n```")]
+        pub async fn $name(&self, $ids: $ty $(, $arg: $aty)*) -> $crate::Result<$out> {
             if $ids.is_empty() {
                 return Ok(Vec::new());
             }
@@ -148,9 +156,9 @@ macro_rules! endpoint_methods {
     (@one_async optional $name:ident($($arg:ident: $ty:ty),*) -> $out:ty = $ctor:expr; $summary:literal $example:literal) => {
         #[doc = $summary]
         #[doc = ""]
-        #[doc = "# Errors\n\n[`Error::NotFound`](crate::Error::NotFound) when the server has no data for the id; [`Error::RateLimited`](crate::Error::RateLimited) and [`Error::Overloaded`](crate::Error::Overloaded) on 429 and 503, with the server's `Retry-After` when it sent one; [`Error::Status`](crate::Error::Status) on any other non-2xx; [`Error::Transport`](crate::Error::Transport) when no response arrived; [`Error::Decode`](crate::Error::Decode) when the body is not the expected JSON."]
+        #[doc = $crate::endpoints::errors_doc!()]
         #[doc = ""]
-        #[doc = concat!("# Examples\n\n```no_run\n# async fn run() -> deadlock_api::Result<()> {\n# use deadlock_api::*;\nlet api = deadlock_api::Client::new()?;\nlet value = api.", stringify!($name), "(", $example, ").await?;\n# let _ = value;\n# Ok(()) }\n```")]
+        #[doc = concat!("# Examples\n\n```no_run\n# async fn run() -> deadlock_api::Result<()> {\nuse deadlock_api::*;\nlet api = deadlock_api::Client::new()?;\nlet value = api.", stringify!($name), "(", $example, ").await?;\n# let _ = value;\n# Ok(()) }\n```")]
         pub async fn $name(&self, $($arg: $ty),*) -> $crate::Result<Option<$out>> {
             $crate::endpoints::optional(self.send(&$ctor).await)
         }
@@ -158,15 +166,17 @@ macro_rules! endpoint_methods {
 }
 pub(crate) use endpoint_methods;
 
-/// Turns the server's 400 "cannot be live" answer into `Ok(None)`.
+/// Turns the server's 400 "cannot be live" answer into `Ok(None)`; any other
+/// 400 (the route's parameter-validation answer) stays an error. The message
+/// text is the one recorded in `tests/fixtures/spectate_url_400.json`.
 pub(crate) fn optional<T>(result: crate::Result<T>) -> crate::Result<Option<T>> {
     match result {
         Ok(v) => Ok(Some(v)),
         Err(crate::Error::Status {
             status: 400,
-            message: Some(_),
+            message: Some(ref m),
             ..
-        }) => Ok(None),
+        }) if m.contains("cannot be live") => Ok(None),
         Err(e) => Err(e),
     }
 }
@@ -176,8 +186,8 @@ mod tests {
     use super::*;
     use crate::endpoint::{Endpoint, to_request};
     use crate::{
-        AccountId, ActiveMatchesQuery, ConfigBuilder, HeroId, MatchFilter, MatchId, Region,
-        SteamSearchQuery,
+        AccountId, ActiveMatchesQuery, ConfigBuilder, EnemyStatsQuery, HeroId, HeroStatsQuery,
+        MatchFilter, MatchId, MateStatsQuery, Region, SteamSearchQuery,
     };
 
     fn url<E: Endpoint>(e: &E) -> String {
@@ -188,6 +198,7 @@ mod tests {
                 .build()
                 .unwrap(),
         )
+        .unwrap()
         .uri()
         .to_string()
     }
@@ -231,13 +242,15 @@ mod tests {
         );
         assert_eq!(
             url(&players::GetMateStats {
-                account: AccountId(7)
+                account: AccountId(7),
+                query: MateStatsQuery::default()
             }),
             "https://h/v1/players/7/mate-stats"
         );
         assert_eq!(
             url(&players::GetEnemyStats {
-                account: AccountId(7)
+                account: AccountId(7),
+                query: EnemyStatsQuery::default()
             }),
             "https://h/v1/players/7/enemy-stats"
         );
@@ -259,6 +272,54 @@ mod tests {
     }
 
     #[test]
+    fn stats_filters_follow_openapi_names() {
+        let ids = vec![AccountId(1)];
+        let q = HeroStatsQuery {
+            hero_ids: vec![HeroId(2), HeroId(3)],
+            game_mode: Some("street_brawl".into()),
+            min_networth: Some(10),
+            ..HeroStatsQuery::default()
+        };
+        assert_eq!(
+            url(&players::GetHeroStats {
+                ids: ids.clone(),
+                query: q
+            }),
+            "https://h/v1/players/hero-stats?account_ids=1&game_mode=street_brawl&hero_ids=2%2C3&min_networth=10"
+        );
+        assert_eq!(
+            url(&players::GetHeroStats {
+                ids,
+                query: HeroStatsQuery::default()
+            }),
+            "https://h/v1/players/hero-stats?account_ids=1"
+        );
+        let q = MateStatsQuery {
+            same_party: Some(true),
+            min_matches_played: Some(5),
+            ..MateStatsQuery::default()
+        };
+        assert_eq!(
+            url(&players::GetMateStats {
+                account: AccountId(7),
+                query: q
+            }),
+            "https://h/v1/players/7/mate-stats?min_matches_played=5&same_party=true"
+        );
+        let q = EnemyStatsQuery {
+            max_match_id: Some(99),
+            ..EnemyStatsQuery::default()
+        };
+        assert_eq!(
+            url(&players::GetEnemyStats {
+                account: AccountId(7),
+                query: q
+            }),
+            "https://h/v1/players/7/enemy-stats?max_match_id=99"
+        );
+    }
+
+    #[test]
     fn id_lists_are_comma_joined() {
         let ids = vec![AccountId(1), AccountId(22)];
         assert_eq!(
@@ -266,7 +327,10 @@ mod tests {
             "https://h/v1/players/rank?account_ids=1%2C22"
         );
         assert_eq!(
-            url(&players::GetHeroStats { ids: ids.clone() }),
+            url(&players::GetHeroStats {
+                ids: ids.clone(),
+                query: HeroStatsQuery::default()
+            }),
             "https://h/v1/players/hero-stats?account_ids=1%2C22"
         );
         assert_eq!(

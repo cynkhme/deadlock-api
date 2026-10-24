@@ -33,24 +33,17 @@ pub struct MatchSalts {
 
 /// `GET /v1/matches/{id}/live/url` for a match that is live.
 ///
-/// Typed from the OpenAPI document (`MatchSpectateResponse`): no live
-/// match was available when the fixtures were recorded.
+/// Typed from the OpenAPI document (`MatchSpectateResponse`: `broadcast_url`
+/// required, `lobby_id` nullable): no live match was available when the
+/// fixtures were recorded.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct SpectateUrl {
-    /// The match id.
-    pub match_id: u64,
     /// The broadcast URL to spectate from.
     pub broadcast_url: String,
-    /// The lobby id.
+    /// The Steam lobby id.
     #[serde(default)]
     pub lobby_id: Option<u64>,
-    /// Unix seconds when the broadcast started.
-    #[serde(default)]
-    pub started_at: Option<u64>,
-    /// Unix seconds when the entry was last updated.
-    #[serde(default)]
-    pub updated_at: Option<u64>,
 }
 
 /// One entry of `GET /v1/matches/active`.

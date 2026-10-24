@@ -85,7 +85,10 @@ pub use client::{Client, ClientBuilder};
 pub use config::{Config, ConfigBuilder};
 pub use error::{Error, Result};
 pub use ids::{AccountId, HeroId, MatchId};
-pub use types::filters::{ActiveMatchesQuery, MatchFilter, SteamSearchQuery};
+pub use types::filters::{
+    ActiveMatchesQuery, EnemyStatsQuery, HeroStatsQuery, MatchFilter, MateStatsQuery,
+    SteamSearchQuery,
+};
 pub use types::info::{ApiInfo, Health, TableSize};
 pub use types::leaderboard::{Leaderboard, LeaderboardEntry, Region};
 pub use types::match_metadata::{

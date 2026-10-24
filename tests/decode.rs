@@ -18,11 +18,17 @@ fn match_metadata_decodes() {
     assert_eq!(m.match_info.duration_s, 1616);
     assert_eq!(m.match_info.players.len(), 2);
     let p = &m.match_info.players[0];
-    assert_eq!(p.account_id, AccountId(123324885));
-    assert_eq!(p.player_slot, 5);
-    assert_eq!(p.death_details[0].killer_player_slot, Some(11));
-    assert_eq!(p.death_details[0].game_time_s, Some(495));
-    assert_eq!(p.items[0].item_id, Some(267712790));
+    assert_eq!(p.account_id, AccountId(441058371));
+    assert_eq!(p.player_slot, 10);
+    assert_eq!(p.kills, Some(5));
+    assert_eq!(p.mvp_rank, Some(3));
+    assert_eq!(m.match_info.players[1].mvp_rank, Some(1));
+    assert_eq!(p.ability_stats[0].ability_id, Some(2521902222));
+    assert_eq!(p.ability_stats[0].ability_value, Some(91));
+    assert_eq!(m.match_info.players[1].ability_stats.len(), 1);
+    assert_eq!(p.death_details[0].killer_player_slot, Some(4));
+    assert_eq!(p.death_details[0].game_time_s, Some(302));
+    assert_eq!(p.items[0].item_id, Some(2521902222));
     assert_eq!(p.stats[0].time_stamp_s, Some(180));
     assert_eq!(m.match_info.winning_team, Some(0));
     assert_eq!(m.match_info.start_time, Some(1792705407));
@@ -30,50 +36,86 @@ fn match_metadata_decodes() {
     assert_eq!(m.match_info.mid_boss[0].team_killed, Some(0));
 }
 
-/// Drift guard for the tolerant typing: every optional field the
-/// model carries is present in the recorded sample, so a `None` in a live
-/// response means the server changed, not that the field never existed.
+/// Drift guard for the tolerant typing: the decoded fixture,
+/// serialized back, must carry every key of the raw fixture with a value
+/// where the raw has one. A `None` or empty list where the sample has data
+/// means a field was renamed or mistyped upstream, or mistyped here.
 #[test]
 fn tolerant_fields_are_all_present_in_the_sample() {
-    let m: MatchMetadata = serde_json::from_slice(&fixture("match_metadata.json")).unwrap();
-    let i = &m.match_info;
-    for (name, present) in [
-        ("start_time", i.start_time.is_some()),
-        ("winning_team", i.winning_team.is_some()),
-        ("match_outcome", i.match_outcome.is_some()),
-        ("game_mode", i.game_mode.is_some()),
-        ("match_mode", i.match_mode.is_some()),
-        ("objectives", !i.objectives.is_empty()),
-        ("mid_boss", !i.mid_boss.is_empty()),
-        ("match_paths", i.match_paths.is_some()),
-        ("damage_matrix", i.damage_matrix.is_some()),
-        ("teams", !i.teams.is_empty()),
-    ] {
-        assert!(present, "match_info.{name}");
+    let raw: serde_json::Value = serde_json::from_slice(&fixture("match_metadata.json")).unwrap();
+    let decoded: MatchMetadata = serde_json::from_value(raw.clone()).unwrap();
+    let back = serde_json::to_value(&decoded).unwrap();
+    let mut diffs = Vec::new();
+    compare_shape("", &raw, &back, &mut diffs);
+    assert!(diffs.is_empty(), "shape drift:\n{}", diffs.join("\n"));
+}
+
+/// Walks `raw` and `back` together: a key of `raw` missing in `back`, or a
+/// value in `raw` that became null/empty in `back`, is a diff. Numbers only
+/// have to agree as f64 (the model may widen ints to floats).
+fn compare_shape(
+    path: &str,
+    raw: &serde_json::Value,
+    back: &serde_json::Value,
+    diffs: &mut Vec<String>,
+) {
+    use serde_json::Value::*;
+    match (raw, back) {
+        (Object(r), Object(b)) => {
+            for (k, rv) in r {
+                let p = format!("{path}/{k}");
+                match b.get(k) {
+                    None => diffs.push(format!("{p}: key missing in the model")),
+                    Some(bv) => compare_shape(&p, rv, bv, diffs),
+                }
+            }
+        }
+        (Array(r), Array(b)) => {
+            if r.len() != b.len() {
+                diffs.push(format!("{path}: {} elements became {}", r.len(), b.len()));
+            }
+            for (i, (rv, bv)) in r.iter().zip(b).enumerate() {
+                compare_shape(&format!("{path}/{i}"), rv, bv, diffs);
+            }
+        }
+        (Null, _) => {}
+        (_, Null) => diffs.push(format!("{path}: value became null")),
+        (Number(r), Number(b)) => {
+            if r.as_f64() != b.as_f64() {
+                diffs.push(format!("{path}: {r} became {b}"));
+            }
+        }
+        (r, b) if r != b => diffs.push(format!("{path}: {r} became {b}")),
+        _ => {}
     }
-    let p = &i.players[0];
-    for (name, present) in [
-        ("team", p.team.is_some()),
-        ("hero_id", p.hero_id.is_some()),
-        ("kills", p.kills.is_some()),
-        ("deaths", p.deaths.is_some()),
-        ("assists", p.assists.is_some()),
-        ("net_worth", p.net_worth.is_some()),
-        ("level", p.level.is_some()),
-        ("stats", !p.stats.is_empty()),
-        ("items", !p.items.is_empty()),
-        ("death_details", !p.death_details.is_empty()),
-        ("hero_data", p.hero_data.is_some()),
-    ] {
-        assert!(present, "players[0].{name}");
-    }
-    assert!(p.stats[0].time_stamp_s.is_some() && p.stats[0].net_worth.is_some());
-    assert!(p.items[0].item_id.is_some() && p.items[0].game_time_s.is_some());
-    assert!(p.death_details[0].game_time_s.is_some() && p.death_details[0].death_pos.is_some());
-    let paths = i.match_paths.as_ref().unwrap();
-    assert!(!paths.paths.is_empty() && !paths.paths[0].x_pos.is_empty());
-    let dm = i.damage_matrix.as_ref().unwrap();
-    assert!(!dm.sample_time_s.is_empty() && !dm.damage_dealers.is_empty());
+}
+
+#[test]
+fn wrong_typed_sub_object_degrades_to_none_not_a_decode_error() {
+    let json = r#"{"match_info":{"match_id":1,"duration_s":2,"players":[{"account_id":3,"player_slot":4,
+        "stats":[{"time_stamp_s":"nope"},{"time_stamp_s":180}],"items":"not a list","death_details":[{"game_time_s":[]}]}],
+        "match_paths":{"paths":[]},"damage_matrix":7,"objectives":[{"team":"red"}]}}"#;
+    let m: MatchMetadata = serde_json::from_str(json).unwrap();
+    let p = &m.match_info.players[0];
+    assert_eq!(
+        p.stats.len(),
+        1,
+        "the wrong-typed sample is skipped, the good one kept"
+    );
+    assert!(p.items.is_empty());
+    assert!(p.death_details.is_empty());
+    assert!(
+        m.match_info.match_paths.is_none(),
+        "match_paths without resolutions is None, not an error"
+    );
+    assert!(m.match_info.damage_matrix.is_none());
+    assert!(m.match_info.objectives.is_empty());
+}
+
+#[test]
+fn wrong_typed_scalar_field_is_still_a_decode_error() {
+    let json = r#"{"match_info":{"match_id":1,"duration_s":2,"players":[{"account_id":3,"player_slot":4,"kills":"7"}]}}"#;
+    assert!(serde_json::from_str::<MatchMetadata>(json).is_err());
 }
 
 #[test]

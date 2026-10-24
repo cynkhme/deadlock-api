@@ -2,7 +2,9 @@
 
 use crate::AccountId;
 use crate::endpoint::Endpoint;
-use crate::types::filters::{MatchFilter, join_ids};
+use crate::types::filters::{
+    EnemyStatsQuery, HeroStatsQuery, MatchFilter, MateStatsQuery, join_ids,
+};
 use crate::types::players::{
     AccountRank, EnemyStats, HeroStats, MatchHistoryEntry, MateStats, RankDistributionEntry,
     RankResponse,
@@ -65,6 +67,7 @@ impl Endpoint for GetRankDistribution {
 /// `GET /v1/players/hero-stats?account_ids=…`.
 pub(crate) struct GetHeroStats {
     pub ids: Vec<AccountId>,
+    pub query: HeroStatsQuery,
 }
 
 impl Endpoint for GetHeroStats {
@@ -73,13 +76,16 @@ impl Endpoint for GetHeroStats {
         "/v1/players/hero-stats".into()
     }
     fn query(&self) -> Vec<(&'static str, String)> {
-        vec![("account_ids", join_ids(&self.ids))]
+        let mut q = vec![("account_ids", join_ids(&self.ids))];
+        q.extend(self.query.query_pairs());
+        q
     }
 }
 
 /// `GET /v1/players/{id}/mate-stats`.
 pub(crate) struct GetMateStats {
     pub account: AccountId,
+    pub query: MateStatsQuery,
 }
 
 impl Endpoint for GetMateStats {
@@ -87,16 +93,23 @@ impl Endpoint for GetMateStats {
     fn path(&self) -> String {
         format!("/v1/players/{}/mate-stats", self.account)
     }
+    fn query(&self) -> Vec<(&'static str, String)> {
+        self.query.query_pairs()
+    }
 }
 
 /// `GET /v1/players/{id}/enemy-stats`.
 pub(crate) struct GetEnemyStats {
     pub account: AccountId,
+    pub query: EnemyStatsQuery,
 }
 
 impl Endpoint for GetEnemyStats {
     type Output = Vec<EnemyStats>;
     fn path(&self) -> String {
         format!("/v1/players/{}/enemy-stats", self.account)
+    }
+    fn query(&self) -> Vec<(&'static str, String)> {
+        self.query.query_pairs()
     }
 }

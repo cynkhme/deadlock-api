@@ -194,7 +194,11 @@ fn empty_id_list_makes_no_request() {
     let api = client(&url);
     assert!(api.steam_profiles(&[]).unwrap().is_empty());
     assert!(api.player_ranks(&[]).unwrap().is_empty());
-    assert!(api.hero_stats(&[]).unwrap().is_empty());
+    assert!(
+        api.hero_stats(&[], &deadlock_api::HeroStatsQuery::default())
+            .unwrap()
+            .is_empty()
+    );
     assert!(requests.lock().unwrap().is_empty());
 }
 
@@ -202,4 +206,64 @@ fn empty_id_list_makes_no_request() {
 fn builder_rejects_bad_config() {
     let err = Client::builder().base_url("not a url").build().unwrap_err();
     assert!(matches!(err, Error::Config { .. }), "{err:?}");
+}
+
+#[test]
+fn spectate_url_400_for_other_reasons_is_an_error() {
+    let (url, _) = server(vec![(
+        "400 Bad Request",
+        JSON,
+        r#"{"status":400,"error":"invalid match id"}"#,
+    )]);
+    let err = client(&url).match_spectate_url(MatchId(1)).unwrap_err();
+    assert!(matches!(err, Error::Status { status: 400, .. }), "{err:?}");
+}
+
+#[test]
+fn spectate_url_200_schema_shape_decodes() {
+    let (url, _) = server(vec![(
+        "200 OK",
+        JSON,
+        r#"{"broadcast_url":"https://b/1","lobby_id":1}"#,
+    )]);
+    let got = client(&url)
+        .match_spectate_url(MatchId(1))
+        .unwrap()
+        .unwrap();
+    assert_eq!(
+        (got.broadcast_url.as_str(), got.lobby_id),
+        ("https://b/1", Some(1))
+    );
+}
+
+#[test]
+fn redirects_are_not_followed() {
+    let (url, requests) = server(vec![
+        ("302 Found", &[("Location", "/v1/info")], ""),
+        ("200 OK", JSON, r#"{"services":{}}"#),
+    ]);
+    let err = client(&url).health().unwrap_err();
+    assert_eq!(err.status(), Some(302), "{err:?}");
+    assert_eq!(requests.lock().unwrap().len(), 1);
+}
+
+#[test]
+fn api_key_query_pair_is_rejected() {
+    let (url, requests) = server(vec![("200 OK", JSON, "{}")]);
+    let api = client(&url);
+    let err = api.get_raw("/v1/x", &[("api_key", "leak")]).unwrap_err();
+    assert!(matches!(err, Error::Config { .. }), "{err:?}");
+    assert!(requests.lock().unwrap().is_empty());
+}
+
+#[test]
+fn invalid_path_is_an_error_not_a_panic() {
+    let (url, _) = server(vec![("200 OK", JSON, "{}")]);
+    let api = client(&url);
+    let err = api.get_raw("/v1/a b", &[]).unwrap_err();
+    assert!(matches!(err, Error::InvalidRequest { .. }), "{err:?}");
+    let err = api
+        .leaderboard(deadlock_api::Region::Unknown("a b".into()))
+        .unwrap_err();
+    assert!(matches!(err, Error::InvalidRequest { .. }), "{err:?}");
 }

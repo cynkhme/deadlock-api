@@ -8,7 +8,7 @@ megabyte of data.
 
 | File | Request | Trim |
 |---|---|---|
-| `match_metadata.json` | `GET /v1/matches/122539002/metadata` (full 0.97 MB response, recorded in the same session) | `jq -f scripts/trim-metadata.jq`: 2 of 12 players, 3 `stats` samples, 5 `items`, 2 `death_details`, 2 paths with 10 positions, 1 damage dealer |
+| `match_metadata.json` | `GET /v1/matches/122539002/metadata` (full 0.97 MB response, recorded in the same session) | `jq -f scripts/trim-metadata.jq`: players of slots 10 and 4 (they carry `mvp_rank` and `ability_stats`), 3 `stats` samples, 5 `items`, 2 `death_details`, 2 paths with 10 positions, 1 damage dealer |
 | `match_salts.json` | `GET /v1/matches/122539002/salts` | none |
 | `spectate_url_400.json` | `GET /v1/matches/122539002/live/url` → **400** `{"status":400,"error":"Match 122539002 cannot be live"}` | none; this is the finished-match case |
 | `active_matches.json` | `GET /v1/matches/active` | first 3 |

@@ -9,9 +9,10 @@ use serde::de::DeserializeOwned;
 use crate::endpoint::{Endpoint, execute_raw, raw_request, raw_url, run};
 use crate::{
     AccountId, AccountRank, ActiveMatch, ActiveMatchesQuery, ApiInfo, Config, ConfigBuilder,
-    EnemyStats, Error, Health, HeroId, HeroStats, Leaderboard, MatchFilter, MatchHistoryEntry,
-    MatchId, MatchMetadata, MatchSalts, MateStats, RankDistributionEntry, RankResponse,
-    RecentMatch, Region, Result, SpectateUrl, SteamProfile, SteamSearchQuery,
+    EnemyStats, EnemyStatsQuery, Error, Health, HeroId, HeroStats, HeroStatsQuery, Leaderboard,
+    MatchFilter, MatchHistoryEntry, MatchId, MatchMetadata, MatchSalts, MateStats, MateStatsQuery,
+    RankDistributionEntry, RankResponse, RecentMatch, Region, Result, SpectateUrl, SteamProfile,
+    SteamSearchQuery,
 };
 
 #[cfg(feature = "rustls")]
@@ -24,7 +25,8 @@ compile_error!("deadlock-api: the `blocking` feature needs `rustls` or `native-t
 /// A blocking client: one connection pool, one [`Config`], one optional cache.
 ///
 /// Cheap to clone (the pool is shared). Build it with [`Client::builder`] or
-/// [`Client::new`] for the defaults.
+/// [`Client::new`] for the defaults. Redirects are not followed: a 3xx comes
+/// back as [`Error::Status`], so the API key is never re-sent to another host.
 ///
 /// # Examples
 ///
@@ -68,6 +70,7 @@ impl ClientBuilder {
             .build();
         let agent = ureq::Agent::config_builder()
             .http_status_as_error(false)
+            .max_redirects(0)
             .timeout_connect(Some(config.connect_timeout()))
             .timeout_global(Some(config.timeout()))
             .user_agent(config.user_agent())
@@ -105,11 +108,14 @@ impl Client {
     /// Any route under the server root, decoded as `T`.
     ///
     /// The escape hatch for routes without a typed method: `path` starts
-    /// with `/v1/`, `query` pairs are form-encoded. Nothing is cached.
+    /// with `/v1/`, `query` pairs are form-encoded. Nothing is cached. The
+    /// API key is sent as `X-API-KEY` from the config; a query pair named
+    /// `api_key` is refused.
     ///
     /// # Errors
     ///
-    /// As for every request; see [`Error`].
+    /// [`Error::Config`] for an `api_key` pair, [`Error::InvalidRequest`] for
+    /// a path that does not form a URL; otherwise as for every request.
     ///
     /// # Examples
     ///
@@ -122,7 +128,7 @@ impl Client {
     /// # Ok(()) }
     /// ```
     pub fn get_json<T: DeserializeOwned>(&self, path: &str, query: &[(&str, &str)]) -> Result<T> {
-        let url = raw_url(&self.config, path, query);
+        let url = raw_url(&self.config, path, query)?;
         let body = self.get_raw_at(&url)?;
         serde_json::from_slice(&body).map_err(|source| Error::Decode {
             location: url,
@@ -146,11 +152,11 @@ impl Client {
     /// # Ok(()) }
     /// ```
     pub fn get_raw(&self, path: &str, query: &[(&str, &str)]) -> Result<Bytes> {
-        self.get_raw_at(&raw_url(&self.config, path, query))
+        self.get_raw_at(&raw_url(&self.config, path, query)?)
     }
 
     fn get_raw_at(&self, url: &str) -> Result<Bytes> {
-        let resp = self.transport(raw_request(&self.config, url))?;
+        let resp = self.transport(raw_request(&self.config, url)?)?;
         execute_raw(url, resp)
     }
 

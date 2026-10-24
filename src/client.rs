@@ -12,9 +12,10 @@ use crate::endpoint::{
 };
 use crate::{
     AccountId, AccountRank, ActiveMatch, ActiveMatchesQuery, ApiInfo, Config, ConfigBuilder,
-    EnemyStats, Error, Health, HeroId, HeroStats, Leaderboard, MatchFilter, MatchHistoryEntry,
-    MatchId, MatchMetadata, MatchSalts, MateStats, RankDistributionEntry, RankResponse,
-    RecentMatch, Region, Result, SpectateUrl, SteamProfile, SteamSearchQuery,
+    EnemyStats, EnemyStatsQuery, Error, Health, HeroId, HeroStats, HeroStatsQuery, Leaderboard,
+    MatchFilter, MatchHistoryEntry, MatchId, MatchMetadata, MatchSalts, MateStats, MateStatsQuery,
+    RankDistributionEntry, RankResponse, RecentMatch, Region, Result, SpectateUrl, SteamProfile,
+    SteamSearchQuery,
 };
 
 #[cfg(not(any(feature = "rustls", feature = "native-tls")))]
@@ -25,6 +26,8 @@ compile_error!("deadlock-api: the `async` feature needs `rustls` or `native-tls`
 /// Cheap to clone (the pool is shared) and `Send`, so it can move into
 /// spawned tasks. The cache is synchronous by design; the client calls it on
 /// tokio's blocking pool, so a slow disk never stalls a worker thread.
+/// Redirects are not followed: a 3xx comes back as [`Error::Status`], so the
+/// API key is never re-sent to another host.
 ///
 /// # Examples
 ///
@@ -64,6 +67,7 @@ impl ClientBuilder {
     pub fn build(self) -> Result<Client> {
         let config = self.config.build()?;
         let builder = reqwest::Client::builder()
+            .redirect(reqwest::redirect::Policy::none())
             .user_agent(config.user_agent())
             .connect_timeout(config.connect_timeout())
             .timeout(config.timeout());
@@ -105,11 +109,14 @@ impl Client {
     /// Any route under the server root, decoded as `T`.
     ///
     /// The escape hatch for routes without a typed method: `path` starts
-    /// with `/v1/`, `query` pairs are form-encoded. Nothing is cached.
+    /// with `/v1/`, `query` pairs are form-encoded. Nothing is cached. The
+    /// API key is sent as `X-API-KEY` from the config; a query pair named
+    /// `api_key` is refused.
     ///
     /// # Errors
     ///
-    /// As for every request; see [`Error`].
+    /// [`Error::Config`] for an `api_key` pair, [`Error::InvalidRequest`] for
+    /// a path that does not form a URL; otherwise as for every request.
     ///
     /// # Examples
     ///
@@ -127,7 +134,7 @@ impl Client {
         path: &str,
         query: &[(&str, &str)],
     ) -> Result<T> {
-        let url = raw_url(&self.config, path, query);
+        let url = raw_url(&self.config, path, query)?;
         let body = self.get_raw_at(&url).await?;
         serde_json::from_slice(&body).map_err(|source| Error::Decode {
             location: url,
@@ -151,11 +158,11 @@ impl Client {
     /// # Ok(()) }
     /// ```
     pub async fn get_raw(&self, path: &str, query: &[(&str, &str)]) -> Result<Bytes> {
-        self.get_raw_at(&raw_url(&self.config, path, query)).await
+        self.get_raw_at(&raw_url(&self.config, path, query)?).await
     }
 
     async fn get_raw_at(&self, url: &str) -> Result<Bytes> {
-        let resp = self.transport(raw_request(&self.config, url)).await?;
+        let resp = self.transport(raw_request(&self.config, url)?).await?;
         execute_raw(url, resp)
     }
 
@@ -163,7 +170,9 @@ impl Client {
     /// miss, cache store after a 2xx, decode. Cache calls run on the
     /// blocking pool; a cache task that panics counts as a miss.
     async fn send<E: Endpoint>(&self, endpoint: &E) -> Result<E::Output> {
-        let key = endpoint.cache_key();
+        let key = endpoint
+            .cache_key()
+            .filter(|_| self.config.cache().is_some());
         if let Some(key) = &key {
             let (cfg, k) = (self.config.clone(), key.clone());
             let hit = tokio::task::spawn_blocking(move || cache_lookup(&cfg, &k))
@@ -176,7 +185,7 @@ impl Client {
                 log::warn!("cached body for {key} is not JSON, fetching instead");
             }
         }
-        let req = to_request(endpoint, &self.config);
+        let req = to_request(endpoint, &self.config)?;
         let url = req.uri().to_string();
         let resp = self.transport(req).await?;
         if let Some(key) = key {

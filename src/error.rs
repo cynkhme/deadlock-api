@@ -73,6 +73,16 @@ pub enum Error {
         #[source]
         source: serde_json::Error,
     },
+    /// A request could not be built: a path or a value supplied by the caller
+    /// (a raw `path`, an unknown [`Region`](crate::Region)) does not form a
+    /// valid URL. Raised before anything is sent.
+    #[error("invalid request {url}: {message}")]
+    InvalidRequest {
+        /// The URL as far as it could be assembled.
+        url: String,
+        /// What was wrong.
+        message: String,
+    },
     /// The configuration cannot be used: the base URL has no scheme or host,
     /// or the user agent or API key is not a valid header value. Raised by
     /// the builders, never by a request.
@@ -107,7 +117,10 @@ impl Error {
             Error::Overloaded { .. } => Some(503),
             Error::NotFound { .. } => Some(404),
             Error::Status { status, .. } => Some(*status),
-            Error::Transport { .. } | Error::Decode { .. } | Error::Config { .. } => None,
+            Error::Transport { .. }
+            | Error::Decode { .. }
+            | Error::InvalidRequest { .. }
+            | Error::Config { .. } => None,
         }
     }
 

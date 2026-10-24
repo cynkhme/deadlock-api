@@ -169,7 +169,12 @@ async fn empty_id_list_makes_no_request() {
     let api = client(&url);
     assert!(api.steam_profiles(&[]).await.unwrap().is_empty());
     assert!(api.player_ranks(&[]).await.unwrap().is_empty());
-    assert!(api.hero_stats(&[]).await.unwrap().is_empty());
+    assert!(
+        api.hero_stats(&[], &deadlock_api::HeroStatsQuery::default())
+            .await
+            .unwrap()
+            .is_empty()
+    );
     assert!(requests.lock().unwrap().is_empty());
 }
 
@@ -179,4 +184,46 @@ async fn client_is_send_and_usable_from_a_spawned_task() {
     let api = client(&url);
     let handle = tokio::spawn(async move { api.health().await.map(|h| h.services.len()) });
     assert_eq!(handle.await.unwrap().unwrap(), 0);
+}
+
+#[tokio::test]
+async fn spectate_url_400_for_other_reasons_is_an_error() {
+    let (url, _) = server(vec![(
+        "400 Bad Request",
+        JSON,
+        r#"{"status":400,"error":"invalid match id"}"#,
+    )]);
+    let err = client(&url)
+        .match_spectate_url(MatchId(1))
+        .await
+        .unwrap_err();
+    assert!(matches!(err, Error::Status { status: 400, .. }), "{err:?}");
+}
+
+#[tokio::test]
+async fn redirects_are_not_followed() {
+    let (url, requests) = server(vec![
+        ("302 Found", &[("Location", "/v1/info")], ""),
+        ("200 OK", JSON, r#"{"services":{}}"#),
+    ]);
+    let err = client(&url).health().await.unwrap_err();
+    assert_eq!(err.status(), Some(302), "{err:?}");
+    assert_eq!(requests.lock().unwrap().len(), 1);
+}
+
+#[tokio::test]
+async fn api_key_query_pair_is_rejected() {
+    let (url, _) = server(vec![("200 OK", JSON, "{}")]);
+    let err = client(&url)
+        .get_raw("/v1/x", &[("api_key", "leak")])
+        .await
+        .unwrap_err();
+    assert!(matches!(err, Error::Config { .. }), "{err:?}");
+}
+
+#[tokio::test]
+async fn invalid_path_is_an_error_not_a_panic() {
+    let (url, _) = server(vec![("200 OK", JSON, "{}")]);
+    let err = client(&url).get_raw("/v1/a b", &[]).await.unwrap_err();
+    assert!(matches!(err, Error::InvalidRequest { .. }), "{err:?}");
 }

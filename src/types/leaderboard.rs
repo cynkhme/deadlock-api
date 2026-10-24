@@ -24,7 +24,8 @@ pub enum Region {
     SAmerica,
     /// `Oceania`.
     Oceania,
-    /// A region this crate does not know, kept verbatim.
+    /// A region this crate does not know, kept verbatim. Sent as is when
+    /// used in a request; the server is case-sensitive (`europe` → 400).
     Unknown(String),
 }
 

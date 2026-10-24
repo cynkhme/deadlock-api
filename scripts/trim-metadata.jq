@@ -1,6 +1,7 @@
-# Trims a full /v1/matches/{id}/metadata response to a fixture: two players,
-# a few samples per list, so the shape is kept and the file stays small.
-.match_info.players |= .[0:2]
+# Trims a full /v1/matches/{id}/metadata response to a fixture: two players
+# (slots 10 and 4, who carry mvp_rank and ability_stats in the 2026-10-24
+# sample), a few samples per list, so the shape is kept and the file stays small.
+.match_info.players |= map(select(.player_slot == 10 or .player_slot == 4))
 | .match_info.players[] |= (
     .stats |= .[0:3]
     | .items |= .[0:5]

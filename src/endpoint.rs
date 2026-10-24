@@ -49,40 +49,54 @@ pub(crate) fn url_for<E: Endpoint>(e: &E, cfg: &Config) -> String {
 /// The request for `e`: GET, JSON accept, the configured user agent and, when
 /// set, the API key as `X-API-KEY` (never in the URL, so it stays out of
 /// caches and logs).
-pub(crate) fn to_request<E: Endpoint>(e: &E, cfg: &Config) -> Request<()> {
-    let mut builder = Request::get(url_for(e, cfg))
-        .header(header::ACCEPT, "application/json")
-        .header(header::USER_AGENT, cfg.user_agent());
-    if let Some(key) = cfg.api_key() {
-        builder = builder.header("x-api-key", key);
-    }
-    builder
-        .body(())
-        .expect("the URL and header values were validated by ConfigBuilder::build")
+///
+/// # Errors
+///
+/// [`Error::InvalidRequest`] when the path (for example a
+/// [`Region::Unknown`](crate::Region::Unknown) segment) does not form a URL.
+pub(crate) fn to_request<E: Endpoint>(e: &E, cfg: &Config) -> Result<Request<()>> {
+    build_request(cfg, &url_for(e, cfg))
 }
 
 /// The URL of an arbitrary GET under the server root, for `get_json` and
 /// `get_raw`; query pairs are form-encoded, none means no `?`.
-pub(crate) fn raw_url(cfg: &Config, path: &str, query: &[(&str, &str)]) -> String {
+///
+/// A pair named `api_key` is refused: the key travels as the `X-API-KEY`
+/// header from the config, and a key in the URL would surface in every
+/// error and log line.
+pub(crate) fn raw_url(cfg: &Config, path: &str, query: &[(&str, &str)]) -> Result<String> {
+    if query.iter().any(|(k, _)| k.eq_ignore_ascii_case("api_key")) {
+        return Err(Error::Config {
+            message: "pass the API key through ConfigBuilder::api_key, not as a query pair".into(),
+        });
+    }
     let mut url = format!("{}{path}", cfg.base_url());
     if !query.is_empty() {
         url.push('?');
         url.push_str(&serde_urlencoded::to_string(query).expect("string pairs always encode"));
     }
-    url
+    Ok(url)
 }
 
 /// The request for an arbitrary GET, with the same headers as [`to_request`].
-pub(crate) fn raw_request(cfg: &Config, url: &str) -> Request<()> {
+pub(crate) fn raw_request(cfg: &Config, url: &str) -> Result<Request<()>> {
+    build_request(cfg, url)
+}
+
+/// GET `url` with the JSON accept header, the user agent and, when set, the
+/// API key as `X-API-KEY`. The header values were validated at build time;
+/// the URL is checked here because paths may come from the caller.
+fn build_request(cfg: &Config, url: &str) -> Result<Request<()>> {
     let mut builder = Request::get(url)
         .header(header::ACCEPT, "application/json")
         .header(header::USER_AGENT, cfg.user_agent());
     if let Some(key) = cfg.api_key() {
         builder = builder.header("x-api-key", key);
     }
-    builder
-        .body(())
-        .expect("the header values were validated by ConfigBuilder::build")
+    builder.body(()).map_err(|e| Error::InvalidRequest {
+        url: url.to_owned(),
+        message: e.to_string(),
+    })
 }
 
 /// Maps a response onto the endpoint's output or an [`Error`].
@@ -190,7 +204,7 @@ where
             log::warn!("cached body for {key} is not JSON, fetching instead");
         }
     }
-    let req = to_request(e, cfg);
+    let req = to_request(e, cfg)?;
     let url = req.uri().to_string();
     let resp = transport(req)?;
     if let Some(key) = &key {
@@ -262,7 +276,7 @@ mod tests {
             .api_key(Some("secret".into()))
             .build()
             .unwrap();
-        let req = to_request(&Ep, &cfg);
+        let req = to_request(&Ep, &cfg).unwrap();
         assert_eq!(req.method(), http::Method::GET);
         assert_eq!(
             req.uri().to_string(),
@@ -277,7 +291,7 @@ mod tests {
                 .starts_with("deadlock-api-rs/")
         );
 
-        let req = to_request(&Ep, &ConfigBuilder::default().build().unwrap());
+        let req = to_request(&Ep, &ConfigBuilder::default().build().unwrap()).unwrap();
         assert!(req.headers().get("x-api-key").is_none());
     }
 
@@ -288,7 +302,7 @@ mod tests {
             .build()
             .unwrap();
         assert_eq!(
-            to_request(&Ep, &cfg).uri().to_string(),
+            to_request(&Ep, &cfg).unwrap().uri().to_string(),
             "https://h/v1/x?a=1&ids=1%2C2"
         );
     }

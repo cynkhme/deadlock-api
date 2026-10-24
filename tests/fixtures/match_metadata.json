@@ -5,30 +5,46 @@
     "winning_team": 0,
     "players": [
       {
-        "account_id": 123324885,
-        "player_slot": 5,
+        "account_id": 441058371,
+        "player_slot": 10,
         "death_details": [
           {
-            "game_time_s": 495,
-            "time_to_kill_s": 10.119193,
-            "killer_player_slot": 11,
+            "game_time_s": 302,
+            "time_to_kill_s": 8.31537,
+            "killer_player_slot": 4,
             "death_pos": {
-              "x": -8062.6562,
-              "y": -1803.9688,
-              "z": 248.0
+              "x": 42.65625,
+              "y": 20.28125,
+              "z": 324.15625
             },
             "killer_pos": {
-              "x": -7891.625,
-              "y": -1587.2812,
-              "z": 248.0625
+              "x": 56.71875,
+              "y": -254.28125,
+              "z": 248.03125
             },
-            "death_duration_s": 15
+            "death_duration_s": 8
+          },
+          {
+            "game_time_s": 431,
+            "time_to_kill_s": 10.771711,
+            "killer_player_slot": 4,
+            "death_pos": {
+              "x": 220.75,
+              "y": 2326.4062,
+              "z": 376.03125
+            },
+            "killer_pos": {
+              "x": 233.125,
+              "y": 2289.1875,
+              "z": 376.03125
+            },
+            "death_duration_s": 12
           }
         ],
         "items": [
           {
-            "game_time_s": 15,
-            "item_id": 267712790,
+            "game_time_s": 20,
+            "item_id": 2521902222,
             "upgrade_id": 0,
             "sold_time_s": 0,
             "flags": 0,
@@ -36,38 +52,38 @@
             "upgrade_info": 65536
           },
           {
-            "game_time_s": 51,
-            "item_id": 267712790,
-            "upgrade_id": 1481088878,
+            "game_time_s": 47,
+            "item_id": 2521902222,
+            "upgrade_id": 1225150031,
             "sold_time_s": 0,
             "flags": 0,
             "imbued_ability_id": 0,
             "upgrade_info": 196608
           },
           {
-            "game_time_s": 84,
-            "item_id": 3621314027,
-            "upgrade_id": 0,
-            "sold_time_s": 0,
-            "flags": 0,
-            "imbued_ability_id": 0,
-            "upgrade_info": 65536
-          },
-          {
-            "game_time_s": 95,
-            "item_id": 2829638276,
+            "game_time_s": 67,
+            "item_id": 754480263,
             "upgrade_id": 1,
-            "sold_time_s": 366,
+            "sold_time_s": 1506,
             "flags": 1,
+            "imbued_ability_id": 2521902222,
+            "upgrade_info": 65536
+          },
+          {
+            "game_time_s": 92,
+            "item_id": 1928108461,
+            "upgrade_id": 0,
+            "sold_time_s": 0,
+            "flags": 0,
             "imbued_ability_id": 0,
             "upgrade_info": 65536
           },
           {
-            "game_time_s": 152,
-            "item_id": 683490631,
-            "upgrade_id": 0,
-            "sold_time_s": 0,
-            "flags": 0,
+            "game_time_s": 134,
+            "item_id": 1998374645,
+            "upgrade_id": 1,
+            "sold_time_s": 1109,
+            "flags": 1,
             "imbued_ability_id": 0,
             "upgrade_info": 65536
           }
@@ -75,70 +91,70 @@
         "stats": [
           {
             "time_stamp_s": 180,
-            "net_worth": 2582,
-            "gold_player": 497,
+            "net_worth": 2063,
+            "gold_player": 230,
             "gold_player_orbs": 0,
-            "gold_lane_creep_orbs": 635,
+            "gold_lane_creep_orbs": 484,
             "gold_neutral_creep_orbs": 0,
             "gold_boss": 0,
             "gold_boss_orb": 0,
             "gold_treasure": 0,
-            "gold_denied": 25,
+            "gold_denied": 52,
             "gold_death_loss": 0,
-            "gold_lane_creep": 635,
-            "gold_neutral_creep": 123,
-            "kills": 1,
+            "gold_lane_creep": 594,
+            "gold_neutral_creep": 103,
+            "kills": 0,
             "deaths": 0,
-            "assists": 1,
-            "creep_kills": 3,
+            "assists": 2,
+            "creep_kills": 6,
             "neutral_kills": 3,
-            "possible_creeps": 13,
-            "creep_damage": 938,
-            "player_damage": 1082,
-            "neutral_damage": 468,
-            "boss_damage": 0,
-            "denies": 0,
-            "player_healing": 174,
+            "possible_creeps": 17,
+            "creep_damage": 1551,
+            "player_damage": 1094,
+            "neutral_damage": 407,
+            "boss_damage": 51,
+            "denies": 1,
+            "player_healing": 0,
             "ability_points": 2,
             "self_healing": 0,
-            "player_damage_taken": 521,
-            "max_health": 935,
+            "player_damage_taken": 1026,
+            "max_health": 1088,
             "weapon_power": 0,
-            "tech_power": 4,
-            "shots_hit": 51,
-            "shots_missed": 56,
+            "tech_power": 15,
+            "shots_hit": 168,
+            "shots_missed": 194,
             "damage_absorbed": 0,
             "absorption_provided": 0,
-            "hero_bullets_hit": 27,
-            "hero_bullets_hit_crit": 9,
+            "hero_bullets_hit": 45,
+            "hero_bullets_hit_crit": 6,
             "heal_prevented": 0,
             "heal_lost": 0,
             "gold_sources": [
               {
                 "source": 1,
-                "kills": 1,
-                "damage": 1082,
-                "gold": 341,
+                "kills": null,
+                "damage": 1094,
+                "gold": 0,
                 "gold_orbs": 0
               },
               {
                 "source": 2,
-                "kills": 3,
-                "damage": 938,
-                "gold": 635,
-                "gold_orbs": 635
+                "kills": 6,
+                "damage": 1551,
+                "gold": 594,
+                "gold_orbs": 484
               },
               {
                 "source": 3,
                 "kills": 3,
-                "damage": 468,
-                "gold": 123,
+                "damage": 407,
+                "gold": 103,
                 "gold_orbs": 0
               },
               {
                 "source": 4,
                 "kills": null,
-                "damage": null,
+                "damage": 51,
                 "gold": 0,
                 "gold_orbs": 0
               },
@@ -153,7 +169,7 @@
                 "source": 7,
                 "kills": null,
                 "damage": null,
-                "gold": 25,
+                "gold": 52,
                 "gold_orbs": null
               },
               {
@@ -167,7 +183,7 @@
                 "source": 12,
                 "kills": null,
                 "damage": null,
-                "gold": 67,
+                "gold": 0,
                 "gold_orbs": null
               },
               {
@@ -200,23 +216,23 @@
               },
               {
                 "source": 6,
-                "kills": 1,
+                "kills": 2,
                 "damage": null,
-                "gold": 156,
+                "gold": 230,
                 "gold_orbs": null
               }
             ],
             "custom_user_stats": [
               {
-                "value": 74,
+                "value": 237,
                 "id": 1
               },
               {
-                "value": 27,
+                "value": 45,
                 "id": 2
               },
               {
-                "value": 9,
+                "value": 6,
                 "id": 3
               },
               {
@@ -224,7 +240,7 @@
                 "id": 4
               },
               {
-                "value": 0,
+                "value": 4,
                 "id": 5
               },
               {
@@ -232,23 +248,23 @@
                 "id": 6
               },
               {
-                "value": 114,
+                "value": 178,
                 "id": 7
               },
               {
-                "value": 32,
+                "value": 44,
                 "id": 8
               },
               {
-                "value": 0,
+                "value": 9,
                 "id": 9
               },
               {
-                "value": 36,
+                "value": 19,
                 "id": 10
               },
               {
-                "value": 33,
+                "value": 13,
                 "id": 11
               },
               {
@@ -256,7 +272,7 @@
                 "id": 12
               },
               {
-                "value": 0,
+                "value": 9,
                 "id": 13
               },
               {
@@ -264,15 +280,15 @@
                 "id": 14
               },
               {
-                "value": 28,
+                "value": 25,
                 "id": 15
               },
               {
-                "value": 0,
+                "value": 20,
                 "id": 16
               },
               {
-                "value": 2547,
+                "value": 1426,
                 "id": 17
               },
               {
@@ -280,83 +296,23 @@
                 "id": 18
               },
               {
-                "value": 3,
-                "id": 19
+                "value": 0,
+                "id": 59
               },
               {
-                "value": 11,
-                "id": 20
-              },
-              {
-                "value": 1,
-                "id": 21
-              },
-              {
-                "value": 4,
-                "id": 22
-              },
-              {
-                "value": 18,
-                "id": 23
-              },
-              {
-                "value": 24,
-                "id": 24
-              },
-              {
-                "value": 57,
-                "id": 25
-              },
-              {
-                "value": 64,
+                "value": 277,
                 "id": 26
               },
               {
-                "value": 96,
-                "id": 27
+                "value": 52,
+                "id": 40
               },
               {
-                "value": 16,
-                "id": 28
-              },
-              {
-                "value": 130,
-                "id": 29
-              },
-              {
-                "value": 112,
-                "id": 30
-              },
-              {
-                "value": 120,
-                "id": 31
-              },
-              {
-                "value": 32,
-                "id": 32
-              },
-              {
-                "value": 6,
-                "id": 33
-              },
-              {
-                "value": 60,
-                "id": 34
-              },
-              {
-                "value": 218,
-                "id": 35
-              },
-              {
-                "value": 11,
-                "id": 36
-              },
-              {
-                "value": 25,
+                "value": 95,
                 "id": 37
               },
               {
-                "value": 15,
+                "value": 6,
                 "id": 38
               },
               {
@@ -364,36 +320,64 @@
                 "id": 39
               },
               {
-                "value": 90,
-                "id": 40
+                "value": 96,
+                "id": 35
               },
               {
-                "value": 1,
-                "id": 41
+                "value": 21,
+                "id": 28
               },
               {
-                "value": 0,
-                "id": 42
-              },
-              {
-                "value": 0,
-                "id": 43
-              },
-              {
-                "value": 0,
+                "value": 2,
                 "id": 44
               },
               {
-                "value": 0,
-                "id": 45
-              },
-              {
-                "value": 0,
+                "value": 222,
                 "id": 46
               },
               {
+                "value": 103,
+                "id": 34
+              },
+              {
+                "value": 17,
+                "id": 21
+              },
+              {
+                "value": 170,
+                "id": 29
+              },
+              {
+                "value": 101,
+                "id": 32
+              },
+              {
+                "value": 58,
+                "id": 36
+              },
+              {
+                "value": 208,
+                "id": 27
+              },
+              {
+                "value": 27,
+                "id": 30
+              },
+              {
+                "value": 30,
+                "id": 25
+              },
+              {
+                "value": 103,
+                "id": 45
+              },
+              {
+                "value": 105,
+                "id": 31
+              },
+              {
                 "value": 0,
-                "id": 47
+                "id": 41
               },
               {
                 "value": 0,
@@ -401,7 +385,7 @@
               },
               {
                 "value": 0,
-                "id": 49
+                "id": 55
               },
               {
                 "value": 0,
@@ -409,7 +393,11 @@
               },
               {
                 "value": 0,
-                "id": 51
+                "id": 47
+              },
+              {
+                "value": 0,
+                "id": 42
               },
               {
                 "value": 0,
@@ -422,12 +410,394 @@
               {
                 "value": 0,
                 "id": 54
+              },
+              {
+                "value": 0,
+                "id": 43
+              },
+              {
+                "value": 0,
+                "id": 56
+              },
+              {
+                "value": 0,
+                "id": 22
+              },
+              {
+                "value": 0,
+                "id": 58
+              },
+              {
+                "value": 0,
+                "id": 51
+              },
+              {
+                "value": 0,
+                "id": 20
               }
             ],
-            "damage_mitigated": 115,
+            "damage_mitigated": 217,
             "level": 5,
             "player_barriering": 0,
-            "teammate_healing": 174,
+            "teammate_healing": 0,
+            "teammate_barriering": 0,
+            "self_damage": 0,
+            "bullet_kills": 0,
+            "melee_kills": 0,
+            "ability_kills": 0,
+            "headshot_kills": 0
+          },
+          {
+            "time_stamp_s": 360,
+            "net_worth": 4159,
+            "gold_player": 236,
+            "gold_player_orbs": 0,
+            "gold_lane_creep_orbs": 1161,
+            "gold_neutral_creep_orbs": 0,
+            "gold_boss": 0,
+            "gold_boss_orb": 0,
+            "gold_treasure": 0,
+            "gold_denied": 52,
+            "gold_death_loss": 21,
+            "gold_lane_creep": 1481,
+            "gold_neutral_creep": 229,
+            "kills": 0,
+            "deaths": 1,
+            "assists": 2,
+            "creep_kills": 15,
+            "neutral_kills": 6,
+            "possible_creeps": 35,
+            "creep_damage": 5336,
+            "player_damage": 2581,
+            "neutral_damage": 931,
+            "boss_damage": 442,
+            "denies": 1,
+            "player_healing": 0,
+            "ability_points": 4,
+            "self_healing": 0,
+            "player_damage_taken": 2724,
+            "max_health": 1355,
+            "weapon_power": 0,
+            "tech_power": 32,
+            "shots_hit": 390,
+            "shots_missed": 329,
+            "damage_absorbed": 0,
+            "absorption_provided": 0,
+            "hero_bullets_hit": 67,
+            "hero_bullets_hit_crit": 7,
+            "heal_prevented": 0,
+            "heal_lost": 0,
+            "gold_sources": [
+              {
+                "source": 1,
+                "kills": null,
+                "damage": 2581,
+                "gold": 6,
+                "gold_orbs": 0
+              },
+              {
+                "source": 2,
+                "kills": 15,
+                "damage": 5336,
+                "gold": 1481,
+                "gold_orbs": 1161
+              },
+              {
+                "source": 3,
+                "kills": 6,
+                "damage": 931,
+                "gold": 229,
+                "gold_orbs": 0
+              },
+              {
+                "source": 4,
+                "kills": null,
+                "damage": 442,
+                "gold": 0,
+                "gold_orbs": 0
+              },
+              {
+                "source": 5,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 7,
+                "kills": null,
+                "damage": null,
+                "gold": 52,
+                "gold_orbs": null
+              },
+              {
+                "source": 8,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 12,
+                "kills": null,
+                "damage": null,
+                "gold": 411,
+                "gold_orbs": null
+              },
+              {
+                "source": 9,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 10,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 11,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 13,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 6,
+                "kills": 2,
+                "damage": null,
+                "gold": 230,
+                "gold_orbs": null
+              }
+            ],
+            "custom_user_stats": [
+              {
+                "value": 391,
+                "id": 1
+              },
+              {
+                "value": 67,
+                "id": 2
+              },
+              {
+                "value": 7,
+                "id": 3
+              },
+              {
+                "value": 0,
+                "id": 4
+              },
+              {
+                "value": 4,
+                "id": 5
+              },
+              {
+                "value": 0,
+                "id": 6
+              },
+              {
+                "value": 279,
+                "id": 7
+              },
+              {
+                "value": 68,
+                "id": 8
+              },
+              {
+                "value": 11,
+                "id": 9
+              },
+              {
+                "value": 17,
+                "id": 10
+              },
+              {
+                "value": 10,
+                "id": 11
+              },
+              {
+                "value": 0,
+                "id": 12
+              },
+              {
+                "value": 6,
+                "id": 13
+              },
+              {
+                "value": 0,
+                "id": 14
+              },
+              {
+                "value": 24,
+                "id": 15
+              },
+              {
+                "value": 16,
+                "id": 16
+              },
+              {
+                "value": 3130,
+                "id": 17
+              },
+              {
+                "value": 1,
+                "id": 18
+              },
+              {
+                "value": 0,
+                "id": 59
+              },
+              {
+                "value": 771,
+                "id": 26
+              },
+              {
+                "value": 62,
+                "id": 40
+              },
+              {
+                "value": 211,
+                "id": 37
+              },
+              {
+                "value": 21,
+                "id": 38
+              },
+              {
+                "value": 2,
+                "id": 39
+              },
+              {
+                "value": 148,
+                "id": 35
+              },
+              {
+                "value": 30,
+                "id": 28
+              },
+              {
+                "value": 3,
+                "id": 44
+              },
+              {
+                "value": 972,
+                "id": 46
+              },
+              {
+                "value": 186,
+                "id": 34
+              },
+              {
+                "value": 17,
+                "id": 21
+              },
+              {
+                "value": 170,
+                "id": 29
+              },
+              {
+                "value": 101,
+                "id": 32
+              },
+              {
+                "value": 123,
+                "id": 36
+              },
+              {
+                "value": 208,
+                "id": 27
+              },
+              {
+                "value": 37,
+                "id": 30
+              },
+              {
+                "value": 33,
+                "id": 25
+              },
+              {
+                "value": 153,
+                "id": 45
+              },
+              {
+                "value": 105,
+                "id": 31
+              },
+              {
+                "value": 10,
+                "id": 41
+              },
+              {
+                "value": 1,
+                "id": 48
+              },
+              {
+                "value": 7,
+                "id": 55
+              },
+              {
+                "value": 534,
+                "id": 50
+              },
+              {
+                "value": 6,
+                "id": 47
+              },
+              {
+                "value": 0,
+                "id": 42
+              },
+              {
+                "value": 0,
+                "id": 52
+              },
+              {
+                "value": 0,
+                "id": 53
+              },
+              {
+                "value": 0,
+                "id": 54
+              },
+              {
+                "value": 0,
+                "id": 43
+              },
+              {
+                "value": 0,
+                "id": 56
+              },
+              {
+                "value": 0,
+                "id": 22
+              },
+              {
+                "value": 0,
+                "id": 58
+              },
+              {
+                "value": 0,
+                "id": 51
+              },
+              {
+                "value": 0,
+                "id": 20
+              }
+            ],
+            "damage_mitigated": 427,
+            "level": 8,
+            "player_barriering": 0,
+            "teammate_healing": 0,
             "teammate_barriering": 0,
             "self_damage": 0,
             "bullet_kills": 0,
@@ -436,72 +806,72 @@
             "headshot_kills": 0
           },
           {
-            "time_stamp_s": 360,
-            "net_worth": 4528,
-            "gold_player": 1020,
+            "time_stamp_s": 540,
+            "net_worth": 7188,
+            "gold_player": 1050,
             "gold_player_orbs": 0,
-            "gold_lane_creep_orbs": 1042,
+            "gold_lane_creep_orbs": 1837,
             "gold_neutral_creep_orbs": 0,
-            "gold_boss": 0,
+            "gold_boss": 346,
             "gold_boss_orb": 0,
             "gold_treasure": 0,
-            "gold_denied": 25,
-            "gold_death_loss": 0,
-            "gold_lane_creep": 1165,
-            "gold_neutral_creep": 123,
-            "kills": 2,
-            "deaths": 0,
-            "assists": 2,
-            "creep_kills": 7,
-            "neutral_kills": 3,
-            "possible_creeps": 29,
-            "creep_damage": 2949,
-            "player_damage": 1862,
-            "neutral_damage": 468,
-            "boss_damage": 0,
-            "denies": 0,
-            "player_healing": 390,
-            "ability_points": 5,
-            "self_healing": 32,
-            "player_damage_taken": 1297,
-            "max_health": 1133,
+            "gold_denied": 52,
+            "gold_death_loss": 54,
+            "gold_lane_creep": 2378,
+            "gold_neutral_creep": 292,
+            "kills": 1,
+            "deaths": 3,
+            "assists": 4,
+            "creep_kills": 29,
+            "neutral_kills": 9,
+            "possible_creeps": 52,
+            "creep_damage": 9952,
+            "player_damage": 5626,
+            "neutral_damage": 1369,
+            "boss_damage": 1192,
+            "denies": 1,
+            "player_healing": 0,
+            "ability_points": 8,
+            "self_healing": 0,
+            "player_damage_taken": 5777,
+            "max_health": 1669,
             "weapon_power": 0,
-            "tech_power": 20,
-            "shots_hit": 137,
-            "shots_missed": 105,
+            "tech_power": 49,
+            "shots_hit": 542,
+            "shots_missed": 394,
             "damage_absorbed": 0,
             "absorption_provided": 0,
-            "hero_bullets_hit": 60,
-            "hero_bullets_hit_crit": 22,
+            "hero_bullets_hit": 117,
+            "hero_bullets_hit_crit": 15,
             "heal_prevented": 0,
             "heal_lost": 0,
             "gold_sources": [
               {
                 "source": 1,
-                "kills": 2,
-                "damage": 1862,
-                "gold": 698,
+                "kills": 1,
+                "damage": 5626,
+                "gold": 578,
                 "gold_orbs": 0
               },
               {
                 "source": 2,
-                "kills": 7,
-                "damage": 2949,
-                "gold": 1165,
-                "gold_orbs": 1042
+                "kills": 29,
+                "damage": 9952,
+                "gold": 2378,
+                "gold_orbs": 1837
               },
               {
                 "source": 3,
-                "kills": 3,
-                "damage": 468,
-                "gold": 123,
+                "kills": 9,
+                "damage": 1369,
+                "gold": 292,
                 "gold_orbs": 0
               },
               {
                 "source": 4,
                 "kills": null,
-                "damage": null,
-                "gold": 0,
+                "damage": 1192,
+                "gold": 346,
                 "gold_orbs": 0
               },
               {
@@ -515,7 +885,7 @@
                 "source": 7,
                 "kills": null,
                 "damage": null,
-                "gold": 25,
+                "gold": 52,
                 "gold_orbs": null
               },
               {
@@ -529,7 +899,7 @@
                 "source": 12,
                 "kills": null,
                 "damage": null,
-                "gold": 524,
+                "gold": 667,
                 "gold_orbs": null
               },
               {
@@ -543,7 +913,7 @@
                 "source": 10,
                 "kills": null,
                 "damage": null,
-                "gold": 29,
+                "gold": 0,
                 "gold_orbs": null
               },
               {
@@ -562,385 +932,23 @@
               },
               {
                 "source": 6,
-                "kills": 2,
+                "kills": 4,
                 "damage": null,
-                "gold": 322,
+                "gold": 472,
                 "gold_orbs": null
               }
             ],
             "custom_user_stats": [
               {
-                "value": 156,
+                "value": 505,
                 "id": 1
               },
               {
-                "value": 60,
+                "value": 117,
                 "id": 2
-              },
-              {
-                "value": 22,
-                "id": 3
-              },
-              {
-                "value": 0,
-                "id": 4
-              },
-              {
-                "value": 0,
-                "id": 5
-              },
-              {
-                "value": 0,
-                "id": 6
-              },
-              {
-                "value": 172,
-                "id": 7
-              },
-              {
-                "value": 36,
-                "id": 8
-              },
-              {
-                "value": 0,
-                "id": 9
-              },
-              {
-                "value": 38,
-                "id": 10
-              },
-              {
-                "value": 37,
-                "id": 11
-              },
-              {
-                "value": 0,
-                "id": 12
-              },
-              {
-                "value": 0,
-                "id": 13
-              },
-              {
-                "value": 0,
-                "id": 14
-              },
-              {
-                "value": 21,
-                "id": 15
-              },
-              {
-                "value": 0,
-                "id": 16
-              },
-              {
-                "value": 6289,
-                "id": 17
-              },
-              {
-                "value": 3,
-                "id": 18
-              },
-              {
-                "value": 4,
-                "id": 19
-              },
-              {
-                "value": 11,
-                "id": 20
-              },
-              {
-                "value": 1,
-                "id": 21
-              },
-              {
-                "value": 4,
-                "id": 22
-              },
-              {
-                "value": 48,
-                "id": 23
-              },
-              {
-                "value": 66,
-                "id": 24
-              },
-              {
-                "value": 194,
-                "id": 25
-              },
-              {
-                "value": 172,
-                "id": 26
-              },
-              {
-                "value": 177,
-                "id": 27
-              },
-              {
-                "value": 20,
-                "id": 28
-              },
-              {
-                "value": 222,
-                "id": 29
-              },
-              {
-                "value": 224,
-                "id": 30
-              },
-              {
-                "value": 129,
-                "id": 31
-              },
-              {
-                "value": 68,
-                "id": 32
-              },
-              {
-                "value": 8,
-                "id": 33
-              },
-              {
-                "value": 271,
-                "id": 34
-              },
-              {
-                "value": 266,
-                "id": 35
-              },
-              {
-                "value": 11,
-                "id": 36
-              },
-              {
-                "value": 118,
-                "id": 37
               },
               {
                 "value": 15,
-                "id": 38
-              },
-              {
-                "value": 1,
-                "id": 39
-              },
-              {
-                "value": 107,
-                "id": 40
-              },
-              {
-                "value": 12,
-                "id": 41
-              },
-              {
-                "value": 92,
-                "id": 42
-              },
-              {
-                "value": 27,
-                "id": 43
-              },
-              {
-                "value": 2,
-                "id": 44
-              },
-              {
-                "value": 75,
-                "id": 45
-              },
-              {
-                "value": 74,
-                "id": 46
-              },
-              {
-                "value": 1,
-                "id": 47
-              },
-              {
-                "value": 2,
-                "id": 48
-              },
-              {
-                "value": 0,
-                "id": 49
-              },
-              {
-                "value": 0,
-                "id": 50
-              },
-              {
-                "value": 0,
-                "id": 51
-              },
-              {
-                "value": 0,
-                "id": 52
-              },
-              {
-                "value": 0,
-                "id": 53
-              },
-              {
-                "value": 0,
-                "id": 54
-              }
-            ],
-            "damage_mitigated": 498,
-            "level": 9,
-            "player_barriering": 0,
-            "teammate_healing": 358,
-            "teammate_barriering": 0,
-            "self_damage": 9,
-            "bullet_kills": 0,
-            "melee_kills": 0,
-            "ability_kills": 2,
-            "headshot_kills": 0
-          },
-          {
-            "time_stamp_s": 540,
-            "net_worth": 6566,
-            "gold_player": 1208,
-            "gold_player_orbs": 0,
-            "gold_lane_creep_orbs": 1409,
-            "gold_neutral_creep_orbs": 0,
-            "gold_boss": 630,
-            "gold_boss_orb": 0,
-            "gold_treasure": 0,
-            "gold_denied": 81,
-            "gold_death_loss": 0,
-            "gold_lane_creep": 1774,
-            "gold_neutral_creep": 123,
-            "kills": 2,
-            "deaths": 1,
-            "assists": 3,
-            "creep_kills": 11,
-            "neutral_kills": 3,
-            "possible_creeps": 41,
-            "creep_damage": 4793,
-            "player_damage": 2610,
-            "neutral_damage": 529,
-            "boss_damage": 433,
-            "denies": 1,
-            "player_healing": 784,
-            "ability_points": 7,
-            "self_healing": 160,
-            "player_damage_taken": 3190,
-            "max_health": 1289,
-            "weapon_power": 9,
-            "tech_power": 34,
-            "shots_hit": 203,
-            "shots_missed": 139,
-            "damage_absorbed": 0,
-            "absorption_provided": 0,
-            "hero_bullets_hit": 82,
-            "hero_bullets_hit_crit": 24,
-            "heal_prevented": 0,
-            "heal_lost": 0,
-            "gold_sources": [
-              {
-                "source": 1,
-                "kills": 2,
-                "damage": 2610,
-                "gold": 698,
-                "gold_orbs": 0
-              },
-              {
-                "source": 2,
-                "kills": 11,
-                "damage": 4793,
-                "gold": 1774,
-                "gold_orbs": 1409
-              },
-              {
-                "source": 3,
-                "kills": 3,
-                "damage": 529,
-                "gold": 123,
-                "gold_orbs": 0
-              },
-              {
-                "source": 4,
-                "kills": null,
-                "damage": 433,
-                "gold": 630,
-                "gold_orbs": 0
-              },
-              {
-                "source": 5,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              },
-              {
-                "source": 7,
-                "kills": null,
-                "damage": null,
-                "gold": 81,
-                "gold_orbs": null
-              },
-              {
-                "source": 8,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              },
-              {
-                "source": 12,
-                "kills": null,
-                "damage": null,
-                "gold": 566,
-                "gold_orbs": null
-              },
-              {
-                "source": 9,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              },
-              {
-                "source": 10,
-                "kills": null,
-                "damage": null,
-                "gold": 165,
-                "gold_orbs": null
-              },
-              {
-                "source": 11,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              },
-              {
-                "source": 13,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              },
-              {
-                "source": 6,
-                "kills": 3,
-                "damage": null,
-                "gold": 510,
-                "gold_orbs": null
-              }
-            ],
-            "custom_user_stats": [
-              {
-                "value": 210,
-                "id": 1
-              },
-              {
-                "value": 80,
-                "id": 2
-              },
-              {
-                "value": 24,
                 "id": 3
               },
               {
@@ -948,7 +956,7 @@
                 "id": 4
               },
               {
-                "value": 0,
+                "value": 4,
                 "id": 5
               },
               {
@@ -956,23 +964,23 @@
                 "id": 6
               },
               {
-                "value": 301,
+                "value": 362,
                 "id": 7
               },
               {
-                "value": 66,
+                "value": 88,
                 "id": 8
               },
               {
-                "value": 7,
+                "value": 13,
                 "id": 9
               },
               {
-                "value": 38,
+                "value": 23,
                 "id": 10
               },
               {
-                "value": 30,
+                "value": 13,
                 "id": 11
               },
               {
@@ -980,7 +988,7 @@
                 "id": 12
               },
               {
-                "value": 0,
+                "value": 3,
                 "id": 13
               },
               {
@@ -988,148 +996,152 @@
                 "id": 14
               },
               {
-                "value": 22,
+                "value": 24,
                 "id": 15
               },
               {
-                "value": 11,
+                "value": 15,
                 "id": 16
               },
               {
-                "value": 10080,
+                "value": 5307,
                 "id": 17
               },
               {
-                "value": 5,
+                "value": 2,
                 "id": 18
               },
               {
-                "value": 9,
-                "id": 19
+                "value": 0,
+                "id": 59
               },
               {
-                "value": 28,
-                "id": 20
-              },
-              {
-                "value": 1,
-                "id": 21
-              },
-              {
-                "value": 4,
-                "id": 22
-              },
-              {
-                "value": 62,
-                "id": 23
-              },
-              {
-                "value": 80,
-                "id": 24
-              },
-              {
-                "value": 246,
-                "id": 25
-              },
-              {
-                "value": 375,
+                "value": 1171,
                 "id": 26
               },
               {
-                "value": 417,
-                "id": 27
-              },
-              {
-                "value": 38,
-                "id": 28
-              },
-              {
-                "value": 509,
-                "id": 29
-              },
-              {
-                "value": 310,
-                "id": 30
-              },
-              {
-                "value": 129,
-                "id": 31
-              },
-              {
-                "value": 68,
-                "id": 32
-              },
-              {
-                "value": 9,
-                "id": 33
-              },
-              {
-                "value": 317,
-                "id": 34
-              },
-              {
-                "value": 750,
-                "id": 35
-              },
-              {
-                "value": 11,
-                "id": 36
-              },
-              {
-                "value": 555,
-                "id": 37
-              },
-              {
-                "value": 27,
-                "id": 38
-              },
-              {
-                "value": 1,
-                "id": 39
-              },
-              {
-                "value": 127,
+                "value": 77,
                 "id": 40
               },
               {
-                "value": 13,
-                "id": 41
+                "value": 452,
+                "id": 37
               },
               {
-                "value": 259,
-                "id": 42
-              },
-              {
-                "value": 27,
-                "id": 43
-              },
-              {
-                "value": 4,
-                "id": 44
-              },
-              {
-                "value": 191,
-                "id": 45
-              },
-              {
-                "value": 377,
-                "id": 46
-              },
-              {
-                "value": 1,
-                "id": 47
-              },
-              {
-                "value": 3,
-                "id": 48
+                "value": 36,
+                "id": 38
               },
               {
                 "value": 2,
-                "id": 49
+                "id": 39
+              },
+              {
+                "value": 241,
+                "id": 35
+              },
+              {
+                "value": 32,
+                "id": 28
+              },
+              {
+                "value": 5,
+                "id": 44
+              },
+              {
+                "value": 2243,
+                "id": 46
+              },
+              {
+                "value": 349,
+                "id": 34
+              },
+              {
+                "value": 21,
+                "id": 21
+              },
+              {
+                "value": 254,
+                "id": 29
+              },
+              {
+                "value": 101,
+                "id": 32
+              },
+              {
+                "value": 123,
+                "id": 36
+              },
+              {
+                "value": 923,
+                "id": 27
+              },
+              {
+                "value": 65,
+                "id": 30
+              },
+              {
+                "value": 33,
+                "id": 25
+              },
+              {
+                "value": 514,
+                "id": 45
+              },
+              {
+                "value": 105,
+                "id": 31
+              },
+              {
+                "value": 15,
+                "id": 41
+              },
+              {
+                "value": 1,
+                "id": 48
+              },
+              {
+                "value": 13,
+                "id": 55
+              },
+              {
+                "value": 1307,
+                "id": 50
+              },
+              {
+                "value": 90,
+                "id": 47
+              },
+              {
+                "value": 108,
+                "id": 42
+              },
+              {
+                "value": 25,
+                "id": 52
+              },
+              {
+                "value": 3,
+                "id": 53
               },
               {
                 "value": 0,
-                "id": 50
+                "id": 54
+              },
+              {
+                "value": 0,
+                "id": 43
+              },
+              {
+                "value": 0,
+                "id": 56
+              },
+              {
+                "value": 0,
+                "id": 22
+              },
+              {
+                "value": 0,
+                "id": 58
               },
               {
                 "value": 0,
@@ -1137,71 +1149,43 @@
               },
               {
                 "value": 0,
-                "id": 52
-              },
-              {
-                "value": 0,
-                "id": 53
-              },
-              {
-                "value": 0,
-                "id": 54
+                "id": 20
               }
             ],
-            "damage_mitigated": 869,
-            "level": 11,
+            "damage_mitigated": 817,
+            "level": 12,
             "player_barriering": 0,
-            "teammate_healing": 624,
+            "teammate_healing": 0,
             "teammate_barriering": 0,
-            "self_damage": 9,
+            "self_damage": 0,
             "bullet_kills": 0,
-            "melee_kills": 0,
-            "ability_kills": 2,
+            "melee_kills": 1,
+            "ability_kills": 1,
             "headshot_kills": 0
           }
         ],
-        "team": 0,
-        "kills": 6,
-        "deaths": 1,
-        "assists": 26,
-        "net_worth": 31033,
-        "hero_id": 87,
-        "last_hits": 127,
+        "team": 1,
+        "kills": 5,
+        "deaths": 9,
+        "assists": 10,
+        "net_worth": 24403,
+        "hero_id": 15,
+        "last_hits": 131,
         "denies": 2,
-        "ability_points": 26,
-        "assigned_lane": 1,
-        "level": 30,
-        "pings": [
-          {
-            "ping_type": 3,
-            "ping_data": 173505,
-            "game_time_s": 119
-          },
-          {
-            "ping_type": 8,
-            "ping_data": 18,
-            "game_time_s": 155
-          },
-          {
-            "ping_type": 6,
-            "ping_data": 0,
-            "game_time_s": 166
-          }
-        ],
+        "ability_points": 23,
+        "assigned_lane": 4,
+        "level": 27,
+        "pings": [],
         "ability_stats": [
           {
-            "ability_id": 267712790,
-            "ability_value": 10
-          },
-          {
-            "ability_id": 3074274290,
-            "ability_value": 16
+            "ability_id": 2521902222,
+            "ability_value": 91
           }
         ],
         "stats_type_stat": [
-          162.407,
+          94.88096,
           0.0,
-          2374.3599
+          3349.44
         ],
         "book_rewards": [],
         "abandon_match_time_s": 0,
@@ -1213,106 +1197,99 @@
         "player_tracked_stats": [],
         "accolades": [
           {
-            "accolade_id": 23,
-            "accolade_stat_value": 2640,
-            "accolade_threshold_achieved": 1
+            "accolade_id": 8,
+            "accolade_stat_value": 104,
+            "accolade_threshold_achieved": 0
           },
           {
-            "accolade_id": 2,
-            "accolade_stat_value": 26,
-            "accolade_threshold_achieved": 1
+            "accolade_id": 7,
+            "accolade_stat_value": 20,
+            "accolade_threshold_achieved": 0
           }
         ],
-        "mvp_rank": null,
+        "mvp_rank": 3,
         "earned_holiday_award_2025": null,
         "power_up_buffs": [
-          {
-            "type": "spirit_permanent_pickup_lv2",
-            "value": 2,
-            "is_permanent": true,
-            "pickup_times_s": [
-              657,
-              1445
-            ],
-            "pickup_stat_values": [
-              3.0,
-              3.0
-            ]
-          },
           {
             "type": "ammo_permanent_pickup_lv2",
             "value": 2,
             "is_permanent": true,
             "pickup_times_s": [
-              1154,
-              1519
+              632,
+              656
             ],
             "pickup_stat_values": [
               5.0,
               5.0
+            ]
+          },
+          {
+            "type": "hp_permanent_pickup_lv2",
+            "value": 2,
+            "is_permanent": true,
+            "pickup_times_s": [
+              653,
+              850
+            ],
+            "pickup_stat_values": [
+              20.0,
+              20.0
             ]
           }
         ],
         "hero_xp_rewards": [
           {
             "xp_grant": {
-              "hero_id": 87,
-              "xp_grant": 100,
-              "reason": 0
-            }
-          },
-          {
-            "xp_grant": {
-              "hero_id": 87,
-              "xp_grant": 25,
-              "reason": 2
+              "hero_id": 15,
+              "xp_grant": 50,
+              "reason": 1
             }
           }
         ],
         "player_rank_data": null,
-        "player_match_outcome": 1
+        "player_match_outcome": 2
       },
       {
-        "account_id": 293046606,
-        "player_slot": 8,
+        "account_id": 1003173192,
+        "player_slot": 4,
         "death_details": [
           {
-            "game_time_s": 359,
-            "time_to_kill_s": 32.0,
-            "killer_player_slot": 6,
+            "game_time_s": 116,
+            "time_to_kill_s": 78.375,
+            "killer_player_slot": 12,
             "death_pos": {
-              "x": 7218.4062,
-              "y": 4293.75,
-              "z": 384.0
+              "x": 1005.84375,
+              "y": -205.21875,
+              "z": 387.28125
             },
             "killer_pos": {
-              "x": 8356.75,
-              "y": 3025.2188,
-              "z": 293.09375
+              "x": 746.34375,
+              "y": -291.90625,
+              "z": 296.15625
             },
-            "death_duration_s": 10
+            "death_duration_s": 8
           },
           {
-            "game_time_s": 564,
-            "time_to_kill_s": 2.2420936,
-            "killer_player_slot": 5,
+            "game_time_s": 432,
+            "time_to_kill_s": 12.442176,
+            "killer_player_slot": 8,
             "death_pos": {
-              "x": -4400.0625,
-              "y": 2731.4688,
-              "z": 774.84375
+              "x": 316.90625,
+              "y": 2257.9062,
+              "z": 376.03125
             },
             "killer_pos": {
-              "x": -4451.8438,
-              "y": 1967.5312,
-              "z": 576.84375
+              "x": 206.625,
+              "y": 2170.8125,
+              "z": 487.65625
             },
-            "death_duration_s": 17
+            "death_duration_s": 12
           }
         ],
         "items": [
           {
-            "game_time_s": 16,
-            "item_id": 1080948381,
+            "game_time_s": 12,
+            "item_id": 3120550633,
             "upgrade_id": 0,
             "sold_time_s": 0,
             "flags": 0,
@@ -1320,26 +1297,26 @@
             "upgrade_info": 65536
           },
           {
-            "game_time_s": 80,
-            "item_id": 1080948381,
-            "upgrade_id": 660763199,
+            "game_time_s": 66,
+            "item_id": 3120550633,
+            "upgrade_id": 967703252,
             "sold_time_s": 0,
             "flags": 0,
             "imbued_ability_id": 0,
             "upgrade_info": 196608
           },
           {
-            "game_time_s": 89,
-            "item_id": 968099481,
+            "game_time_s": 69,
+            "item_id": 2829638276,
             "upgrade_id": 1,
-            "sold_time_s": 1245,
-            "flags": 1,
+            "sold_time_s": 0,
+            "flags": 0,
             "imbued_ability_id": 0,
             "upgrade_info": 65536
           },
           {
-            "game_time_s": 105,
-            "item_id": 2948410412,
+            "game_time_s": 102,
+            "item_id": 1264175662,
             "upgrade_id": 0,
             "sold_time_s": 0,
             "flags": 0,
@@ -1347,76 +1324,76 @@
             "upgrade_info": 65536
           },
           {
-            "game_time_s": 184,
-            "item_id": 1009965641,
-            "upgrade_id": 1,
+            "game_time_s": 161,
+            "item_id": 1264175662,
+            "upgrade_id": 426371878,
             "sold_time_s": 0,
             "flags": 0,
             "imbued_ability_id": 0,
-            "upgrade_info": 65536
+            "upgrade_info": 196608
           }
         ],
         "stats": [
           {
             "time_stamp_s": 180,
-            "net_worth": 1751,
+            "net_worth": 1807,
             "gold_player": 0,
             "gold_player_orbs": 0,
-            "gold_lane_creep_orbs": 481,
+            "gold_lane_creep_orbs": 388,
             "gold_neutral_creep_orbs": 0,
             "gold_boss": 0,
             "gold_boss_orb": 0,
             "gold_treasure": 0,
-            "gold_denied": 104,
+            "gold_denied": 0,
             "gold_death_loss": 0,
-            "gold_lane_creep": 566,
-            "gold_neutral_creep": 0,
+            "gold_lane_creep": 693,
+            "gold_neutral_creep": 60,
             "kills": 0,
-            "deaths": 0,
+            "deaths": 1,
             "assists": 0,
-            "creep_kills": 7,
-            "neutral_kills": 0,
-            "possible_creeps": 15,
-            "creep_damage": 2062,
-            "player_damage": 918,
-            "neutral_damage": 0,
+            "creep_kills": 5,
+            "neutral_kills": 3,
+            "possible_creeps": 5,
+            "creep_damage": 1590,
+            "player_damage": 1451,
+            "neutral_damage": 201,
             "boss_damage": 0,
-            "denies": 3,
-            "player_healing": 46,
+            "denies": 0,
+            "player_healing": 0,
             "ability_points": 2,
-            "self_healing": 46,
-            "player_damage_taken": 1263,
-            "max_health": 829,
+            "self_healing": 0,
+            "player_damage_taken": 1123,
+            "max_health": 957,
             "weapon_power": 0,
-            "tech_power": 18,
-            "shots_hit": 295,
-            "shots_missed": 281,
+            "tech_power": 3,
+            "shots_hit": 124,
+            "shots_missed": 134,
             "damage_absorbed": 0,
             "absorption_provided": 0,
-            "hero_bullets_hit": 311,
-            "hero_bullets_hit_crit": 52,
+            "hero_bullets_hit": 35,
+            "hero_bullets_hit_crit": 7,
             "heal_prevented": 0,
             "heal_lost": 0,
             "gold_sources": [
               {
                 "source": 1,
                 "kills": null,
-                "damage": 918,
+                "damage": 1451,
                 "gold": 0,
                 "gold_orbs": 0
               },
               {
                 "source": 2,
-                "kills": 7,
-                "damage": 2062,
-                "gold": 566,
-                "gold_orbs": 481
+                "kills": 5,
+                "damage": 1590,
+                "gold": 693,
+                "gold_orbs": 388
               },
               {
                 "source": 3,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
+                "kills": 3,
+                "damage": 201,
+                "gold": 60,
                 "gold_orbs": 0
               },
               {
@@ -1437,7 +1414,7 @@
                 "source": 7,
                 "kills": null,
                 "damage": null,
-                "gold": 104,
+                "gold": 0,
                 "gold_orbs": null
               },
               {
@@ -1451,7 +1428,7 @@
                 "source": 12,
                 "kills": null,
                 "damage": null,
-                "gold": 0,
+                "gold": 66,
                 "gold_orbs": null
               },
               {
@@ -1492,15 +1469,15 @@
             ],
             "custom_user_stats": [
               {
-                "value": 427,
+                "value": 198,
                 "id": 1
               },
               {
-                "value": 163,
+                "value": 65,
                 "id": 2
               },
               {
-                "value": 27,
+                "value": 12,
                 "id": 3
               },
               {
@@ -1516,19 +1493,735 @@
                 "id": 6
               },
               {
-                "value": 314,
+                "value": 410,
                 "id": 7
               },
               {
-                "value": 63,
+                "value": 115,
                 "id": 8
               },
               {
-                "value": 13,
+                "value": 12,
                 "id": 9
               },
               {
-                "value": 38,
+                "value": 33,
+                "id": 10
+              },
+              {
+                "value": 18,
+                "id": 11
+              },
+              {
+                "value": 0,
+                "id": 12
+              },
+              {
+                "value": 0,
+                "id": 13
+              },
+              {
+                "value": 0,
+                "id": 14
+              },
+              {
+                "value": 28,
+                "id": 15
+              },
+              {
+                "value": 10,
+                "id": 16
+              },
+              {
+                "value": 1747,
+                "id": 17
+              },
+              {
+                "value": 0,
+                "id": 18
+              },
+              {
+                "value": 0,
+                "id": 59
+              },
+              {
+                "value": 318,
+                "id": 50
+              },
+              {
+                "value": 63,
+                "id": 46
+              },
+              {
+                "value": 33,
+                "id": 33
+              },
+              {
+                "value": 332,
+                "id": 40
+              },
+              {
+                "value": 17,
+                "id": 38
+              },
+              {
+                "value": 204,
+                "id": 37
+              },
+              {
+                "value": 2,
+                "id": 44
+              },
+              {
+                "value": 59,
+                "id": 28
+              },
+              {
+                "value": 16,
+                "id": 23
+              },
+              {
+                "value": 263,
+                "id": 34
+              },
+              {
+                "value": 191,
+                "id": 35
+              },
+              {
+                "value": 192,
+                "id": 45
+              },
+              {
+                "value": 65,
+                "id": 29
+              },
+              {
+                "value": 16,
+                "id": 19
+              },
+              {
+                "value": 132,
+                "id": 30
+              },
+              {
+                "value": 1,
+                "id": 39
+              },
+              {
+                "value": 25,
+                "id": 36
+              },
+              {
+                "value": 47,
+                "id": 26
+              },
+              {
+                "value": 11,
+                "id": 27
+              },
+              {
+                "value": 105,
+                "id": 42
+              },
+              {
+                "value": 2,
+                "id": 41
+              },
+              {
+                "value": 0,
+                "id": 48
+              },
+              {
+                "value": 0,
+                "id": 47
+              },
+              {
+                "value": 0,
+                "id": 54
+              },
+              {
+                "value": 0,
+                "id": 31
+              },
+              {
+                "value": 0,
+                "id": 21
+              },
+              {
+                "value": 0,
+                "id": 32
+              },
+              {
+                "value": 0,
+                "id": 43
+              },
+              {
+                "value": 0,
+                "id": 55
+              },
+              {
+                "value": 0,
+                "id": 53
+              },
+              {
+                "value": 0,
+                "id": 52
+              },
+              {
+                "value": 0,
+                "id": 63
+              },
+              {
+                "value": 0,
+                "id": 56
+              },
+              {
+                "value": 0,
+                "id": 25
+              }
+            ],
+            "damage_mitigated": 144,
+            "level": 4,
+            "player_barriering": 0,
+            "teammate_healing": 0,
+            "teammate_barriering": 0,
+            "self_damage": 0,
+            "bullet_kills": 0,
+            "melee_kills": 0,
+            "ability_kills": 0,
+            "headshot_kills": 0
+          },
+          {
+            "time_stamp_s": 360,
+            "net_worth": 4840,
+            "gold_player": 1000,
+            "gold_player_orbs": 0,
+            "gold_lane_creep_orbs": 1001,
+            "gold_neutral_creep_orbs": 0,
+            "gold_boss": 0,
+            "gold_boss_orb": 0,
+            "gold_treasure": 0,
+            "gold_denied": 0,
+            "gold_death_loss": 0,
+            "gold_lane_creep": 1410,
+            "gold_neutral_creep": 60,
+            "kills": 2,
+            "deaths": 1,
+            "assists": 2,
+            "creep_kills": 14,
+            "neutral_kills": 3,
+            "possible_creeps": 15,
+            "creep_damage": 4161,
+            "player_damage": 3349,
+            "neutral_damage": 201,
+            "boss_damage": 0,
+            "denies": 0,
+            "player_healing": 87,
+            "ability_points": 5,
+            "self_healing": 87,
+            "player_damage_taken": 1469,
+            "max_health": 1292,
+            "weapon_power": 18,
+            "tech_power": 8,
+            "shots_hit": 235,
+            "shots_missed": 257,
+            "damage_absorbed": 0,
+            "absorption_provided": 0,
+            "hero_bullets_hit": 59,
+            "hero_bullets_hit_crit": 12,
+            "heal_prevented": 0,
+            "heal_lost": 0,
+            "gold_sources": [
+              {
+                "source": 1,
+                "kills": 2,
+                "damage": 3349,
+                "gold": 669,
+                "gold_orbs": 0
+              },
+              {
+                "source": 2,
+                "kills": 14,
+                "damage": 4161,
+                "gold": 1410,
+                "gold_orbs": 1001
+              },
+              {
+                "source": 3,
+                "kills": 3,
+                "damage": 201,
+                "gold": 60,
+                "gold_orbs": 0
+              },
+              {
+                "source": 4,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": 0
+              },
+              {
+                "source": 5,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 7,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 8,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 12,
+                "kills": null,
+                "damage": null,
+                "gold": 769,
+                "gold_orbs": null
+              },
+              {
+                "source": 9,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 10,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 11,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 13,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 6,
+                "kills": 2,
+                "damage": null,
+                "gold": 331,
+                "gold_orbs": null
+              }
+            ],
+            "custom_user_stats": [
+              {
+                "value": 350,
+                "id": 1
+              },
+              {
+                "value": 94,
+                "id": 2
+              },
+              {
+                "value": 17,
+                "id": 3
+              },
+              {
+                "value": 0,
+                "id": 4
+              },
+              {
+                "value": 0,
+                "id": 5
+              },
+              {
+                "value": 0,
+                "id": 6
+              },
+              {
+                "value": 635,
+                "id": 7
+              },
+              {
+                "value": 129,
+                "id": 8
+              },
+              {
+                "value": 12,
+                "id": 9
+              },
+              {
+                "value": 27,
+                "id": 10
+              },
+              {
+                "value": 18,
+                "id": 11
+              },
+              {
+                "value": 0,
+                "id": 12
+              },
+              {
+                "value": 0,
+                "id": 13
+              },
+              {
+                "value": 0,
+                "id": 14
+              },
+              {
+                "value": 20,
+                "id": 15
+              },
+              {
+                "value": 9,
+                "id": 16
+              },
+              {
+                "value": 5488,
+                "id": 17
+              },
+              {
+                "value": 1,
+                "id": 18
+              },
+              {
+                "value": 0,
+                "id": 59
+              },
+              {
+                "value": 699,
+                "id": 50
+              },
+              {
+                "value": 87,
+                "id": 46
+              },
+              {
+                "value": 60,
+                "id": 33
+              },
+              {
+                "value": 642,
+                "id": 40
+              },
+              {
+                "value": 26,
+                "id": 38
+              },
+              {
+                "value": 251,
+                "id": 37
+              },
+              {
+                "value": 2,
+                "id": 44
+              },
+              {
+                "value": 64,
+                "id": 28
+              },
+              {
+                "value": 18,
+                "id": 23
+              },
+              {
+                "value": 402,
+                "id": 34
+              },
+              {
+                "value": 226,
+                "id": 35
+              },
+              {
+                "value": 432,
+                "id": 45
+              },
+              {
+                "value": 65,
+                "id": 29
+              },
+              {
+                "value": 16,
+                "id": 19
+              },
+              {
+                "value": 156,
+                "id": 30
+              },
+              {
+                "value": 1,
+                "id": 39
+              },
+              {
+                "value": 25,
+                "id": 36
+              },
+              {
+                "value": 216,
+                "id": 26
+              },
+              {
+                "value": 27,
+                "id": 27
+              },
+              {
+                "value": 105,
+                "id": 42
+              },
+              {
+                "value": 19,
+                "id": 41
+              },
+              {
+                "value": 4,
+                "id": 48
+              },
+              {
+                "value": 3,
+                "id": 47
+              },
+              {
+                "value": 1,
+                "id": 54
+              },
+              {
+                "value": 0,
+                "id": 31
+              },
+              {
+                "value": 0,
+                "id": 21
+              },
+              {
+                "value": 0,
+                "id": 32
+              },
+              {
+                "value": 0,
+                "id": 43
+              },
+              {
+                "value": 0,
+                "id": 55
+              },
+              {
+                "value": 0,
+                "id": 53
+              },
+              {
+                "value": 0,
+                "id": 52
+              },
+              {
+                "value": 0,
+                "id": 63
+              },
+              {
+                "value": 0,
+                "id": 56
+              },
+              {
+                "value": 0,
+                "id": 25
+              }
+            ],
+            "damage_mitigated": 437,
+            "level": 9,
+            "player_barriering": 0,
+            "teammate_healing": 0,
+            "teammate_barriering": 0,
+            "self_damage": 0,
+            "bullet_kills": 0,
+            "melee_kills": 1,
+            "ability_kills": 1,
+            "headshot_kills": 0
+          },
+          {
+            "time_stamp_s": 540,
+            "net_worth": 8448,
+            "gold_player": 2362,
+            "gold_player_orbs": 0,
+            "gold_lane_creep_orbs": 1445,
+            "gold_neutral_creep_orbs": 0,
+            "gold_boss": 801,
+            "gold_boss_orb": 0,
+            "gold_treasure": 0,
+            "gold_denied": 28,
+            "gold_death_loss": 0,
+            "gold_lane_creep": 2042,
+            "gold_neutral_creep": 228,
+            "kills": 5,
+            "deaths": 2,
+            "assists": 2,
+            "creep_kills": 19,
+            "neutral_kills": 4,
+            "possible_creeps": 22,
+            "creep_damage": 5535,
+            "player_damage": 6835,
+            "neutral_damage": 351,
+            "boss_damage": 1112,
+            "denies": 0,
+            "player_healing": 447,
+            "ability_points": 10,
+            "self_healing": 447,
+            "player_damage_taken": 4738,
+            "max_health": 1522,
+            "weapon_power": 24,
+            "tech_power": 43,
+            "shots_hit": 342,
+            "shots_missed": 339,
+            "damage_absorbed": 0,
+            "absorption_provided": 0,
+            "hero_bullets_hit": 86,
+            "hero_bullets_hit_crit": 20,
+            "heal_prevented": 0,
+            "heal_lost": 0,
+            "gold_sources": [
+              {
+                "source": 1,
+                "kills": 5,
+                "damage": 6835,
+                "gold": 2031,
+                "gold_orbs": 0
+              },
+              {
+                "source": 2,
+                "kills": 19,
+                "damage": 5535,
+                "gold": 2042,
+                "gold_orbs": 1445
+              },
+              {
+                "source": 3,
+                "kills": 4,
+                "damage": 351,
+                "gold": 228,
+                "gold_orbs": 0
+              },
+              {
+                "source": 4,
+                "kills": null,
+                "damage": 1112,
+                "gold": 801,
+                "gold_orbs": 0
+              },
+              {
+                "source": 5,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 7,
+                "kills": null,
+                "damage": null,
+                "gold": 28,
+                "gold_orbs": null
+              },
+              {
+                "source": 8,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 12,
+                "kills": null,
+                "damage": null,
+                "gold": 932,
+                "gold_orbs": null
+              },
+              {
+                "source": 9,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 10,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 11,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 13,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 6,
+                "kills": 2,
+                "damage": null,
+                "gold": 331,
+                "gold_orbs": null
+              }
+            ],
+            "custom_user_stats": [
+              {
+                "value": 461,
+                "id": 1
+              },
+              {
+                "value": 123,
+                "id": 2
+              },
+              {
+                "value": 21,
+                "id": 3
+              },
+              {
+                "value": 0,
+                "id": 4
+              },
+              {
+                "value": 0,
+                "id": 5
+              },
+              {
+                "value": 0,
+                "id": 6
+              },
+              {
+                "value": 869,
+                "id": 7
+              },
+              {
+                "value": 232,
+                "id": 8
+              },
+              {
+                "value": 43,
+                "id": 9
+              },
+              {
+                "value": 27,
                 "id": 10
               },
               {
@@ -1548,108 +2241,124 @@
                 "id": 14
               },
               {
-                "value": 20,
+                "value": 27,
                 "id": 15
               },
               {
-                "value": 21,
+                "value": 19,
                 "id": 16
               },
               {
-                "value": 1822,
+                "value": 10488,
                 "id": 17
               },
               {
-                "value": 0,
+                "value": 7,
                 "id": 18
               },
               {
-                "value": 90,
-                "id": 19
+                "value": 0,
+                "id": 59
               },
               {
-                "value": 4,
-                "id": 20
+                "value": 2220,
+                "id": 50
               },
               {
-                "value": 24,
-                "id": 24
-              },
-              {
-                "value": 239,
-                "id": 25
-              },
-              {
-                "value": 56,
-                "id": 28
-              },
-              {
-                "value": 275,
-                "id": 36
-              },
-              {
-                "value": 73,
-                "id": 23
-              },
-              {
-                "value": 337,
-                "id": 30
-              },
-              {
-                "value": 357,
-                "id": 29
-              },
-              {
-                "value": 10,
-                "id": 55
-              },
-              {
-                "value": 152,
-                "id": 34
-              },
-              {
-                "value": 7,
-                "id": 38
-              },
-              {
-                "value": 126,
-                "id": 35
+                "value": 934,
+                "id": 46
               },
               {
                 "value": 72,
+                "id": 33
+              },
+              {
+                "value": 851,
+                "id": 40
+              },
+              {
+                "value": 53,
+                "id": 38
+              },
+              {
+                "value": 630,
+                "id": 37
+              },
+              {
+                "value": 3,
+                "id": 44
+              },
+              {
+                "value": 133,
+                "id": 28
+              },
+              {
+                "value": 28,
+                "id": 23
+              },
+              {
+                "value": 642,
+                "id": 34
+              },
+              {
+                "value": 519,
+                "id": 35
+              },
+              {
+                "value": 462,
                 "id": 45
               },
               {
-                "value": 97,
-                "id": 42
+                "value": 111,
+                "id": 29
               },
               {
-                "value": 54,
+                "value": 23,
+                "id": 19
+              },
+              {
+                "value": 242,
+                "id": 30
+              },
+              {
+                "value": 3,
+                "id": 39
+              },
+              {
+                "value": 25,
+                "id": 36
+              },
+              {
+                "value": 269,
                 "id": 26
               },
               {
-                "value": 299,
-                "id": 52
+                "value": 163,
+                "id": 27
               },
               {
-                "value": 1,
-                "id": 22
+                "value": 787,
+                "id": 42
               },
               {
-                "value": 108,
-                "id": 31
-              },
-              {
-                "value": 26,
-                "id": 53
-              },
-              {
-                "value": 0,
+                "value": 23,
                 "id": 41
               },
               {
-                "value": 0,
+                "value": 4,
                 "id": 48
+              },
+              {
+                "value": 4,
+                "id": 47
+              },
+              {
+                "value": 1,
+                "id": 54
+              },
+              {
+                "value": 25,
+                "id": 31
               },
               {
                 "value": 0,
@@ -1657,39 +2366,27 @@
               },
               {
                 "value": 0,
-                "id": 27
-              },
-              {
-                "value": 0,
-                "id": 47
-              },
-              {
-                "value": 0,
-                "id": 50
-              },
-              {
-                "value": 0,
                 "id": 32
               },
               {
                 "value": 0,
-                "id": 37
+                "id": 43
               },
               {
                 "value": 0,
-                "id": 40
+                "id": 55
               },
               {
                 "value": 0,
-                "id": 46
+                "id": 53
               },
               {
                 "value": 0,
-                "id": 33
+                "id": 52
               },
               {
                 "value": 0,
-                "id": 54
+                "id": 63
               },
               {
                 "value": 0,
@@ -1697,810 +2394,59 @@
               },
               {
                 "value": 0,
-                "id": 57
-              },
-              {
-                "value": 0,
-                "id": 39
-              },
-              {
-                "value": 0,
-                "id": 44
-              },
-              {
-                "value": 0,
-                "id": 58
-              },
-              {
-                "value": 0,
-                "id": 43
+                "id": 25
               }
             ],
-            "damage_mitigated": 103,
-            "level": 4,
+            "damage_mitigated": 533,
+            "level": 14,
             "player_barriering": 0,
             "teammate_healing": 0,
             "teammate_barriering": 0,
             "self_damage": 0,
             "bullet_kills": 0,
-            "melee_kills": 0,
-            "ability_kills": 0,
-            "headshot_kills": 0
-          },
-          {
-            "time_stamp_s": 360,
-            "net_worth": 3474,
-            "gold_player": 21,
-            "gold_player_orbs": 0,
-            "gold_lane_creep_orbs": 1074,
-            "gold_neutral_creep_orbs": 0,
-            "gold_boss": 0,
-            "gold_boss_orb": 0,
-            "gold_treasure": 0,
-            "gold_denied": 158,
-            "gold_death_loss": 0,
-            "gold_lane_creep": 1189,
-            "gold_neutral_creep": 0,
-            "kills": 0,
-            "deaths": 1,
-            "assists": 0,
-            "creep_kills": 16,
-            "neutral_kills": 0,
-            "possible_creeps": 33,
-            "creep_damage": 4917,
-            "player_damage": 1914,
-            "neutral_damage": 0,
-            "boss_damage": 0,
-            "denies": 4,
-            "player_healing": 87,
-            "ability_points": 4,
-            "self_healing": 87,
-            "player_damage_taken": 2851,
-            "max_health": 928,
-            "weapon_power": 15,
-            "tech_power": 20,
-            "shots_hit": 564,
-            "shots_missed": 536,
-            "damage_absorbed": 0,
-            "absorption_provided": 0,
-            "hero_bullets_hit": 550,
-            "hero_bullets_hit_crit": 89,
-            "heal_prevented": 0,
-            "heal_lost": 0,
-            "gold_sources": [
-              {
-                "source": 1,
-                "kills": null,
-                "damage": 1914,
-                "gold": 21,
-                "gold_orbs": 0
-              },
-              {
-                "source": 2,
-                "kills": 16,
-                "damage": 4917,
-                "gold": 1189,
-                "gold_orbs": 1074
-              },
-              {
-                "source": 3,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": 0
-              },
-              {
-                "source": 4,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": 0
-              },
-              {
-                "source": 5,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              },
-              {
-                "source": 7,
-                "kills": null,
-                "damage": null,
-                "gold": 158,
-                "gold_orbs": null
-              },
-              {
-                "source": 8,
-                "kills": null,
-                "damage": null,
-                "gold": 14,
-                "gold_orbs": null
-              },
-              {
-                "source": 12,
-                "kills": null,
-                "damage": null,
-                "gold": 418,
-                "gold_orbs": null
-              },
-              {
-                "source": 9,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              },
-              {
-                "source": 10,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              },
-              {
-                "source": 11,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              },
-              {
-                "source": 13,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              },
-              {
-                "source": 6,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              }
-            ],
-            "custom_user_stats": [
-              {
-                "value": 809,
-                "id": 1
-              },
-              {
-                "value": 290,
-                "id": 2
-              },
-              {
-                "value": 47,
-                "id": 3
-              },
-              {
-                "value": 0,
-                "id": 4
-              },
-              {
-                "value": 0,
-                "id": 5
-              },
-              {
-                "value": 0,
-                "id": 6
-              },
-              {
-                "value": 617,
-                "id": 7
-              },
-              {
-                "value": 133,
-                "id": 8
-              },
-              {
-                "value": 27,
-                "id": 9
-              },
-              {
-                "value": 36,
-                "id": 10
-              },
-              {
-                "value": 16,
-                "id": 11
-              },
-              {
-                "value": 0,
-                "id": 12
-              },
-              {
-                "value": 0,
-                "id": 13
-              },
-              {
-                "value": 0,
-                "id": 14
-              },
-              {
-                "value": 22,
-                "id": 15
-              },
-              {
-                "value": 20,
-                "id": 16
-              },
-              {
-                "value": 3832,
-                "id": 17
-              },
-              {
-                "value": 2,
-                "id": 18
-              },
-              {
-                "value": 157,
-                "id": 19
-              },
-              {
-                "value": 4,
-                "id": 20
-              },
-              {
-                "value": 32,
-                "id": 24
-              },
-              {
-                "value": 343,
-                "id": 25
-              },
-              {
-                "value": 119,
-                "id": 28
-              },
-              {
-                "value": 512,
-                "id": 36
-              },
-              {
-                "value": 133,
-                "id": 23
-              },
-              {
-                "value": 833,
-                "id": 30
-              },
-              {
-                "value": 784,
-                "id": 29
-              },
-              {
-                "value": 57,
-                "id": 55
-              },
-              {
-                "value": 266,
-                "id": 34
-              },
-              {
-                "value": 9,
-                "id": 38
-              },
-              {
-                "value": 236,
-                "id": 35
-              },
-              {
-                "value": 151,
-                "id": 45
-              },
-              {
-                "value": 251,
-                "id": 42
-              },
-              {
-                "value": 162,
-                "id": 26
-              },
-              {
-                "value": 808,
-                "id": 52
-              },
-              {
-                "value": 2,
-                "id": 22
-              },
-              {
-                "value": 108,
-                "id": 31
-              },
-              {
-                "value": 50,
-                "id": 53
-              },
-              {
-                "value": 9,
-                "id": 41
-              },
-              {
-                "value": 1,
-                "id": 48
-              },
-              {
-                "value": 5,
-                "id": 21
-              },
-              {
-                "value": 166,
-                "id": 27
-              },
-              {
-                "value": 21,
-                "id": 47
-              },
-              {
-                "value": 0,
-                "id": 50
-              },
-              {
-                "value": 0,
-                "id": 32
-              },
-              {
-                "value": 0,
-                "id": 37
-              },
-              {
-                "value": 0,
-                "id": 40
-              },
-              {
-                "value": 0,
-                "id": 46
-              },
-              {
-                "value": 0,
-                "id": 33
-              },
-              {
-                "value": 0,
-                "id": 54
-              },
-              {
-                "value": 0,
-                "id": 56
-              },
-              {
-                "value": 0,
-                "id": 57
-              },
-              {
-                "value": 0,
-                "id": 39
-              },
-              {
-                "value": 0,
-                "id": 44
-              },
-              {
-                "value": 0,
-                "id": 58
-              },
-              {
-                "value": 0,
-                "id": 43
-              }
-            ],
-            "damage_mitigated": 171,
-            "level": 7,
-            "player_barriering": 0,
-            "teammate_healing": 0,
-            "teammate_barriering": 0,
-            "self_damage": 0,
-            "bullet_kills": 0,
-            "melee_kills": 0,
-            "ability_kills": 0,
-            "headshot_kills": 0
-          },
-          {
-            "time_stamp_s": 540,
-            "net_worth": 6232,
-            "gold_player": 1057,
-            "gold_player_orbs": 0,
-            "gold_lane_creep_orbs": 1197,
-            "gold_neutral_creep_orbs": 0,
-            "gold_boss": 176,
-            "gold_boss_orb": 0,
-            "gold_treasure": 0,
-            "gold_denied": 158,
-            "gold_death_loss": 0,
-            "gold_lane_creep": 2068,
-            "gold_neutral_creep": 264,
-            "kills": 2,
-            "deaths": 1,
-            "assists": 2,
-            "creep_kills": 23,
-            "neutral_kills": 6,
-            "possible_creeps": 41,
-            "creep_damage": 7497,
-            "player_damage": 3882,
-            "neutral_damage": 1214,
-            "boss_damage": 165,
-            "denies": 4,
-            "player_healing": 141,
-            "ability_points": 7,
-            "self_healing": 141,
-            "player_damage_taken": 3348,
-            "max_health": 1155,
-            "weapon_power": 18,
-            "tech_power": 22,
-            "shots_hit": 767,
-            "shots_missed": 695,
-            "damage_absorbed": 0,
-            "absorption_provided": 0,
-            "hero_bullets_hit": 773,
-            "hero_bullets_hit_crit": 134,
-            "heal_prevented": 0,
-            "heal_lost": 0,
-            "gold_sources": [
-              {
-                "source": 1,
-                "kills": 2,
-                "damage": 3882,
-                "gold": 834,
-                "gold_orbs": 0
-              },
-              {
-                "source": 2,
-                "kills": 23,
-                "damage": 7497,
-                "gold": 2068,
-                "gold_orbs": 1197
-              },
-              {
-                "source": 3,
-                "kills": 6,
-                "damage": 1214,
-                "gold": 264,
-                "gold_orbs": 0
-              },
-              {
-                "source": 4,
-                "kills": null,
-                "damage": 165,
-                "gold": 176,
-                "gold_orbs": 0
-              },
-              {
-                "source": 5,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              },
-              {
-                "source": 7,
-                "kills": null,
-                "damage": null,
-                "gold": 158,
-                "gold_orbs": null
-              },
-              {
-                "source": 8,
-                "kills": null,
-                "damage": null,
-                "gold": 109,
-                "gold_orbs": null
-              },
-              {
-                "source": 12,
-                "kills": null,
-                "damage": null,
-                "gold": 583,
-                "gold_orbs": null
-              },
-              {
-                "source": 9,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              },
-              {
-                "source": 10,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              },
-              {
-                "source": 11,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              },
-              {
-                "source": 13,
-                "kills": null,
-                "damage": null,
-                "gold": 0,
-                "gold_orbs": null
-              },
-              {
-                "source": 6,
-                "kills": 2,
-                "damage": null,
-                "gold": 223,
-                "gold_orbs": null
-              }
-            ],
-            "custom_user_stats": [
-              {
-                "value": 1047,
-                "id": 1
-              },
-              {
-                "value": 371,
-                "id": 2
-              },
-              {
-                "value": 70,
-                "id": 3
-              },
-              {
-                "value": 0,
-                "id": 4
-              },
-              {
-                "value": 0,
-                "id": 5
-              },
-              {
-                "value": 0,
-                "id": 6
-              },
-              {
-                "value": 714,
-                "id": 7
-              },
-              {
-                "value": 140,
-                "id": 8
-              },
-              {
-                "value": 27,
-                "id": 9
-              },
-              {
-                "value": 35,
-                "id": 10
-              },
-              {
-                "value": 19,
-                "id": 11
-              },
-              {
-                "value": 0,
-                "id": 12
-              },
-              {
-                "value": 0,
-                "id": 13
-              },
-              {
-                "value": 0,
-                "id": 14
-              },
-              {
-                "value": 20,
-                "id": 15
-              },
-              {
-                "value": 19,
-                "id": 16
-              },
-              {
-                "value": 6197,
-                "id": 17
-              },
-              {
-                "value": 7,
-                "id": 18
-              },
-              {
-                "value": 173,
-                "id": 19
-              },
-              {
-                "value": 4,
-                "id": 20
-              },
-              {
-                "value": 66,
-                "id": 24
-              },
-              {
-                "value": 409,
-                "id": 25
-              },
-              {
-                "value": 125,
-                "id": 28
-              },
-              {
-                "value": 512,
-                "id": 36
-              },
-              {
-                "value": 198,
-                "id": 23
-              },
-              {
-                "value": 1168,
-                "id": 30
-              },
-              {
-                "value": 828,
-                "id": 29
-              },
-              {
-                "value": 57,
-                "id": 55
-              },
-              {
-                "value": 1002,
-                "id": 34
-              },
-              {
-                "value": 10,
-                "id": 38
-              },
-              {
-                "value": 299,
-                "id": 35
-              },
-              {
-                "value": 283,
-                "id": 45
-              },
-              {
-                "value": 328,
-                "id": 42
-              },
-              {
-                "value": 333,
-                "id": 26
-              },
-              {
-                "value": 901,
-                "id": 52
-              },
-              {
-                "value": 2,
-                "id": 22
-              },
-              {
-                "value": 108,
-                "id": 31
-              },
-              {
-                "value": 50,
-                "id": 53
-              },
-              {
-                "value": 13,
-                "id": 41
-              },
-              {
-                "value": 1,
-                "id": 48
-              },
-              {
-                "value": 5,
-                "id": 21
-              },
-              {
-                "value": 335,
-                "id": 27
-              },
-              {
-                "value": 250,
-                "id": 47
-              },
-              {
-                "value": 110,
-                "id": 50
-              },
-              {
-                "value": 57,
-                "id": 32
-              },
-              {
-                "value": 20,
-                "id": 37
-              },
-              {
-                "value": 290,
-                "id": 40
-              },
-              {
-                "value": 0,
-                "id": 46
-              },
-              {
-                "value": 0,
-                "id": 33
-              },
-              {
-                "value": 0,
-                "id": 54
-              },
-              {
-                "value": 0,
-                "id": 56
-              },
-              {
-                "value": 0,
-                "id": 57
-              },
-              {
-                "value": 0,
-                "id": 39
-              },
-              {
-                "value": 0,
-                "id": 44
-              },
-              {
-                "value": 0,
-                "id": 58
-              },
-              {
-                "value": 0,
-                "id": 43
-              }
-            ],
-            "damage_mitigated": 479,
-            "level": 11,
-            "player_barriering": 0,
-            "teammate_healing": 0,
-            "teammate_barriering": 0,
-            "self_damage": 0,
-            "bullet_kills": 1,
-            "melee_kills": 0,
-            "ability_kills": 1,
+            "melee_kills": 3,
+            "ability_kills": 2,
             "headshot_kills": 0
           }
         ],
-        "team": 1,
-        "kills": 5,
-        "deaths": 6,
-        "assists": 7,
-        "net_worth": 24907,
-        "hero_id": 13,
-        "last_hits": 128,
-        "denies": 5,
-        "ability_points": 23,
-        "assigned_lane": 6,
-        "level": 27,
+        "team": 0,
+        "kills": 15,
+        "deaths": 5,
+        "assists": 20,
+        "net_worth": 29774,
+        "hero_id": 64,
+        "last_hits": 46,
+        "denies": 0,
+        "ability_points": 25,
+        "assigned_lane": 4,
+        "level": 29,
         "pings": [
           {
             "ping_type": 1,
-            "ping_data": 10,
-            "game_time_s": 466
+            "ping_data": 5,
+            "game_time_s": 32
           },
           {
             "ping_type": 1,
-            "ping_data": 4,
-            "game_time_s": 599
+            "ping_data": 5,
+            "game_time_s": 79
           },
           {
             "ping_type": 1,
-            "ping_data": 9,
-            "game_time_s": 637
+            "ping_data": 3,
+            "game_time_s": 154
           }
         ],
-        "ability_stats": [],
+        "ability_stats": [
+          {
+            "ability_id": 1033019133,
+            "ability_value": 84
+          }
+        ],
         "stats_type_stat": [
-          187.85397,
+          121.62584,
           0.0,
-          2893.48
+          3047.26
         ],
         "book_rewards": [],
         "abandon_match_time_s": 0,
@@ -2512,63 +2458,60 @@
         "player_tracked_stats": [],
         "accolades": [
           {
-            "accolade_id": 12,
-            "accolade_stat_value": 15,
-            "accolade_threshold_achieved": 0
+            "accolade_id": 18,
+            "accolade_stat_value": 1,
+            "accolade_threshold_achieved": 1
           },
           {
-            "accolade_id": 11,
-            "accolade_stat_value": 104,
-            "accolade_threshold_achieved": 0
+            "accolade_id": 19,
+            "accolade_stat_value": 7,
+            "accolade_threshold_achieved": 1
           }
         ],
-        "mvp_rank": null,
+        "mvp_rank": 1,
         "earned_holiday_award_2025": null,
         "power_up_buffs": [
           {
             "type": "spirit_permanent_pickup_lv2",
-            "value": 2,
+            "value": 1,
             "is_permanent": true,
             "pickup_times_s": [
-              1008,
-              1417
+              1473
             ],
             "pickup_stat_values": [
-              3.0,
               3.0
             ]
           },
           {
-            "type": "hp_permanent_pickup_lv2",
-            "value": 5,
+            "type": "firerate_permanent_pickup_lv2",
+            "value": 1,
             "is_permanent": true,
             "pickup_times_s": [
-              826,
-              850,
-              1152,
-              1172,
-              1419
+              1163
             ],
             "pickup_stat_values": [
-              20.0,
-              20.0,
-              20.0,
-              20.0,
-              20.0
+              2.0
             ]
           }
         ],
         "hero_xp_rewards": [
           {
             "xp_grant": {
-              "hero_id": 13,
+              "hero_id": 64,
+              "xp_grant": 100,
+              "reason": 0
+            }
+          },
+          {
+            "xp_grant": {
+              "hero_id": 64,
               "xp_grant": 50,
-              "reason": 1
+              "reason": 2
             }
           }
         ],
         "player_rank_data": null,
-        "player_match_outcome": 2
+        "player_match_outcome": 1
       }
     ],
     "start_time": 1792705407,
