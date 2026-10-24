@@ -31,6 +31,7 @@
 #[macro_use]
 mod config;
 mod cache;
+mod endpoint;
 mod error;
 mod ids;
 

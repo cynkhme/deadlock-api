@@ -110,7 +110,6 @@ impl Error {
 
 /// Parses a `Retry-After` header value: whole seconds, or an HTTP-date taken
 /// relative to `now` (a date in the past gives zero).
-#[allow(dead_code)] // used by the endpoint core
 pub(crate) fn parse_retry_after(value: &str, now: SystemTime) -> Option<Duration> {
     let value = value.trim();
     if let Ok(secs) = value.parse::<u64>() {
@@ -121,7 +120,6 @@ pub(crate) fn parse_retry_after(value: &str, now: SystemTime) -> Option<Duration
 }
 
 /// The `error` field of the server's `{"status": …, "error": "…"}` body.
-#[allow(dead_code)] // used by the endpoint core
 pub(crate) fn api_message(body: &[u8]) -> Option<String> {
     #[derive(serde::Deserialize)]
     struct ErrorBody {
@@ -133,7 +131,6 @@ pub(crate) fn api_message(body: &[u8]) -> Option<String> {
 }
 
 /// At most 512 bytes of `body` as text, cut on a character boundary.
-#[allow(dead_code)] // used by the endpoint core
 pub(crate) fn body_excerpt(body: &[u8]) -> String {
     let head = &body[..body.len().min(512)];
     let mut text = String::from_utf8_lossy(head).into_owned();
