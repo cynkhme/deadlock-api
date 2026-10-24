@@ -1,6 +1,9 @@
 //! A local HTTP/1.1 server that answers scripted responses and records what
 //! it was asked, so transport tests need no network.
-#![allow(dead_code)] // shared by several test binaries; not every binary uses every helper
+#![allow(
+    dead_code,
+    reason = "shared by several test binaries; not every binary uses every helper"
+)]
 
 use std::io::{BufRead, BufReader, Write};
 use std::net::TcpListener;

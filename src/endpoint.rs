@@ -211,7 +211,10 @@ pub(crate) fn is_json(body: &[u8]) -> bool {
 /// hand-edited or foreign file), so it is treated as a miss and replaced by
 /// the fresh body; a cached body that is JSON but not the model stays, and
 /// decoding it fails with the key as the location.
-#[cfg_attr(not(feature = "blocking"), allow(dead_code))] // the async client re-states this flow
+#[cfg_attr(
+    all(not(feature = "blocking"), not(test)),
+    expect(dead_code, reason = "the async client re-states this flow")
+)]
 pub(crate) fn run<E, F>(e: &E, cfg: &Config, transport: F) -> Result<E::Output>
 where
     E: Endpoint,
