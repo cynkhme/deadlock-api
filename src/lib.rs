@@ -46,7 +46,7 @@
 //! # Features
 //!
 //! - `blocking` (default): the synchronous [`blocking::Client`] on ureq.
-//! - `async`: the asynchronous `Client` on reqwest; pulls in tokio.
+//! - `async`: the asynchronous [`Client`] on reqwest; pulls in tokio.
 //! - `rustls` (default) / `native-tls`: the TLS stack for both clients. With
 //!   both enabled `rustls` wins; disable default features to use `native-tls`
 //!   alone.
@@ -69,6 +69,8 @@ mod config;
 #[cfg(feature = "blocking")]
 pub mod blocking;
 mod cache;
+#[cfg(feature = "async")]
+mod client;
 mod endpoint;
 mod endpoints;
 mod error;
@@ -78,6 +80,8 @@ pub mod types;
 pub use cache::Cache;
 #[cfg(feature = "fs-cache")]
 pub use cache::FileCache;
+#[cfg(feature = "async")]
+pub use client::{Client, ClientBuilder};
 pub use config::{Config, ConfigBuilder};
 pub use error::{Error, Result};
 pub use ids::{AccountId, HeroId, MatchId};
