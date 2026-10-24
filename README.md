@@ -56,7 +56,7 @@ An API key is optional; when set, it is sent in the `X-API-KEY` header and never
 
 A client feature without a TLS feature is a compile error. For the async client alone: `cargo add deadlock-api --no-default-features --features async,rustls`.
 
-With either TLS feature, both clients verify the server certificate against the operating system's trust store, so a CA installed on the machine (a corporate proxy, for example) is trusted. On Linux the store is the system CA bundle, or the file named by `SSL_CERT_FILE`; without one, every request fails with `Error::Transport`.
+With either TLS feature, both clients verify the server certificate against the operating system's trust store, so a CA installed on the machine (a corporate proxy, for example) is trusted. On Linux the store is the system CA bundle, or the file named by `SSL_CERT_FILE`. With `rustls` and a store that holds no certificate, the async client's `build()` fails with `Error::Transport`, and the blocking client fails every request with it.
 
 ## Endpoints
 
