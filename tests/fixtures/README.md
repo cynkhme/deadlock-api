@@ -7,6 +7,10 @@ and a few elements per list, so decoding tests see every field without a
 megabyte of data. The scripts named here are in the `scripts/` directory of
 the repository, which the published crate does not include.
 
+The responses are data served by deadlock-api.com, included here only as
+test input. The crate's MIT and Apache-2.0 licences cover its code, not
+this data.
+
 | File | Request | Trim |
 |---|---|---|
 | `match_metadata.json` | `GET /v1/matches/122539002/metadata` (full 0.97 MB response, recorded in the same session) | `jq -f scripts/trim-metadata.jq`: players of slots 10 and 4 (they carry `mvp_rank` and `ability_stats`), 3 `stats` samples, 5 `items`, 2 `death_details`, 2 paths with 10 positions, 1 damage dealer |
