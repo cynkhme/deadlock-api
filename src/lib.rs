@@ -28,6 +28,8 @@
 #![deny(missing_docs)]
 #![deny(rustdoc::broken_intra_doc_links)]
 
+mod error;
 mod ids;
 
+pub use error::{Error, Result};
 pub use ids::{AccountId, HeroId, MatchId};
