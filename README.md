@@ -81,7 +81,7 @@ A client feature without a TLS feature is a compile error. For the async client 
 
 A method that takes a list of ids returns an empty `Vec` for an empty list without sending a request. Model fields carry the server's JSON names unchanged, so the server's own documentation applies field for field.
 
-Any other route goes through `get_json::<T>(path, query)` or `get_raw(path, query)`, which return the decoded body or the raw bytes and bypass the cache.
+Any other route goes through `get_json::<T>(path, query)` or `get_raw(path, query)`, which return the decoded body or the raw bytes and bypass the cache. The path starts with `/` and carries no `?` or `#`; query pairs go in `query`.
 
 ## Cache
 

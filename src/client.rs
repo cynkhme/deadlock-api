@@ -116,7 +116,8 @@ impl Client {
     /// # Errors
     ///
     /// [`Error::Config`] for an `api_key` pair, [`Error::InvalidRequest`] for
-    /// a path that does not form a URL; otherwise as for every request.
+    /// a path that does not start with `/`, carries a `?` or `#`, or does not
+    /// form a URL; otherwise as for every request.
     ///
     /// # Examples
     ///
@@ -146,7 +147,9 @@ impl Client {
     ///
     /// # Errors
     ///
-    /// As for every request; see [`Error`].
+    /// [`Error::Config`] for an `api_key` pair, [`Error::InvalidRequest`] for
+    /// a path that does not start with `/`, carries a `?` or `#`, or does not
+    /// form a URL; otherwise as for every request.
     ///
     /// # Examples
     ///

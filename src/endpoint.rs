@@ -55,6 +55,7 @@ pub(crate) fn url_for<E: Endpoint>(e: &E, cfg: &Config) -> String {
 /// [`Error::InvalidRequest`] when the path (for example a
 /// [`Region::Unknown`](crate::Region::Unknown) segment) does not form a URL.
 pub(crate) fn to_request<E: Endpoint>(e: &E, cfg: &Config) -> Result<Request<()>> {
+    check_path(cfg, &e.path())?;
     build_request(cfg, &url_for(e, cfg))
 }
 
@@ -67,15 +68,36 @@ pub(crate) fn to_request<E: Endpoint>(e: &E, cfg: &Config) -> Result<Request<()>
 pub(crate) fn raw_url(cfg: &Config, path: &str, query: &[(&str, &str)]) -> Result<String> {
     if query.iter().any(|(k, _)| k.eq_ignore_ascii_case("api_key")) {
         return Err(Error::Config {
-            message: "pass the API key through ConfigBuilder::api_key, not as a query pair".into(),
+            message: "pass the API key through the client builder's api_key, not as a query pair"
+                .into(),
         });
     }
+    check_path(cfg, path)?;
     let mut url = format!("{}{path}", cfg.base_url());
     if !query.is_empty() {
         url.push('?');
         url.push_str(&serde_urlencoded::to_string(query).expect("string pairs always encode"));
     }
     Ok(url)
+}
+
+/// Refuses a path that would leave the configured server or smuggle a query:
+/// the path is appended to the base URL as a string, so one without a
+/// leading `/` extends the host (`@evil.example/x` sends the request, and
+/// the API key, to `evil.example`), and a `?` or `#` would bypass the
+/// `api_key` check. The error URL stops before any `?` so a key in it is not
+/// repeated.
+fn check_path(cfg: &Config, path: &str) -> Result<()> {
+    if path.starts_with('/') && !path.contains(['?', '#']) {
+        return Ok(());
+    }
+    let shown = path.split(['?', '#']).next().unwrap_or_default();
+    Err(Error::InvalidRequest {
+        url: format!("{}{shown}", cfg.base_url()),
+        message:
+            "the path must start with `/` and carry no `?` or `#`; pass query pairs separately"
+                .into(),
+    })
 }
 
 /// The request for an arbitrary GET, with the same headers as [`to_request`].

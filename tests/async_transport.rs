@@ -227,3 +227,28 @@ async fn invalid_path_is_an_error_not_a_panic() {
     let err = client(&url).get_raw("/v1/a b", &[]).await.unwrap_err();
     assert!(matches!(err, Error::InvalidRequest { .. }), "{err:?}");
 }
+
+#[tokio::test]
+async fn raw_path_cannot_move_the_request_off_the_base_host() {
+    let (url, _) = server(vec![("200 OK", JSON, "{}")]);
+    let api = client(&url);
+    for path in [
+        "@evil.example/x",
+        ".evil.example/x",
+        "v1/info",
+        "/v1/x?api_key=k",
+        "/v1/x#f",
+    ] {
+        let err = api.get_raw(path, &[]).await.unwrap_err();
+        assert!(
+            matches!(err, Error::InvalidRequest { .. }),
+            "{path}: {err:?}"
+        );
+        assert!(!err.to_string().contains("api_key"), "{err}");
+    }
+    let err = api
+        .leaderboard(deadlock_api::Region::Unknown("Europe?x=1".into()))
+        .await
+        .unwrap_err();
+    assert!(matches!(err, Error::InvalidRequest { .. }), "{err:?}");
+}

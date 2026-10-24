@@ -75,7 +75,8 @@ pub enum Error {
     },
     /// A request could not be built: a path or a value supplied by the caller
     /// (a raw `path`, an unknown [`Region`](crate::Region)) does not form a
-    /// valid URL. Raised before anything is sent.
+    /// valid URL, or would move the request off the configured server or
+    /// carry a query inside the path. Raised before anything is sent.
     #[error("invalid request {url}: {message}")]
     InvalidRequest {
         /// The URL as far as it could be assembled.
@@ -85,7 +86,8 @@ pub enum Error {
     },
     /// The configuration cannot be used: the base URL has no scheme or host,
     /// or the user agent or API key is not a valid header value. Raised by
-    /// the builders, never by a request.
+    /// the builders, and by `get_json` and `get_raw` for a query pair named
+    /// `api_key`.
     #[error("invalid configuration: {message}")]
     Config {
         /// What was wrong, naming the setting.
