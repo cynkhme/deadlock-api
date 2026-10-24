@@ -1,0 +1,3799 @@
+{
+  "match_info": {
+    "duration_s": 1616,
+    "match_outcome": 0,
+    "winning_team": 0,
+    "players": [
+      {
+        "account_id": 123324885,
+        "player_slot": 5,
+        "death_details": [
+          {
+            "game_time_s": 495,
+            "time_to_kill_s": 10.119193,
+            "killer_player_slot": 11,
+            "death_pos": {
+              "x": -8062.6562,
+              "y": -1803.9688,
+              "z": 248.0
+            },
+            "killer_pos": {
+              "x": -7891.625,
+              "y": -1587.2812,
+              "z": 248.0625
+            },
+            "death_duration_s": 15
+          }
+        ],
+        "items": [
+          {
+            "game_time_s": 15,
+            "item_id": 267712790,
+            "upgrade_id": 0,
+            "sold_time_s": 0,
+            "flags": 0,
+            "imbued_ability_id": 0,
+            "upgrade_info": 65536
+          },
+          {
+            "game_time_s": 51,
+            "item_id": 267712790,
+            "upgrade_id": 1481088878,
+            "sold_time_s": 0,
+            "flags": 0,
+            "imbued_ability_id": 0,
+            "upgrade_info": 196608
+          },
+          {
+            "game_time_s": 84,
+            "item_id": 3621314027,
+            "upgrade_id": 0,
+            "sold_time_s": 0,
+            "flags": 0,
+            "imbued_ability_id": 0,
+            "upgrade_info": 65536
+          },
+          {
+            "game_time_s": 95,
+            "item_id": 2829638276,
+            "upgrade_id": 1,
+            "sold_time_s": 366,
+            "flags": 1,
+            "imbued_ability_id": 0,
+            "upgrade_info": 65536
+          },
+          {
+            "game_time_s": 152,
+            "item_id": 683490631,
+            "upgrade_id": 0,
+            "sold_time_s": 0,
+            "flags": 0,
+            "imbued_ability_id": 0,
+            "upgrade_info": 65536
+          }
+        ],
+        "stats": [
+          {
+            "time_stamp_s": 180,
+            "net_worth": 2582,
+            "gold_player": 497,
+            "gold_player_orbs": 0,
+            "gold_lane_creep_orbs": 635,
+            "gold_neutral_creep_orbs": 0,
+            "gold_boss": 0,
+            "gold_boss_orb": 0,
+            "gold_treasure": 0,
+            "gold_denied": 25,
+            "gold_death_loss": 0,
+            "gold_lane_creep": 635,
+            "gold_neutral_creep": 123,
+            "kills": 1,
+            "deaths": 0,
+            "assists": 1,
+            "creep_kills": 3,
+            "neutral_kills": 3,
+            "possible_creeps": 13,
+            "creep_damage": 938,
+            "player_damage": 1082,
+            "neutral_damage": 468,
+            "boss_damage": 0,
+            "denies": 0,
+            "player_healing": 174,
+            "ability_points": 2,
+            "self_healing": 0,
+            "player_damage_taken": 521,
+            "max_health": 935,
+            "weapon_power": 0,
+            "tech_power": 4,
+            "shots_hit": 51,
+            "shots_missed": 56,
+            "damage_absorbed": 0,
+            "absorption_provided": 0,
+            "hero_bullets_hit": 27,
+            "hero_bullets_hit_crit": 9,
+            "heal_prevented": 0,
+            "heal_lost": 0,
+            "gold_sources": [
+              {
+                "source": 1,
+                "kills": 1,
+                "damage": 1082,
+                "gold": 341,
+                "gold_orbs": 0
+              },
+              {
+                "source": 2,
+                "kills": 3,
+                "damage": 938,
+                "gold": 635,
+                "gold_orbs": 635
+              },
+              {
+                "source": 3,
+                "kills": 3,
+                "damage": 468,
+                "gold": 123,
+                "gold_orbs": 0
+              },
+              {
+                "source": 4,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": 0
+              },
+              {
+                "source": 5,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 7,
+                "kills": null,
+                "damage": null,
+                "gold": 25,
+                "gold_orbs": null
+              },
+              {
+                "source": 8,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 12,
+                "kills": null,
+                "damage": null,
+                "gold": 67,
+                "gold_orbs": null
+              },
+              {
+                "source": 9,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 10,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 11,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 13,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 6,
+                "kills": 1,
+                "damage": null,
+                "gold": 156,
+                "gold_orbs": null
+              }
+            ],
+            "custom_user_stats": [
+              {
+                "value": 74,
+                "id": 1
+              },
+              {
+                "value": 27,
+                "id": 2
+              },
+              {
+                "value": 9,
+                "id": 3
+              },
+              {
+                "value": 0,
+                "id": 4
+              },
+              {
+                "value": 0,
+                "id": 5
+              },
+              {
+                "value": 0,
+                "id": 6
+              },
+              {
+                "value": 114,
+                "id": 7
+              },
+              {
+                "value": 32,
+                "id": 8
+              },
+              {
+                "value": 0,
+                "id": 9
+              },
+              {
+                "value": 36,
+                "id": 10
+              },
+              {
+                "value": 33,
+                "id": 11
+              },
+              {
+                "value": 0,
+                "id": 12
+              },
+              {
+                "value": 0,
+                "id": 13
+              },
+              {
+                "value": 0,
+                "id": 14
+              },
+              {
+                "value": 28,
+                "id": 15
+              },
+              {
+                "value": 0,
+                "id": 16
+              },
+              {
+                "value": 2547,
+                "id": 17
+              },
+              {
+                "value": 0,
+                "id": 18
+              },
+              {
+                "value": 3,
+                "id": 19
+              },
+              {
+                "value": 11,
+                "id": 20
+              },
+              {
+                "value": 1,
+                "id": 21
+              },
+              {
+                "value": 4,
+                "id": 22
+              },
+              {
+                "value": 18,
+                "id": 23
+              },
+              {
+                "value": 24,
+                "id": 24
+              },
+              {
+                "value": 57,
+                "id": 25
+              },
+              {
+                "value": 64,
+                "id": 26
+              },
+              {
+                "value": 96,
+                "id": 27
+              },
+              {
+                "value": 16,
+                "id": 28
+              },
+              {
+                "value": 130,
+                "id": 29
+              },
+              {
+                "value": 112,
+                "id": 30
+              },
+              {
+                "value": 120,
+                "id": 31
+              },
+              {
+                "value": 32,
+                "id": 32
+              },
+              {
+                "value": 6,
+                "id": 33
+              },
+              {
+                "value": 60,
+                "id": 34
+              },
+              {
+                "value": 218,
+                "id": 35
+              },
+              {
+                "value": 11,
+                "id": 36
+              },
+              {
+                "value": 25,
+                "id": 37
+              },
+              {
+                "value": 15,
+                "id": 38
+              },
+              {
+                "value": 1,
+                "id": 39
+              },
+              {
+                "value": 90,
+                "id": 40
+              },
+              {
+                "value": 1,
+                "id": 41
+              },
+              {
+                "value": 0,
+                "id": 42
+              },
+              {
+                "value": 0,
+                "id": 43
+              },
+              {
+                "value": 0,
+                "id": 44
+              },
+              {
+                "value": 0,
+                "id": 45
+              },
+              {
+                "value": 0,
+                "id": 46
+              },
+              {
+                "value": 0,
+                "id": 47
+              },
+              {
+                "value": 0,
+                "id": 48
+              },
+              {
+                "value": 0,
+                "id": 49
+              },
+              {
+                "value": 0,
+                "id": 50
+              },
+              {
+                "value": 0,
+                "id": 51
+              },
+              {
+                "value": 0,
+                "id": 52
+              },
+              {
+                "value": 0,
+                "id": 53
+              },
+              {
+                "value": 0,
+                "id": 54
+              }
+            ],
+            "damage_mitigated": 115,
+            "level": 5,
+            "player_barriering": 0,
+            "teammate_healing": 174,
+            "teammate_barriering": 0,
+            "self_damage": 0,
+            "bullet_kills": 0,
+            "melee_kills": 0,
+            "ability_kills": 1,
+            "headshot_kills": 0
+          },
+          {
+            "time_stamp_s": 360,
+            "net_worth": 4528,
+            "gold_player": 1020,
+            "gold_player_orbs": 0,
+            "gold_lane_creep_orbs": 1042,
+            "gold_neutral_creep_orbs": 0,
+            "gold_boss": 0,
+            "gold_boss_orb": 0,
+            "gold_treasure": 0,
+            "gold_denied": 25,
+            "gold_death_loss": 0,
+            "gold_lane_creep": 1165,
+            "gold_neutral_creep": 123,
+            "kills": 2,
+            "deaths": 0,
+            "assists": 2,
+            "creep_kills": 7,
+            "neutral_kills": 3,
+            "possible_creeps": 29,
+            "creep_damage": 2949,
+            "player_damage": 1862,
+            "neutral_damage": 468,
+            "boss_damage": 0,
+            "denies": 0,
+            "player_healing": 390,
+            "ability_points": 5,
+            "self_healing": 32,
+            "player_damage_taken": 1297,
+            "max_health": 1133,
+            "weapon_power": 0,
+            "tech_power": 20,
+            "shots_hit": 137,
+            "shots_missed": 105,
+            "damage_absorbed": 0,
+            "absorption_provided": 0,
+            "hero_bullets_hit": 60,
+            "hero_bullets_hit_crit": 22,
+            "heal_prevented": 0,
+            "heal_lost": 0,
+            "gold_sources": [
+              {
+                "source": 1,
+                "kills": 2,
+                "damage": 1862,
+                "gold": 698,
+                "gold_orbs": 0
+              },
+              {
+                "source": 2,
+                "kills": 7,
+                "damage": 2949,
+                "gold": 1165,
+                "gold_orbs": 1042
+              },
+              {
+                "source": 3,
+                "kills": 3,
+                "damage": 468,
+                "gold": 123,
+                "gold_orbs": 0
+              },
+              {
+                "source": 4,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": 0
+              },
+              {
+                "source": 5,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 7,
+                "kills": null,
+                "damage": null,
+                "gold": 25,
+                "gold_orbs": null
+              },
+              {
+                "source": 8,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 12,
+                "kills": null,
+                "damage": null,
+                "gold": 524,
+                "gold_orbs": null
+              },
+              {
+                "source": 9,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 10,
+                "kills": null,
+                "damage": null,
+                "gold": 29,
+                "gold_orbs": null
+              },
+              {
+                "source": 11,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 13,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 6,
+                "kills": 2,
+                "damage": null,
+                "gold": 322,
+                "gold_orbs": null
+              }
+            ],
+            "custom_user_stats": [
+              {
+                "value": 156,
+                "id": 1
+              },
+              {
+                "value": 60,
+                "id": 2
+              },
+              {
+                "value": 22,
+                "id": 3
+              },
+              {
+                "value": 0,
+                "id": 4
+              },
+              {
+                "value": 0,
+                "id": 5
+              },
+              {
+                "value": 0,
+                "id": 6
+              },
+              {
+                "value": 172,
+                "id": 7
+              },
+              {
+                "value": 36,
+                "id": 8
+              },
+              {
+                "value": 0,
+                "id": 9
+              },
+              {
+                "value": 38,
+                "id": 10
+              },
+              {
+                "value": 37,
+                "id": 11
+              },
+              {
+                "value": 0,
+                "id": 12
+              },
+              {
+                "value": 0,
+                "id": 13
+              },
+              {
+                "value": 0,
+                "id": 14
+              },
+              {
+                "value": 21,
+                "id": 15
+              },
+              {
+                "value": 0,
+                "id": 16
+              },
+              {
+                "value": 6289,
+                "id": 17
+              },
+              {
+                "value": 3,
+                "id": 18
+              },
+              {
+                "value": 4,
+                "id": 19
+              },
+              {
+                "value": 11,
+                "id": 20
+              },
+              {
+                "value": 1,
+                "id": 21
+              },
+              {
+                "value": 4,
+                "id": 22
+              },
+              {
+                "value": 48,
+                "id": 23
+              },
+              {
+                "value": 66,
+                "id": 24
+              },
+              {
+                "value": 194,
+                "id": 25
+              },
+              {
+                "value": 172,
+                "id": 26
+              },
+              {
+                "value": 177,
+                "id": 27
+              },
+              {
+                "value": 20,
+                "id": 28
+              },
+              {
+                "value": 222,
+                "id": 29
+              },
+              {
+                "value": 224,
+                "id": 30
+              },
+              {
+                "value": 129,
+                "id": 31
+              },
+              {
+                "value": 68,
+                "id": 32
+              },
+              {
+                "value": 8,
+                "id": 33
+              },
+              {
+                "value": 271,
+                "id": 34
+              },
+              {
+                "value": 266,
+                "id": 35
+              },
+              {
+                "value": 11,
+                "id": 36
+              },
+              {
+                "value": 118,
+                "id": 37
+              },
+              {
+                "value": 15,
+                "id": 38
+              },
+              {
+                "value": 1,
+                "id": 39
+              },
+              {
+                "value": 107,
+                "id": 40
+              },
+              {
+                "value": 12,
+                "id": 41
+              },
+              {
+                "value": 92,
+                "id": 42
+              },
+              {
+                "value": 27,
+                "id": 43
+              },
+              {
+                "value": 2,
+                "id": 44
+              },
+              {
+                "value": 75,
+                "id": 45
+              },
+              {
+                "value": 74,
+                "id": 46
+              },
+              {
+                "value": 1,
+                "id": 47
+              },
+              {
+                "value": 2,
+                "id": 48
+              },
+              {
+                "value": 0,
+                "id": 49
+              },
+              {
+                "value": 0,
+                "id": 50
+              },
+              {
+                "value": 0,
+                "id": 51
+              },
+              {
+                "value": 0,
+                "id": 52
+              },
+              {
+                "value": 0,
+                "id": 53
+              },
+              {
+                "value": 0,
+                "id": 54
+              }
+            ],
+            "damage_mitigated": 498,
+            "level": 9,
+            "player_barriering": 0,
+            "teammate_healing": 358,
+            "teammate_barriering": 0,
+            "self_damage": 9,
+            "bullet_kills": 0,
+            "melee_kills": 0,
+            "ability_kills": 2,
+            "headshot_kills": 0
+          },
+          {
+            "time_stamp_s": 540,
+            "net_worth": 6566,
+            "gold_player": 1208,
+            "gold_player_orbs": 0,
+            "gold_lane_creep_orbs": 1409,
+            "gold_neutral_creep_orbs": 0,
+            "gold_boss": 630,
+            "gold_boss_orb": 0,
+            "gold_treasure": 0,
+            "gold_denied": 81,
+            "gold_death_loss": 0,
+            "gold_lane_creep": 1774,
+            "gold_neutral_creep": 123,
+            "kills": 2,
+            "deaths": 1,
+            "assists": 3,
+            "creep_kills": 11,
+            "neutral_kills": 3,
+            "possible_creeps": 41,
+            "creep_damage": 4793,
+            "player_damage": 2610,
+            "neutral_damage": 529,
+            "boss_damage": 433,
+            "denies": 1,
+            "player_healing": 784,
+            "ability_points": 7,
+            "self_healing": 160,
+            "player_damage_taken": 3190,
+            "max_health": 1289,
+            "weapon_power": 9,
+            "tech_power": 34,
+            "shots_hit": 203,
+            "shots_missed": 139,
+            "damage_absorbed": 0,
+            "absorption_provided": 0,
+            "hero_bullets_hit": 82,
+            "hero_bullets_hit_crit": 24,
+            "heal_prevented": 0,
+            "heal_lost": 0,
+            "gold_sources": [
+              {
+                "source": 1,
+                "kills": 2,
+                "damage": 2610,
+                "gold": 698,
+                "gold_orbs": 0
+              },
+              {
+                "source": 2,
+                "kills": 11,
+                "damage": 4793,
+                "gold": 1774,
+                "gold_orbs": 1409
+              },
+              {
+                "source": 3,
+                "kills": 3,
+                "damage": 529,
+                "gold": 123,
+                "gold_orbs": 0
+              },
+              {
+                "source": 4,
+                "kills": null,
+                "damage": 433,
+                "gold": 630,
+                "gold_orbs": 0
+              },
+              {
+                "source": 5,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 7,
+                "kills": null,
+                "damage": null,
+                "gold": 81,
+                "gold_orbs": null
+              },
+              {
+                "source": 8,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 12,
+                "kills": null,
+                "damage": null,
+                "gold": 566,
+                "gold_orbs": null
+              },
+              {
+                "source": 9,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 10,
+                "kills": null,
+                "damage": null,
+                "gold": 165,
+                "gold_orbs": null
+              },
+              {
+                "source": 11,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 13,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 6,
+                "kills": 3,
+                "damage": null,
+                "gold": 510,
+                "gold_orbs": null
+              }
+            ],
+            "custom_user_stats": [
+              {
+                "value": 210,
+                "id": 1
+              },
+              {
+                "value": 80,
+                "id": 2
+              },
+              {
+                "value": 24,
+                "id": 3
+              },
+              {
+                "value": 0,
+                "id": 4
+              },
+              {
+                "value": 0,
+                "id": 5
+              },
+              {
+                "value": 0,
+                "id": 6
+              },
+              {
+                "value": 301,
+                "id": 7
+              },
+              {
+                "value": 66,
+                "id": 8
+              },
+              {
+                "value": 7,
+                "id": 9
+              },
+              {
+                "value": 38,
+                "id": 10
+              },
+              {
+                "value": 30,
+                "id": 11
+              },
+              {
+                "value": 0,
+                "id": 12
+              },
+              {
+                "value": 0,
+                "id": 13
+              },
+              {
+                "value": 0,
+                "id": 14
+              },
+              {
+                "value": 22,
+                "id": 15
+              },
+              {
+                "value": 11,
+                "id": 16
+              },
+              {
+                "value": 10080,
+                "id": 17
+              },
+              {
+                "value": 5,
+                "id": 18
+              },
+              {
+                "value": 9,
+                "id": 19
+              },
+              {
+                "value": 28,
+                "id": 20
+              },
+              {
+                "value": 1,
+                "id": 21
+              },
+              {
+                "value": 4,
+                "id": 22
+              },
+              {
+                "value": 62,
+                "id": 23
+              },
+              {
+                "value": 80,
+                "id": 24
+              },
+              {
+                "value": 246,
+                "id": 25
+              },
+              {
+                "value": 375,
+                "id": 26
+              },
+              {
+                "value": 417,
+                "id": 27
+              },
+              {
+                "value": 38,
+                "id": 28
+              },
+              {
+                "value": 509,
+                "id": 29
+              },
+              {
+                "value": 310,
+                "id": 30
+              },
+              {
+                "value": 129,
+                "id": 31
+              },
+              {
+                "value": 68,
+                "id": 32
+              },
+              {
+                "value": 9,
+                "id": 33
+              },
+              {
+                "value": 317,
+                "id": 34
+              },
+              {
+                "value": 750,
+                "id": 35
+              },
+              {
+                "value": 11,
+                "id": 36
+              },
+              {
+                "value": 555,
+                "id": 37
+              },
+              {
+                "value": 27,
+                "id": 38
+              },
+              {
+                "value": 1,
+                "id": 39
+              },
+              {
+                "value": 127,
+                "id": 40
+              },
+              {
+                "value": 13,
+                "id": 41
+              },
+              {
+                "value": 259,
+                "id": 42
+              },
+              {
+                "value": 27,
+                "id": 43
+              },
+              {
+                "value": 4,
+                "id": 44
+              },
+              {
+                "value": 191,
+                "id": 45
+              },
+              {
+                "value": 377,
+                "id": 46
+              },
+              {
+                "value": 1,
+                "id": 47
+              },
+              {
+                "value": 3,
+                "id": 48
+              },
+              {
+                "value": 2,
+                "id": 49
+              },
+              {
+                "value": 0,
+                "id": 50
+              },
+              {
+                "value": 0,
+                "id": 51
+              },
+              {
+                "value": 0,
+                "id": 52
+              },
+              {
+                "value": 0,
+                "id": 53
+              },
+              {
+                "value": 0,
+                "id": 54
+              }
+            ],
+            "damage_mitigated": 869,
+            "level": 11,
+            "player_barriering": 0,
+            "teammate_healing": 624,
+            "teammate_barriering": 0,
+            "self_damage": 9,
+            "bullet_kills": 0,
+            "melee_kills": 0,
+            "ability_kills": 2,
+            "headshot_kills": 0
+          }
+        ],
+        "team": 0,
+        "kills": 6,
+        "deaths": 1,
+        "assists": 26,
+        "net_worth": 31033,
+        "hero_id": 87,
+        "last_hits": 127,
+        "denies": 2,
+        "ability_points": 26,
+        "assigned_lane": 1,
+        "level": 30,
+        "pings": [
+          {
+            "ping_type": 3,
+            "ping_data": 173505,
+            "game_time_s": 119
+          },
+          {
+            "ping_type": 8,
+            "ping_data": 18,
+            "game_time_s": 155
+          },
+          {
+            "ping_type": 6,
+            "ping_data": 0,
+            "game_time_s": 166
+          }
+        ],
+        "ability_stats": [
+          {
+            "ability_id": 267712790,
+            "ability_value": 10
+          },
+          {
+            "ability_id": 3074274290,
+            "ability_value": 16
+          }
+        ],
+        "stats_type_stat": [
+          162.407,
+          0.0,
+          2374.3599
+        ],
+        "book_rewards": [],
+        "abandon_match_time_s": 0,
+        "hero_data": {
+          "hero_xp": 0,
+          "hero_equips": null
+        },
+        "rewards_eligible": true,
+        "player_tracked_stats": [],
+        "accolades": [
+          {
+            "accolade_id": 23,
+            "accolade_stat_value": 2640,
+            "accolade_threshold_achieved": 1
+          },
+          {
+            "accolade_id": 2,
+            "accolade_stat_value": 26,
+            "accolade_threshold_achieved": 1
+          }
+        ],
+        "mvp_rank": null,
+        "earned_holiday_award_2025": null,
+        "power_up_buffs": [
+          {
+            "type": "spirit_permanent_pickup_lv2",
+            "value": 2,
+            "is_permanent": true,
+            "pickup_times_s": [
+              657,
+              1445
+            ],
+            "pickup_stat_values": [
+              3.0,
+              3.0
+            ]
+          },
+          {
+            "type": "ammo_permanent_pickup_lv2",
+            "value": 2,
+            "is_permanent": true,
+            "pickup_times_s": [
+              1154,
+              1519
+            ],
+            "pickup_stat_values": [
+              5.0,
+              5.0
+            ]
+          }
+        ],
+        "hero_xp_rewards": [
+          {
+            "xp_grant": {
+              "hero_id": 87,
+              "xp_grant": 100,
+              "reason": 0
+            }
+          },
+          {
+            "xp_grant": {
+              "hero_id": 87,
+              "xp_grant": 25,
+              "reason": 2
+            }
+          }
+        ],
+        "player_rank_data": null,
+        "player_match_outcome": 1
+      },
+      {
+        "account_id": 293046606,
+        "player_slot": 8,
+        "death_details": [
+          {
+            "game_time_s": 359,
+            "time_to_kill_s": 32.0,
+            "killer_player_slot": 6,
+            "death_pos": {
+              "x": 7218.4062,
+              "y": 4293.75,
+              "z": 384.0
+            },
+            "killer_pos": {
+              "x": 8356.75,
+              "y": 3025.2188,
+              "z": 293.09375
+            },
+            "death_duration_s": 10
+          },
+          {
+            "game_time_s": 564,
+            "time_to_kill_s": 2.2420936,
+            "killer_player_slot": 5,
+            "death_pos": {
+              "x": -4400.0625,
+              "y": 2731.4688,
+              "z": 774.84375
+            },
+            "killer_pos": {
+              "x": -4451.8438,
+              "y": 1967.5312,
+              "z": 576.84375
+            },
+            "death_duration_s": 17
+          }
+        ],
+        "items": [
+          {
+            "game_time_s": 16,
+            "item_id": 1080948381,
+            "upgrade_id": 0,
+            "sold_time_s": 0,
+            "flags": 0,
+            "imbued_ability_id": 0,
+            "upgrade_info": 65536
+          },
+          {
+            "game_time_s": 80,
+            "item_id": 1080948381,
+            "upgrade_id": 660763199,
+            "sold_time_s": 0,
+            "flags": 0,
+            "imbued_ability_id": 0,
+            "upgrade_info": 196608
+          },
+          {
+            "game_time_s": 89,
+            "item_id": 968099481,
+            "upgrade_id": 1,
+            "sold_time_s": 1245,
+            "flags": 1,
+            "imbued_ability_id": 0,
+            "upgrade_info": 65536
+          },
+          {
+            "game_time_s": 105,
+            "item_id": 2948410412,
+            "upgrade_id": 0,
+            "sold_time_s": 0,
+            "flags": 0,
+            "imbued_ability_id": 0,
+            "upgrade_info": 65536
+          },
+          {
+            "game_time_s": 184,
+            "item_id": 1009965641,
+            "upgrade_id": 1,
+            "sold_time_s": 0,
+            "flags": 0,
+            "imbued_ability_id": 0,
+            "upgrade_info": 65536
+          }
+        ],
+        "stats": [
+          {
+            "time_stamp_s": 180,
+            "net_worth": 1751,
+            "gold_player": 0,
+            "gold_player_orbs": 0,
+            "gold_lane_creep_orbs": 481,
+            "gold_neutral_creep_orbs": 0,
+            "gold_boss": 0,
+            "gold_boss_orb": 0,
+            "gold_treasure": 0,
+            "gold_denied": 104,
+            "gold_death_loss": 0,
+            "gold_lane_creep": 566,
+            "gold_neutral_creep": 0,
+            "kills": 0,
+            "deaths": 0,
+            "assists": 0,
+            "creep_kills": 7,
+            "neutral_kills": 0,
+            "possible_creeps": 15,
+            "creep_damage": 2062,
+            "player_damage": 918,
+            "neutral_damage": 0,
+            "boss_damage": 0,
+            "denies": 3,
+            "player_healing": 46,
+            "ability_points": 2,
+            "self_healing": 46,
+            "player_damage_taken": 1263,
+            "max_health": 829,
+            "weapon_power": 0,
+            "tech_power": 18,
+            "shots_hit": 295,
+            "shots_missed": 281,
+            "damage_absorbed": 0,
+            "absorption_provided": 0,
+            "hero_bullets_hit": 311,
+            "hero_bullets_hit_crit": 52,
+            "heal_prevented": 0,
+            "heal_lost": 0,
+            "gold_sources": [
+              {
+                "source": 1,
+                "kills": null,
+                "damage": 918,
+                "gold": 0,
+                "gold_orbs": 0
+              },
+              {
+                "source": 2,
+                "kills": 7,
+                "damage": 2062,
+                "gold": 566,
+                "gold_orbs": 481
+              },
+              {
+                "source": 3,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": 0
+              },
+              {
+                "source": 4,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": 0
+              },
+              {
+                "source": 5,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 7,
+                "kills": null,
+                "damage": null,
+                "gold": 104,
+                "gold_orbs": null
+              },
+              {
+                "source": 8,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 12,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 9,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 10,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 11,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 13,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 6,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              }
+            ],
+            "custom_user_stats": [
+              {
+                "value": 427,
+                "id": 1
+              },
+              {
+                "value": 163,
+                "id": 2
+              },
+              {
+                "value": 27,
+                "id": 3
+              },
+              {
+                "value": 0,
+                "id": 4
+              },
+              {
+                "value": 0,
+                "id": 5
+              },
+              {
+                "value": 0,
+                "id": 6
+              },
+              {
+                "value": 314,
+                "id": 7
+              },
+              {
+                "value": 63,
+                "id": 8
+              },
+              {
+                "value": 13,
+                "id": 9
+              },
+              {
+                "value": 38,
+                "id": 10
+              },
+              {
+                "value": 17,
+                "id": 11
+              },
+              {
+                "value": 0,
+                "id": 12
+              },
+              {
+                "value": 0,
+                "id": 13
+              },
+              {
+                "value": 0,
+                "id": 14
+              },
+              {
+                "value": 20,
+                "id": 15
+              },
+              {
+                "value": 21,
+                "id": 16
+              },
+              {
+                "value": 1822,
+                "id": 17
+              },
+              {
+                "value": 0,
+                "id": 18
+              },
+              {
+                "value": 90,
+                "id": 19
+              },
+              {
+                "value": 4,
+                "id": 20
+              },
+              {
+                "value": 24,
+                "id": 24
+              },
+              {
+                "value": 239,
+                "id": 25
+              },
+              {
+                "value": 56,
+                "id": 28
+              },
+              {
+                "value": 275,
+                "id": 36
+              },
+              {
+                "value": 73,
+                "id": 23
+              },
+              {
+                "value": 337,
+                "id": 30
+              },
+              {
+                "value": 357,
+                "id": 29
+              },
+              {
+                "value": 10,
+                "id": 55
+              },
+              {
+                "value": 152,
+                "id": 34
+              },
+              {
+                "value": 7,
+                "id": 38
+              },
+              {
+                "value": 126,
+                "id": 35
+              },
+              {
+                "value": 72,
+                "id": 45
+              },
+              {
+                "value": 97,
+                "id": 42
+              },
+              {
+                "value": 54,
+                "id": 26
+              },
+              {
+                "value": 299,
+                "id": 52
+              },
+              {
+                "value": 1,
+                "id": 22
+              },
+              {
+                "value": 108,
+                "id": 31
+              },
+              {
+                "value": 26,
+                "id": 53
+              },
+              {
+                "value": 0,
+                "id": 41
+              },
+              {
+                "value": 0,
+                "id": 48
+              },
+              {
+                "value": 0,
+                "id": 21
+              },
+              {
+                "value": 0,
+                "id": 27
+              },
+              {
+                "value": 0,
+                "id": 47
+              },
+              {
+                "value": 0,
+                "id": 50
+              },
+              {
+                "value": 0,
+                "id": 32
+              },
+              {
+                "value": 0,
+                "id": 37
+              },
+              {
+                "value": 0,
+                "id": 40
+              },
+              {
+                "value": 0,
+                "id": 46
+              },
+              {
+                "value": 0,
+                "id": 33
+              },
+              {
+                "value": 0,
+                "id": 54
+              },
+              {
+                "value": 0,
+                "id": 56
+              },
+              {
+                "value": 0,
+                "id": 57
+              },
+              {
+                "value": 0,
+                "id": 39
+              },
+              {
+                "value": 0,
+                "id": 44
+              },
+              {
+                "value": 0,
+                "id": 58
+              },
+              {
+                "value": 0,
+                "id": 43
+              }
+            ],
+            "damage_mitigated": 103,
+            "level": 4,
+            "player_barriering": 0,
+            "teammate_healing": 0,
+            "teammate_barriering": 0,
+            "self_damage": 0,
+            "bullet_kills": 0,
+            "melee_kills": 0,
+            "ability_kills": 0,
+            "headshot_kills": 0
+          },
+          {
+            "time_stamp_s": 360,
+            "net_worth": 3474,
+            "gold_player": 21,
+            "gold_player_orbs": 0,
+            "gold_lane_creep_orbs": 1074,
+            "gold_neutral_creep_orbs": 0,
+            "gold_boss": 0,
+            "gold_boss_orb": 0,
+            "gold_treasure": 0,
+            "gold_denied": 158,
+            "gold_death_loss": 0,
+            "gold_lane_creep": 1189,
+            "gold_neutral_creep": 0,
+            "kills": 0,
+            "deaths": 1,
+            "assists": 0,
+            "creep_kills": 16,
+            "neutral_kills": 0,
+            "possible_creeps": 33,
+            "creep_damage": 4917,
+            "player_damage": 1914,
+            "neutral_damage": 0,
+            "boss_damage": 0,
+            "denies": 4,
+            "player_healing": 87,
+            "ability_points": 4,
+            "self_healing": 87,
+            "player_damage_taken": 2851,
+            "max_health": 928,
+            "weapon_power": 15,
+            "tech_power": 20,
+            "shots_hit": 564,
+            "shots_missed": 536,
+            "damage_absorbed": 0,
+            "absorption_provided": 0,
+            "hero_bullets_hit": 550,
+            "hero_bullets_hit_crit": 89,
+            "heal_prevented": 0,
+            "heal_lost": 0,
+            "gold_sources": [
+              {
+                "source": 1,
+                "kills": null,
+                "damage": 1914,
+                "gold": 21,
+                "gold_orbs": 0
+              },
+              {
+                "source": 2,
+                "kills": 16,
+                "damage": 4917,
+                "gold": 1189,
+                "gold_orbs": 1074
+              },
+              {
+                "source": 3,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": 0
+              },
+              {
+                "source": 4,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": 0
+              },
+              {
+                "source": 5,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 7,
+                "kills": null,
+                "damage": null,
+                "gold": 158,
+                "gold_orbs": null
+              },
+              {
+                "source": 8,
+                "kills": null,
+                "damage": null,
+                "gold": 14,
+                "gold_orbs": null
+              },
+              {
+                "source": 12,
+                "kills": null,
+                "damage": null,
+                "gold": 418,
+                "gold_orbs": null
+              },
+              {
+                "source": 9,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 10,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 11,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 13,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 6,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              }
+            ],
+            "custom_user_stats": [
+              {
+                "value": 809,
+                "id": 1
+              },
+              {
+                "value": 290,
+                "id": 2
+              },
+              {
+                "value": 47,
+                "id": 3
+              },
+              {
+                "value": 0,
+                "id": 4
+              },
+              {
+                "value": 0,
+                "id": 5
+              },
+              {
+                "value": 0,
+                "id": 6
+              },
+              {
+                "value": 617,
+                "id": 7
+              },
+              {
+                "value": 133,
+                "id": 8
+              },
+              {
+                "value": 27,
+                "id": 9
+              },
+              {
+                "value": 36,
+                "id": 10
+              },
+              {
+                "value": 16,
+                "id": 11
+              },
+              {
+                "value": 0,
+                "id": 12
+              },
+              {
+                "value": 0,
+                "id": 13
+              },
+              {
+                "value": 0,
+                "id": 14
+              },
+              {
+                "value": 22,
+                "id": 15
+              },
+              {
+                "value": 20,
+                "id": 16
+              },
+              {
+                "value": 3832,
+                "id": 17
+              },
+              {
+                "value": 2,
+                "id": 18
+              },
+              {
+                "value": 157,
+                "id": 19
+              },
+              {
+                "value": 4,
+                "id": 20
+              },
+              {
+                "value": 32,
+                "id": 24
+              },
+              {
+                "value": 343,
+                "id": 25
+              },
+              {
+                "value": 119,
+                "id": 28
+              },
+              {
+                "value": 512,
+                "id": 36
+              },
+              {
+                "value": 133,
+                "id": 23
+              },
+              {
+                "value": 833,
+                "id": 30
+              },
+              {
+                "value": 784,
+                "id": 29
+              },
+              {
+                "value": 57,
+                "id": 55
+              },
+              {
+                "value": 266,
+                "id": 34
+              },
+              {
+                "value": 9,
+                "id": 38
+              },
+              {
+                "value": 236,
+                "id": 35
+              },
+              {
+                "value": 151,
+                "id": 45
+              },
+              {
+                "value": 251,
+                "id": 42
+              },
+              {
+                "value": 162,
+                "id": 26
+              },
+              {
+                "value": 808,
+                "id": 52
+              },
+              {
+                "value": 2,
+                "id": 22
+              },
+              {
+                "value": 108,
+                "id": 31
+              },
+              {
+                "value": 50,
+                "id": 53
+              },
+              {
+                "value": 9,
+                "id": 41
+              },
+              {
+                "value": 1,
+                "id": 48
+              },
+              {
+                "value": 5,
+                "id": 21
+              },
+              {
+                "value": 166,
+                "id": 27
+              },
+              {
+                "value": 21,
+                "id": 47
+              },
+              {
+                "value": 0,
+                "id": 50
+              },
+              {
+                "value": 0,
+                "id": 32
+              },
+              {
+                "value": 0,
+                "id": 37
+              },
+              {
+                "value": 0,
+                "id": 40
+              },
+              {
+                "value": 0,
+                "id": 46
+              },
+              {
+                "value": 0,
+                "id": 33
+              },
+              {
+                "value": 0,
+                "id": 54
+              },
+              {
+                "value": 0,
+                "id": 56
+              },
+              {
+                "value": 0,
+                "id": 57
+              },
+              {
+                "value": 0,
+                "id": 39
+              },
+              {
+                "value": 0,
+                "id": 44
+              },
+              {
+                "value": 0,
+                "id": 58
+              },
+              {
+                "value": 0,
+                "id": 43
+              }
+            ],
+            "damage_mitigated": 171,
+            "level": 7,
+            "player_barriering": 0,
+            "teammate_healing": 0,
+            "teammate_barriering": 0,
+            "self_damage": 0,
+            "bullet_kills": 0,
+            "melee_kills": 0,
+            "ability_kills": 0,
+            "headshot_kills": 0
+          },
+          {
+            "time_stamp_s": 540,
+            "net_worth": 6232,
+            "gold_player": 1057,
+            "gold_player_orbs": 0,
+            "gold_lane_creep_orbs": 1197,
+            "gold_neutral_creep_orbs": 0,
+            "gold_boss": 176,
+            "gold_boss_orb": 0,
+            "gold_treasure": 0,
+            "gold_denied": 158,
+            "gold_death_loss": 0,
+            "gold_lane_creep": 2068,
+            "gold_neutral_creep": 264,
+            "kills": 2,
+            "deaths": 1,
+            "assists": 2,
+            "creep_kills": 23,
+            "neutral_kills": 6,
+            "possible_creeps": 41,
+            "creep_damage": 7497,
+            "player_damage": 3882,
+            "neutral_damage": 1214,
+            "boss_damage": 165,
+            "denies": 4,
+            "player_healing": 141,
+            "ability_points": 7,
+            "self_healing": 141,
+            "player_damage_taken": 3348,
+            "max_health": 1155,
+            "weapon_power": 18,
+            "tech_power": 22,
+            "shots_hit": 767,
+            "shots_missed": 695,
+            "damage_absorbed": 0,
+            "absorption_provided": 0,
+            "hero_bullets_hit": 773,
+            "hero_bullets_hit_crit": 134,
+            "heal_prevented": 0,
+            "heal_lost": 0,
+            "gold_sources": [
+              {
+                "source": 1,
+                "kills": 2,
+                "damage": 3882,
+                "gold": 834,
+                "gold_orbs": 0
+              },
+              {
+                "source": 2,
+                "kills": 23,
+                "damage": 7497,
+                "gold": 2068,
+                "gold_orbs": 1197
+              },
+              {
+                "source": 3,
+                "kills": 6,
+                "damage": 1214,
+                "gold": 264,
+                "gold_orbs": 0
+              },
+              {
+                "source": 4,
+                "kills": null,
+                "damage": 165,
+                "gold": 176,
+                "gold_orbs": 0
+              },
+              {
+                "source": 5,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 7,
+                "kills": null,
+                "damage": null,
+                "gold": 158,
+                "gold_orbs": null
+              },
+              {
+                "source": 8,
+                "kills": null,
+                "damage": null,
+                "gold": 109,
+                "gold_orbs": null
+              },
+              {
+                "source": 12,
+                "kills": null,
+                "damage": null,
+                "gold": 583,
+                "gold_orbs": null
+              },
+              {
+                "source": 9,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 10,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 11,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 13,
+                "kills": null,
+                "damage": null,
+                "gold": 0,
+                "gold_orbs": null
+              },
+              {
+                "source": 6,
+                "kills": 2,
+                "damage": null,
+                "gold": 223,
+                "gold_orbs": null
+              }
+            ],
+            "custom_user_stats": [
+              {
+                "value": 1047,
+                "id": 1
+              },
+              {
+                "value": 371,
+                "id": 2
+              },
+              {
+                "value": 70,
+                "id": 3
+              },
+              {
+                "value": 0,
+                "id": 4
+              },
+              {
+                "value": 0,
+                "id": 5
+              },
+              {
+                "value": 0,
+                "id": 6
+              },
+              {
+                "value": 714,
+                "id": 7
+              },
+              {
+                "value": 140,
+                "id": 8
+              },
+              {
+                "value": 27,
+                "id": 9
+              },
+              {
+                "value": 35,
+                "id": 10
+              },
+              {
+                "value": 19,
+                "id": 11
+              },
+              {
+                "value": 0,
+                "id": 12
+              },
+              {
+                "value": 0,
+                "id": 13
+              },
+              {
+                "value": 0,
+                "id": 14
+              },
+              {
+                "value": 20,
+                "id": 15
+              },
+              {
+                "value": 19,
+                "id": 16
+              },
+              {
+                "value": 6197,
+                "id": 17
+              },
+              {
+                "value": 7,
+                "id": 18
+              },
+              {
+                "value": 173,
+                "id": 19
+              },
+              {
+                "value": 4,
+                "id": 20
+              },
+              {
+                "value": 66,
+                "id": 24
+              },
+              {
+                "value": 409,
+                "id": 25
+              },
+              {
+                "value": 125,
+                "id": 28
+              },
+              {
+                "value": 512,
+                "id": 36
+              },
+              {
+                "value": 198,
+                "id": 23
+              },
+              {
+                "value": 1168,
+                "id": 30
+              },
+              {
+                "value": 828,
+                "id": 29
+              },
+              {
+                "value": 57,
+                "id": 55
+              },
+              {
+                "value": 1002,
+                "id": 34
+              },
+              {
+                "value": 10,
+                "id": 38
+              },
+              {
+                "value": 299,
+                "id": 35
+              },
+              {
+                "value": 283,
+                "id": 45
+              },
+              {
+                "value": 328,
+                "id": 42
+              },
+              {
+                "value": 333,
+                "id": 26
+              },
+              {
+                "value": 901,
+                "id": 52
+              },
+              {
+                "value": 2,
+                "id": 22
+              },
+              {
+                "value": 108,
+                "id": 31
+              },
+              {
+                "value": 50,
+                "id": 53
+              },
+              {
+                "value": 13,
+                "id": 41
+              },
+              {
+                "value": 1,
+                "id": 48
+              },
+              {
+                "value": 5,
+                "id": 21
+              },
+              {
+                "value": 335,
+                "id": 27
+              },
+              {
+                "value": 250,
+                "id": 47
+              },
+              {
+                "value": 110,
+                "id": 50
+              },
+              {
+                "value": 57,
+                "id": 32
+              },
+              {
+                "value": 20,
+                "id": 37
+              },
+              {
+                "value": 290,
+                "id": 40
+              },
+              {
+                "value": 0,
+                "id": 46
+              },
+              {
+                "value": 0,
+                "id": 33
+              },
+              {
+                "value": 0,
+                "id": 54
+              },
+              {
+                "value": 0,
+                "id": 56
+              },
+              {
+                "value": 0,
+                "id": 57
+              },
+              {
+                "value": 0,
+                "id": 39
+              },
+              {
+                "value": 0,
+                "id": 44
+              },
+              {
+                "value": 0,
+                "id": 58
+              },
+              {
+                "value": 0,
+                "id": 43
+              }
+            ],
+            "damage_mitigated": 479,
+            "level": 11,
+            "player_barriering": 0,
+            "teammate_healing": 0,
+            "teammate_barriering": 0,
+            "self_damage": 0,
+            "bullet_kills": 1,
+            "melee_kills": 0,
+            "ability_kills": 1,
+            "headshot_kills": 0
+          }
+        ],
+        "team": 1,
+        "kills": 5,
+        "deaths": 6,
+        "assists": 7,
+        "net_worth": 24907,
+        "hero_id": 13,
+        "last_hits": 128,
+        "denies": 5,
+        "ability_points": 23,
+        "assigned_lane": 6,
+        "level": 27,
+        "pings": [
+          {
+            "ping_type": 1,
+            "ping_data": 10,
+            "game_time_s": 466
+          },
+          {
+            "ping_type": 1,
+            "ping_data": 4,
+            "game_time_s": 599
+          },
+          {
+            "ping_type": 1,
+            "ping_data": 9,
+            "game_time_s": 637
+          }
+        ],
+        "ability_stats": [],
+        "stats_type_stat": [
+          187.85397,
+          0.0,
+          2893.48
+        ],
+        "book_rewards": [],
+        "abandon_match_time_s": 0,
+        "hero_data": {
+          "hero_xp": 0,
+          "hero_equips": null
+        },
+        "rewards_eligible": true,
+        "player_tracked_stats": [],
+        "accolades": [
+          {
+            "accolade_id": 12,
+            "accolade_stat_value": 15,
+            "accolade_threshold_achieved": 0
+          },
+          {
+            "accolade_id": 11,
+            "accolade_stat_value": 104,
+            "accolade_threshold_achieved": 0
+          }
+        ],
+        "mvp_rank": null,
+        "earned_holiday_award_2025": null,
+        "power_up_buffs": [
+          {
+            "type": "spirit_permanent_pickup_lv2",
+            "value": 2,
+            "is_permanent": true,
+            "pickup_times_s": [
+              1008,
+              1417
+            ],
+            "pickup_stat_values": [
+              3.0,
+              3.0
+            ]
+          },
+          {
+            "type": "hp_permanent_pickup_lv2",
+            "value": 5,
+            "is_permanent": true,
+            "pickup_times_s": [
+              826,
+              850,
+              1152,
+              1172,
+              1419
+            ],
+            "pickup_stat_values": [
+              20.0,
+              20.0,
+              20.0,
+              20.0,
+              20.0
+            ]
+          }
+        ],
+        "hero_xp_rewards": [
+          {
+            "xp_grant": {
+              "hero_id": 13,
+              "xp_grant": 50,
+              "reason": 1
+            }
+          }
+        ],
+        "player_rank_data": null,
+        "player_match_outcome": 2
+      }
+    ],
+    "start_time": 1792705407,
+    "match_id": 122539002,
+    "legacy_objectives_mask": null,
+    "game_mode": 1,
+    "match_mode": 1,
+    "objectives": [
+      {
+        "legacy_objective_id": null,
+        "destroyed_time_s": 381,
+        "creep_damage": 3091,
+        "creep_damage_mitigated": null,
+        "player_damage": 2420,
+        "player_damage_mitigated": null,
+        "first_damage_time_s": 52,
+        "team_objective_id": 3,
+        "team": 0,
+        "player_spirit_damage": 308
+      },
+      {
+        "legacy_objective_id": null,
+        "destroyed_time_s": 459,
+        "creep_damage": 2984,
+        "creep_damage_mitigated": null,
+        "player_damage": 2601,
+        "player_damage_mitigated": null,
+        "first_damage_time_s": 54,
+        "team_objective_id": 1,
+        "team": 1,
+        "player_spirit_damage": 483
+      },
+      {
+        "legacy_objective_id": null,
+        "destroyed_time_s": 367,
+        "creep_damage": 2238,
+        "creep_damage_mitigated": null,
+        "player_damage": 3265,
+        "player_damage_mitigated": null,
+        "first_damage_time_s": 63,
+        "team_objective_id": 4,
+        "team": 1,
+        "player_spirit_damage": 196
+      }
+    ],
+    "match_paths": {
+      "version": 1,
+      "interval_s": 1.0,
+      "x_resolution": 16383,
+      "y_resolution": 16383,
+      "paths": [
+        {
+          "player_slot": 5,
+          "x_min": -9525.5625,
+          "y_min": -10162.469,
+          "x_max": 5732.5312,
+          "y_max": 8598.625,
+          "x_pos": [
+            8575,
+            8576,
+            8576,
+            8576,
+            8576,
+            8576,
+            8576,
+            8576,
+            8492,
+            8336
+          ],
+          "y_pos": [
+            3,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            255,
+            996
+          ],
+          "health": [
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100
+          ],
+          "combat_type": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "move_type": [
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6
+          ]
+        },
+        {
+          "player_slot": 8,
+          "x_min": -8750.625,
+          "y_min": -2901.3125,
+          "x_max": 9094.75,
+          "y_max": 10276.031,
+          "x_pos": [
+            9424,
+            9423,
+            9423,
+            9423,
+            9423,
+            9423,
+            9423,
+            9423,
+            9465,
+            9568
+          ],
+          "y_pos": [
+            16382,
+            16383,
+            16383,
+            16383,
+            16383,
+            16383,
+            16383,
+            16383,
+            15992,
+            14915
+          ],
+          "health": [
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100
+          ],
+          "combat_type": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "move_type": [
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6
+          ]
+        }
+      ]
+    },
+    "damage_matrix": {
+      "damage_dealers": [
+        {
+          "dealer_player_slot": 5,
+          "damage_sources": [
+            {
+              "damage_to_players": [
+                {
+                  "target_player_slot": 9,
+                  "damage": [
+                    109,
+                    270,
+                    308,
+                    326,
+                    421,
+                    631,
+                    706,
+                    706,
+                    1018
+                  ]
+                },
+                {
+                  "target_player_slot": 11,
+                  "damage": [
+                    83,
+                    210,
+                    254,
+                    363,
+                    509,
+                    533,
+                    533,
+                    763,
+                    1060
+                  ]
+                },
+                {
+                  "target_player_slot": 0,
+                  "damage": [
+                    14,
+                    50,
+                    71,
+                    159,
+                    444,
+                    444,
+                    526,
+                    778,
+                    2237
+                  ]
+                },
+                {
+                  "target_player_slot": 7,
+                  "damage": [
+                    61,
+                    61,
+                    61,
+                    66,
+                    166,
+                    166,
+                    166
+                  ]
+                },
+                {
+                  "target_player_slot": 8,
+                  "damage": [
+                    20,
+                    45,
+                    74,
+                    77,
+                    77,
+                    77,
+                    77
+                  ]
+                },
+                {
+                  "target_player_slot": 10,
+                  "damage": [
+                    84,
+                    84,
+                    84,
+                    84,
+                    438,
+                    438
+                  ]
+                },
+                {
+                  "target_player_slot": 12,
+                  "damage": [
+                    57,
+                    57,
+                    57,
+                    57
+                  ]
+                }
+              ],
+              "source_details_index": 0
+            },
+            {
+              "damage_to_players": [
+                {
+                  "target_player_slot": 9,
+                  "damage": [
+                    164,
+                    466,
+                    504,
+                    522,
+                    747,
+                    957,
+                    1032,
+                    1032,
+                    1674
+                  ]
+                },
+                {
+                  "target_player_slot": 11,
+                  "damage": [
+                    190,
+                    407,
+                    525,
+                    745,
+                    1138,
+                    1306,
+                    1306,
+                    1879,
+                    2368
+                  ]
+                },
+                {
+                  "target_player_slot": 0,
+                  "damage": [
+                    249,
+                    1023,
+                    1842,
+                    3067,
+                    3600,
+                    3935,
+                    4257,
+                    4975,
+                    6985
+                  ]
+                },
+                {
+                  "target_player_slot": 7,
+                  "damage": [
+                    61,
+                    61,
+                    61,
+                    66,
+                    244,
+                    244,
+                    244
+                  ]
+                },
+                {
+                  "target_player_slot": 8,
+                  "damage": [
+                    20,
+                    117,
+                    228,
+                    247,
+                    247,
+                    247,
+                    247
+                  ]
+                },
+                {
+                  "target_player_slot": 10,
+                  "damage": [
+                    156,
+                    156,
+                    156,
+                    156,
+                    586,
+                    586
+                  ]
+                },
+                {
+                  "target_player_slot": 12,
+                  "damage": [
+                    91,
+                    91,
+                    91,
+                    91
+                  ]
+                }
+              ],
+              "source_details_index": 1
+            }
+          ]
+        }
+      ],
+      "sample_time_s": [
+        180,
+        360,
+        540,
+        720,
+        900
+      ],
+      "source_details": {
+        "stat_type": [
+          0,
+          0,
+          3,
+          3,
+          0,
+          0,
+          0,
+          3,
+          5,
+          3,
+          5,
+          3,
+          5,
+          0,
+          0,
+          3,
+          3,
+          3,
+          3,
+          6,
+          4,
+          4,
+          4,
+          4,
+          1,
+          5,
+          3,
+          1,
+          3,
+          3,
+          3,
+          3,
+          0,
+          6,
+          6,
+          5,
+          3,
+          3,
+          4,
+          7,
+          0,
+          3,
+          3,
+          3,
+          3,
+          3,
+          5,
+          4,
+          0,
+          4,
+          4,
+          3,
+          5,
+          7,
+          3,
+          3,
+          3,
+          3,
+          7,
+          7,
+          3,
+          3,
+          7,
+          5,
+          3,
+          3,
+          3,
+          5,
+          7,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          5,
+          0,
+          0,
+          0,
+          3,
+          5,
+          3,
+          3,
+          3,
+          1,
+          5,
+          3,
+          0,
+          3,
+          3,
+          5,
+          3,
+          3,
+          3,
+          3,
+          3,
+          0,
+          6,
+          4,
+          4,
+          4,
+          4,
+          3,
+          3,
+          0,
+          3,
+          1,
+          4,
+          5,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          0,
+          0,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          5,
+          3,
+          3,
+          3,
+          3,
+          3,
+          1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          1,
+          3,
+          0,
+          3,
+          0,
+          0,
+          0,
+          7,
+          0,
+          0,
+          4,
+          4,
+          4,
+          4,
+          4,
+          3,
+          5,
+          4,
+          0,
+          4,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          1,
+          0,
+          4,
+          5,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          4,
+          4,
+          4,
+          4,
+          4,
+          5,
+          1,
+          0,
+          4,
+          1,
+          0,
+          4,
+          4,
+          0,
+          1,
+          3,
+          4,
+          1,
+          1,
+          3,
+          3,
+          1,
+          5,
+          5,
+          1,
+          0,
+          4,
+          0,
+          0,
+          0,
+          0,
+          4,
+          4,
+          4,
+          4,
+          0,
+          0,
+          4,
+          0,
+          6,
+          4,
+          4,
+          1,
+          5,
+          3,
+          0,
+          3,
+          3,
+          4,
+          6,
+          3,
+          0,
+          0,
+          0,
+          0,
+          4,
+          4,
+          4,
+          0,
+          4,
+          4,
+          0,
+          0,
+          0,
+          4,
+          4,
+          4,
+          3,
+          1,
+          0,
+          3,
+          3,
+          4,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          0,
+          3,
+          4,
+          1,
+          3,
+          0,
+          4,
+          1,
+          2,
+          0,
+          0,
+          0,
+          4,
+          0,
+          4,
+          0,
+          4,
+          4,
+          1,
+          0,
+          0,
+          6,
+          0,
+          4,
+          4,
+          4,
+          0,
+          0,
+          0,
+          0,
+          4,
+          4,
+          4,
+          5,
+          1,
+          4,
+          0,
+          1,
+          4,
+          0,
+          4,
+          0,
+          3,
+          4,
+          0,
+          4,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          0,
+          4,
+          2,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          4,
+          4,
+          4,
+          4,
+          4,
+          0,
+          4,
+          4,
+          5,
+          3,
+          3,
+          0,
+          0,
+          5,
+          1,
+          0,
+          0,
+          0,
+          4,
+          4,
+          4,
+          4,
+          0,
+          4,
+          0,
+          4,
+          4,
+          0,
+          4,
+          5,
+          3,
+          0,
+          0,
+          4,
+          4,
+          0,
+          0,
+          0,
+          4
+        ],
+        "source_name": [
+          "citadel_weapon_nurse_set",
+          "Bullet",
+          "Bullet",
+          "ability_deadpack_primary_weapon_charge",
+          "ability_nurse_leech_therapy",
+          "Ability",
+          "citadel_weapon_nurse_set_crit",
+          "citadel_weapon_yamato_set",
+          "medic_trooper_aoe_health_pickup_sapphire/regen",
+          "citadel_weapon_yamato_alt",
+          "upgrade_endurance",
+          "UnknownAbility",
+          "ability_nurse_leech_therapy",
+          "ability_melee_nurse",
+          "Melee",
+          "Melee",
+          "ability_melee_deadpack",
+          "ability_deadpack_flamethrower",
+          "citadel_ability_flying_strike",
+          "Citadel_Graph_CrowdControl_Stun",
+          "ability_nurse_leech_therapy",
+          "citadel_weapon_nurse_set",
+          "citadel_weapon_nurse_set_crit",
+          "ability_melee_nurse",
+          "ability_nurse_healing_needles",
+          "upgrade_trophy_collector",
+          "Ability",
+          "ability_nurse_leech_therapy",
+          "citadel_ability_power_slash",
+          "ability_deadpack_rocketeer",
+          "Misc",
+          "ability_nurse_adrenaline_rush",
+          "ability_nurse_fear",
+          "Citadel_Graph_CrowdControl_Slow",
+          "Citadel_Graph_CrowdControl_Fear",
+          "upgrade_healing_booster",
+          "citadel_weapon_yamato_set_crit",
+          "citadel_ability_healing_slash",
+          "ability_nurse_fear",
+          "Citadel_Graph_Mitigation_SpiritResist",
+          "upgrade_headshot_booster",
+          "ability_bullet_flurry",
+          "ability_stacking_damage",
+          "citadel_weapon_haze_set",
+          "citadel_weapon_haze_set_crit",
+          "upgrade_acolytes_glove",
+          "modifier_citadel_in_fountain",
+          "citadel_weapon_nurse_healing_needles",
+          "UnknownAbility",
+          "ability_unknown",
+          "upgrade_headshot_booster",
+          "ability_deadpack_chargeblast",
+          "modifier_invis_bush",
+          "Citadel_Graph_Mitigation_MeleeResist",
+          "ability_melee_yamato",
+          "citadel_ability_uppercut",
+          "upgrade_magic_burst",
+          "citadel_ability_sticky_bomb",
+          "Citadel_Graph_Mitigation_Immunity",
+          "Citadel_Graph_Mitigation_DamageReduction",
+          "citadel_ability_tengu_airlift",
+          "citadel_ability_tengu_urn",
+          "Citadel_Graph_Mitigation_BulletResist",
+          "citadel_pickup_health_float_in_world/regen",
+          "citadel_ability_zip_line",
+          "upgrade_crackshot",
+          "upgrade_express_shot",
+          "upgrade_guardian_ward",
+          "Citadel_Graph_Mitigation_Barrier",
+          "citadel_weapon_bull_set",
+          "citadel_ability_bull_charge",
+          "upgrade_melee_charge",
+          "citadel_ability_melee_bull",
+          "citadel_ability_bebop_laser_beam",
+          "citadel_ability_bull_heal",
+          "upgrade_capacitor",
+          "citadel_ability_tengu_stone_form",
+          "upgrade_spirit_snatch",
+          "citadel_ability_bull_leap",
+          "citadel_weapon_bull_set_crit",
+          "upgrade_vex_barrier",
+          "citadel_weapon_haze_set",
+          "citadel_weapon_haze_set_crit",
+          "ability_stacking_damage",
+          "citadel_weapon_ratking_set",
+          "base_stat_regen",
+          "citadel_weapon_chessmaster_shotgun",
+          "citadel_weapon_ratking_set_crit",
+          "citadel_weapon_chessmaster_shotgun_crit",
+          "citadel_ability_tangotether",
+          "medic_trooper_aoe_health_pickup_amber/regen",
+          "ability_chessmaster_throwbishop",
+          "ability_melee_haze",
+          "ability_chessmaster_throwbishop_dot",
+          "ability_ratking_scrap_grenade",
+          "upgrade_non_player_bonus",
+          "ability_chessmaster_forkpiece",
+          "ability_ratking_ratarmor",
+          "ability_ratking_ratnibble",
+          "ability_drifter_hunger",
+          "citadel_weapon_drifter_set",
+          "ability_sleep_dagger",
+          "Citadel_Graph_CrowdControl_Sleep",
+          "citadel_weapon_haze_set",
+          "ability_sleep_dagger",
+          "ability_stacking_damage",
+          "citadel_weapon_haze_set_crit",
+          "citadel_weapon_nurse_set",
+          "ability_melee_nurse",
+          "ability_bullet_flurry",
+          "ability_nurse_leech_therapy",
+          "upgrade_active_reload",
+          "ability_bullet_flurry",
+          "upgrade_sprint_booster",
+          "citadel_weapon_artist_set",
+          "ability_artist_homingbrush",
+          "ability_artist_rollingprojectile",
+          "upgrade_tech_damage_pulse",
+          "ability_frank_painaura",
+          "ability_nurse_fear",
+          "ability_nurse_adrenaline_rush",
+          "Misc",
+          "upgrade_headshot_booster",
+          "citadel_weapon_nurse_set_crit",
+          "citadel_weapon_frank_set2",
+          "drifter_blood_blast",
+          "upgrade_weapon_backstabber",
+          "drifter_shadow_mark",
+          "upgrade_cardio_calibrator",
+          "citadel_weapon_drifter_set_crit",
+          "upgrade_cold_front",
+          "ability_melee_drifter",
+          "ability_frank_shocktarget2",
+          "ability_frank_revive",
+          "upgrade_chonky",
+          "ability_melee_ratking",
+          "ability_chessmaster_queen",
+          "ability_melee_frank",
+          "citadel_weapon_frank_set2_crit",
+          "ability_artist_bamboogrove",
+          "citadel_weapon_artist_set_crit",
+          "upgrade_fury_trance",
+          "citadel_weapon_tengu_set",
+          "citadel_weapon_ratking_set",
+          "citadel_weapon_tengu_set_crit",
+          "citadel_weapon_ratking_set_crit",
+          "ability_ratking_scrap_grenade",
+          "ability_melee_ratking",
+          "ability_ratking_ratarmor",
+          "ability_ratking_ratarmor",
+          "ability_ratking_ratnibble",
+          "citadel_weapon_ratking_set",
+          "ability_ratking_scrap_grenade",
+          "ability_ratking_ratnibble",
+          "citadel_weapon_ratking_set_crit",
+          "ability_ratking_ratarmor",
+          "upgrade_melee_rebuttal",
+          "upgrade_regenerating_bullet_shield",
+          "ability_melee_ratking",
+          "ability_ratking_standard_bearer",
+          "ability_ratking_standard_bearer",
+          "ability_sleep_dagger",
+          "citadel_ability_hook",
+          "citadel_ability_melee_bebop",
+          "citadel_weapon_bebop_set",
+          "citadel_weapon_bebop_set_crit",
+          "upgrade_crushing_fists",
+          "upgrade_siphon_bullets",
+          "upgrade_siphon_bullets",
+          "upgrade_siphon_bullets",
+          "upgrade_juggernaut",
+          "citadel_weapon_frank_set2_crit",
+          "citadel_weapon_frank_set2",
+          "ability_melee_frank",
+          "ability_frank_shocktarget2",
+          "ability_frank_selfzap",
+          "ability_frank_painaura",
+          "ability_frank_painaura",
+          "ability_melee_frank",
+          "citadel_weapon_frank_set2",
+          "ability_frank_shocktarget2",
+          "citadel_weapon_frank_set2_crit",
+          "survival_powerup_pickup/survival_powerup_pickup",
+          "ability_frank_revive",
+          "ability_frank_revive",
+          "ability_frank_selfzap",
+          "upgrade_melee_rebuttal",
+          "upgrade_melee_rebuttal",
+          "upgrade_melee_rebuttal",
+          "ability_frank_revive",
+          "upgrade_tech_damage_pulse",
+          "upgrade_mystic_regeneration",
+          "upgrade_chain_lightning",
+          "upgrade_tech_damage_pulse",
+          "upgrade_resonant_healing",
+          "ability_frank_shocktarget2",
+          "citadel_ability_tier2boss_rocket_barrage",
+          "citadel_ability_tier2boss_laser_beam",
+          "upgrade_health_stealing_magic",
+          "upgrade_soaring_spirit",
+          "upgrade_cooldown_reduction",
+          "ability_artist_bamboogrove",
+          "citadel_ability_zip_line",
+          "citadel_ability_zip_line",
+          "citadel_weapon_artist_set",
+          "citadel_weapon_artist_set_crit",
+          "ability_artist_homingbrush",
+          "ability_artist_tether",
+          "citadel_weapon_artist_set",
+          "ability_artist_homingbrush",
+          "ability_artist_tether",
+          "citadel_weapon_artist_set_crit",
+          "ability_melee_artist",
+          "ability_artist_rollingprojectile",
+          "ability_artist_rollingprojectile",
+          "ability_artist_bamboogrove",
+          "Citadel_Graph_CrowdControl_Silence",
+          "ability_melee_artist",
+          "ability_artist_bamboogrove",
+          "ability_artist_tether",
+          "upgrade_magic_shield",
+          "citadel_ability_melee_tengu",
+          "upgrade_thermal_detonator",
+          "ability_deadpack_ultimate",
+          "upgrade_magic_shock",
+          "upgrade_thermal_detonator",
+          "Citadel_Graph_CrowdControl_Disarm",
+          "citadel_ability_tier3boss_aoe_wave",
+          "citadel_ability_melee_bebop",
+          "citadel_ability_sticky_bomb",
+          "citadel_weapon_bebop_set",
+          "citadel_weapon_bebop_set_crit",
+          "citadel_ability_melee_bebop",
+          "citadel_weapon_bebop_set",
+          "citadel_ability_sticky_bomb",
+          "citadel_ability_hook",
+          "citadel_weapon_bebop_set_crit",
+          "citadel_ability_hook",
+          "upgrade_magic_burst",
+          "citadel_ability_uppercut",
+          "citadel_ability_bebop_laser_beam",
+          "citadel_ability_uppercut",
+          "upgrade_magic_burst",
+          "citadel_ability_bebop_laser_beam",
+          "ability_artist_tether",
+          "citadel_ability_bebop_laser_beam",
+          "upgrade_magic_shock",
+          "upgrade_siphon_bullets",
+          "upgrade_thermal_detonator",
+          "upgrade_magic_shock",
+          "citadel_weapon_yamato_set",
+          "citadel_weapon_yamato_set_crit",
+          "citadel_weapon_yamato_alt",
+          "citadel_ability_power_slash",
+          "ability_melee_yamato",
+          "upgrade_medic_bullets",
+          "citadel_ability_flying_strike",
+          "citadel_ability_healing_slash",
+          "citadel_ability_healing_slash",
+          "upgrade_lifestrike_gauntlets",
+          "citadel_weapon_yamato_set_crit",
+          "ability_melee_yamato",
+          "citadel_weapon_yamato_alt",
+          "citadel_ability_power_slash",
+          "citadel_weapon_yamato_set",
+          "citadel_ability_healing_slash",
+          "citadel_ability_flying_strike",
+          "upgrade_acolytes_glove",
+          "ability_melee_artist",
+          "upgrade_acolytes_glove",
+          "citadel_ability_infinity_slash",
+          "ability_ratking_standard_bearer",
+          "upgrade_spirit_snatch",
+          "upgrade_spirit_snatch",
+          "upgrade_boxing_glove",
+          "upgrade_healbane",
+          "ability_deadpack_primary_weapon_charge",
+          "ability_melee_deadpack",
+          "ability_deadpack_flamethrower",
+          "ability_deadpack_rocketeer",
+          "ability_deadpack_rocketeer",
+          "ability_deadpack_primary_weapon_charge",
+          "ability_deadpack_chargeblast",
+          "ability_deadpack_chargeblast",
+          "ability_deadpack_flamethrower",
+          "ability_deadpack_rocketeer",
+          "upgrade_express_shot",
+          "upgrade_crackshot",
+          "Citadel_Graph_CrowdControl_Root",
+          "ability_deadpack_ultimate",
+          "upgrade_express_shot",
+          "upgrade_crackshot",
+          "ability_deadpack_ultimate",
+          "citadel_weapon_bull_set",
+          "citadel_weapon_bull_set_crit",
+          "citadel_ability_melee_bull",
+          "citadel_ability_bull_charge",
+          "citadel_weapon_bull_set_crit",
+          "citadel_ability_melee_bull",
+          "citadel_weapon_bull_set",
+          "citadel_ability_passive_beefy",
+          "citadel_ability_passive_beefy",
+          "citadel_ability_bull_charge",
+          "citadel_ability_bull_heal",
+          "citadel_ability_bull_heal",
+          "citadel_ability_bull_heal",
+          "upgrade_melee_charge",
+          "upgrade_melee_charge",
+          "citadel_ability_bull_leap",
+          "ability_melee_chessmaster",
+          "citadel_ability_bull_leap",
+          "upgrade_crushing_fists",
+          "upgrade_crushing_fists",
+          "drifter_blood_blast",
+          "citadel_weapon_drifter_set",
+          "citadel_weapon_drifter_set_crit",
+          "ability_melee_drifter",
+          "drifter_shadow_mark",
+          "ability_drifter_hunger",
+          "upgrade_weapon_backstabber",
+          "ability_melee_drifter",
+          "upgrade_weapon_backstabber",
+          "drifter_blood_blast",
+          "citadel_weapon_drifter_set",
+          "ability_drifter_hunger",
+          "citadel_weapon_drifter_set_crit",
+          "drifter_shadow_mark",
+          "upgrade_cold_front",
+          "upgrade_cold_front",
+          "drifter_shadow_mark",
+          "ability_drifter_hunger",
+          "citadel_weapon_chessmaster_shotgun_crit",
+          "citadel_weapon_chessmaster_shotgun",
+          "ability_chessmaster_throwbishop_dot",
+          "ability_chessmaster_throwbishop",
+          "ability_melee_chessmaster",
+          "ability_chessmaster_forkpiece",
+          "citadel_weapon_chessmaster_shotgun",
+          "citadel_weapon_chessmaster_shotgun_crit",
+          "ability_chessmaster_throwbishop_dot",
+          "ability_chessmaster_throwbishop",
+          "ability_chessmaster_forkpiece",
+          "ability_chessmaster_queen",
+          "ability_melee_chessmaster",
+          "ability_chessmaster_queen",
+          "upgrade_boundless_spirit",
+          "citadel_ability_tier2boss_stomp",
+          "citadel_ability_tier3boss_drop_bombs",
+          "citadel_weapon_tengu_set",
+          "citadel_weapon_tengu_set_crit",
+          "upgrade_goose_egg",
+          "citadel_ability_tengu_stone_form",
+          "citadel_ability_melee_tengu",
+          "citadel_ability_tengu_urn",
+          "citadel_ability_tengu_airlift",
+          "citadel_weapon_tengu_set",
+          "citadel_weapon_tengu_set_crit",
+          "citadel_ability_tengu_airlift",
+          "citadel_ability_tengu_urn",
+          "upgrade_chain_lightning",
+          "upgrade_chain_lightning",
+          "citadel_ability_tengu_stone_form",
+          "citadel_ability_tengu_stone_form",
+          "citadel_ability_melee_tengu",
+          "upgrade_capacitor",
+          "upgrade_capacitor",
+          "upgrade_tech_purge",
+          "ability_melee_haze",
+          "citadel_ability_tier2boss_laser_beam",
+          "citadel_ability_tier2boss_rocket_barrage",
+          "citadel_ability_tier2boss_rocket_barrage",
+          "citadel_ability_tier2boss_laser_beam",
+          "citadel_ability_tier2boss_stomp",
+          "citadel_ability_tier3boss_aoe_wave",
+          "citadel_ability_tier3boss_drop_bombs",
+          "citadel_ability_tier3boss_aoe_wave"
+        ]
+      }
+    },
+    "match_pauses": [],
+    "custom_user_stats": [
+      {
+        "name": "Enemy Hero Accuracy##Shots",
+        "id": 1
+      },
+      {
+        "name": "Enemy Hero Accuracy##Hits",
+        "id": 2
+      },
+      {
+        "name": "Enemy Hero Accuracy##Headshots",
+        "id": 3
+      }
+    ],
+    "watched_death_replays": [],
+    "objectives_mask_team0": 65125,
+    "objectives_mask_team1": 8260,
+    "mid_boss": [
+      {
+        "team_killed": 0,
+        "team_claimed": 0,
+        "destroyed_time_s": 1407
+      }
+    ],
+    "is_high_skill_range_parties": false,
+    "low_pri_pool": false,
+    "new_player_pool": false,
+    "average_badge_team0": 0,
+    "average_badge_team1": 0,
+    "game_mode_version": 2,
+    "rewards_eligible": true,
+    "not_scored": false,
+    "team_score": [],
+    "match_tracked_stats": [],
+    "teams": [
+      {
+        "team": 0,
+        "team_tracked_stats": []
+      },
+      {
+        "team": 1,
+        "team_tracked_stats": []
+      }
+    ],
+    "bot_difficulty": 0,
+    "street_brawl_rounds": [],
+    "ranked_type": 0,
+    "rank_interval": 0,
+    "corrupted_penalty_seed": 1645892123,
+    "extra_messages": []
+  },
+  "hero_build_ids": {
+    "293046606": 199456,
+    "56383927": 836523,
+    "867597710": 202319,
+    "323352756": 888049,
+    "865077432": 835407,
+    "931320759": 652169,
+    "441058371": 797198,
+    "123324885": 913107,
+    "480025603": 120,
+    "1552722380": 901651,
+    "1873471073": 868319,
+    "1003173192": 751433
+  },
+  "pregame_hero_ids": {
+    "56383927": 0,
+    "441058371": 0,
+    "865077432": 0,
+    "1873471073": 0,
+    "1552722380": 0,
+    "123324885": 0,
+    "867597710": 0,
+    "293046606": 0,
+    "931320759": 0,
+    "323352756": 0,
+    "480025603": 0,
+    "1003173192": 0
+  },
+  "banned_hero_ids": [
+    63,
+    76
+  ]
+}

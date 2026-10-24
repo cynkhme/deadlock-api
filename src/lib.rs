@@ -34,6 +34,7 @@ mod cache;
 mod endpoint;
 mod error;
 mod ids;
+pub mod types;
 
 pub use cache::Cache;
 #[cfg(feature = "fs-cache")]
@@ -41,3 +42,7 @@ pub use cache::FileCache;
 pub use config::{Config, ConfigBuilder};
 pub use error::{Error, Result};
 pub use ids::{AccountId, HeroId, MatchId};
+pub use types::match_metadata::{
+    DamageDealer, DamageMatrix, Death, Item, MatchInfo, MatchMetadata, MatchPaths, MidBoss,
+    Objective, Pause, Player, PlayerPath, PlayerStats, Pos, Team,
+};
