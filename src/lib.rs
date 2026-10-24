@@ -59,7 +59,7 @@
 //!
 //! # License
 //!
-//! MIT.
+//! MIT OR Apache-2.0, at your option.
 //!
 #![deny(missing_docs)]
 #![deny(rustdoc::broken_intra_doc_links)]
@@ -112,3 +112,7 @@ pub use types::players::{
     RankResponse,
 };
 pub use types::steam::{SteamFriend, SteamProfile};
+
+#[cfg(all(doctest, feature = "blocking"))]
+#[doc = include_str!("../README.md")]
+struct ReadmeDoctests;
