@@ -76,6 +76,7 @@
 //!
 //! MIT OR Apache-2.0, at your option.
 //!
+#![cfg_attr(docsrs, feature(doc_cfg))]
 #![deny(missing_docs)]
 #![deny(rustdoc::broken_intra_doc_links)]
 #![cfg_attr(
