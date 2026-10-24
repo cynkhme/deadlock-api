@@ -113,8 +113,8 @@ impl Client {
     /// Any route under the server root, decoded as `T`.
     ///
     /// The escape hatch for routes without a typed method: `path` starts
-    /// with `/v1/`, `query` pairs are form-encoded. Nothing is cached. The
-    /// API key is sent as `X-API-KEY` from the config; a query pair named
+    /// with `/`, `query` pairs are form-encoded. Nothing is cached. The API
+    /// key is sent as `X-API-KEY` from the config; a query pair named
     /// `api_key` is refused.
     ///
     /// # Errors
