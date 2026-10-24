@@ -1,0 +1,32 @@
+[package]
+name = "deadlock-api"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+description = "Client for the deadlock-api.com Deadlock match data API"
+publish = false
+
+[features]
+default = ["blocking", "rustls"]
+blocking = ["dep:ureq"]
+async = ["dep:reqwest", "dep:tokio"]
+rustls = ["ureq?/rustls", "reqwest?/rustls"]
+native-tls = ["ureq?/native-tls", "reqwest?/native-tls"]
+fs-cache = []
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+http = "1"
+bytes = "1"
+serde_urlencoded = "0.7"
+log = "0.4"
+httpdate = "1"
+ureq = { version = "3", default-features = false, optional = true }
+reqwest = { version = "0.13", default-features = false, optional = true }
+tokio = { version = "1", features = ["rt"], optional = true }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
