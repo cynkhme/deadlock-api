@@ -30,17 +30,17 @@ pub trait Cache: Send + Sync {
 #[derive(Debug)]
 pub struct FileCache {
     dir: std::path::PathBuf,
-    counter: std::sync::atomic::AtomicU64,
 }
+
+/// Process-wide, so two caches on one directory never pick the same temp name.
+#[cfg(feature = "fs-cache")]
+static TEMP_COUNTER: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
 
 #[cfg(feature = "fs-cache")]
 impl FileCache {
     /// A cache rooted at `dir`; the directory is created on the first write.
     pub fn new(dir: impl Into<std::path::PathBuf>) -> Self {
-        Self {
-            dir: dir.into(),
-            counter: std::sync::atomic::AtomicU64::new(0),
-        }
+        Self { dir: dir.into() }
     }
 
     /// The directory the cache writes into.
@@ -52,8 +52,9 @@ impl FileCache {
     ///
     /// # Errors
     ///
-    /// `InvalidInput` when the key is empty, absolute, or has an empty,
-    /// `.` or `..` segment: such a key could name a file outside `dir`.
+    /// `InvalidInput` when the key is empty, absolute, or has an empty, `.`
+    /// or `..` segment, or a segment containing `\\` or `:`: such a key could
+    /// name a file outside `dir` on some platform.
     pub fn path_for(&self, key: &str) -> std::io::Result<std::path::PathBuf> {
         let invalid = || {
             std::io::Error::new(
@@ -66,7 +67,11 @@ impl FileCache {
         }
         let mut path = self.dir.clone();
         for segment in key.split('/') {
-            if segment.is_empty() || segment == "." || segment == ".." {
+            if segment.is_empty()
+                || segment == "."
+                || segment == ".."
+                || segment.contains(['\\', ':'])
+            {
                 return Err(invalid());
             }
             path.push(segment);
@@ -89,9 +94,7 @@ impl Cache for FileCache {
         let path = self.path_for(key)?;
         let parent = path.parent().unwrap_or(&self.dir);
         std::fs::create_dir_all(parent)?;
-        let n = self
-            .counter
-            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        let n = TEMP_COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         let file_name = path
             .file_name()
             .map(|f| f.to_string_lossy())
@@ -169,13 +172,47 @@ mod tests {
     fn key_escaping_dir_is_rejected() {
         let dir = scratch("escape");
         let cache = FileCache::new(&dir);
-        for key in ["../x", "/etc/passwd", "a//b", "", "a/../b", ".", "a/./b"] {
+        for key in [
+            "../x",
+            "/etc/passwd",
+            "a//b",
+            "",
+            "a/../b",
+            ".",
+            "a/./b",
+            "a\\..\\b.json",
+            "c:x.json",
+        ] {
             let err = cache.path_for(key).unwrap_err();
             assert_eq!(err.kind(), ErrorKind::InvalidInput, "{key:?}");
             assert!(cache.put(key, b"x").is_err(), "{key:?}");
             assert!(cache.get(key).is_err(), "{key:?}");
         }
         assert!(!dir.exists());
+    }
+
+    #[test]
+    fn two_instances_on_one_dir_never_collide() {
+        let dir = scratch("instances");
+        let caches = [
+            std::sync::Arc::new(FileCache::new(&dir)),
+            std::sync::Arc::new(FileCache::new(&dir)),
+        ];
+        let handles: Vec<_> = caches
+            .into_iter()
+            .enumerate()
+            .map(|(i, cache)| {
+                std::thread::spawn(move || {
+                    let body = vec![b'a' + i as u8; 1 << 20];
+                    (0..200)
+                        .filter(|_| cache.put("k.json", &body).is_err())
+                        .count()
+                })
+            })
+            .collect();
+        let errors: usize = handles.into_iter().map(|h| h.join().unwrap()).sum();
+        let _ = std::fs::remove_dir_all(&dir);
+        assert_eq!(errors, 0);
     }
 
     #[test]

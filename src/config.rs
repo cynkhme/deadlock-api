@@ -3,7 +3,7 @@
 use std::sync::Arc;
 use std::time::Duration;
 
-use crate::Cache;
+use crate::{Cache, Error};
 
 const DEFAULT_BASE_URL: &str = "https://api.deadlock-api.com";
 const DEFAULT_CONNECT_TIMEOUT: Duration = Duration::from_secs(10);
@@ -63,8 +63,8 @@ impl Config {
     }
 
     /// The cache consulted for cacheable endpoints, if one was set.
-    pub fn cache(&self) -> Option<&Arc<dyn Cache>> {
-        self.cache.as_ref()
+    pub fn cache(&self) -> Option<&dyn Cache> {
+        self.cache.as_deref()
     }
 }
 
@@ -129,20 +129,51 @@ impl ConfigBuilder {
         self
     }
 
-    /// Resolves defaults and produces the [`Config`].
-    pub fn build(self) -> Config {
-        let base_url = self.base_url.unwrap_or_else(|| DEFAULT_BASE_URL.to_owned());
-        Config {
-            base_url: base_url.trim_end_matches('/').to_owned(),
+    /// Resolves defaults, validates the settings and produces the [`Config`].
+    ///
+    /// # Errors
+    ///
+    /// [`Error::Config`] when the base URL has no scheme or host, or when the
+    /// user agent or the API key is not a valid HTTP header value (for
+    /// example an API key read from a file with its trailing newline).
+    pub fn build(self) -> crate::Result<Config> {
+        let base_url = self
+            .base_url
+            .unwrap_or_else(|| DEFAULT_BASE_URL.to_owned())
+            .trim_end_matches('/')
+            .to_owned();
+        let uri: http::Uri = base_url.parse().map_err(|e| Error::Config {
+            message: format!("base_url {base_url:?}: {e}"),
+        })?;
+        if uri.scheme().is_none() || uri.authority().is_none() {
+            return Err(Error::Config {
+                message: format!("base_url {base_url:?} needs a scheme and a host"),
+            });
+        }
+        let user_agent = self
+            .user_agent
+            .unwrap_or_else(|| format!("deadlock-api-rs/{}", env!("CARGO_PKG_VERSION")));
+        header_value("user_agent", &user_agent)?;
+        if let Some(key) = &self.api_key {
+            header_value("api_key", key)?;
+        }
+        Ok(Config {
+            base_url,
             api_key: self.api_key,
-            user_agent: self
-                .user_agent
-                .unwrap_or_else(|| format!("deadlock-api-rs/{}", env!("CARGO_PKG_VERSION"))),
+            user_agent,
             connect_timeout: self.connect_timeout.unwrap_or(DEFAULT_CONNECT_TIMEOUT),
             timeout: self.timeout.unwrap_or(DEFAULT_TIMEOUT),
             cache: self.cache,
-        }
+        })
     }
+}
+
+fn header_value(setting: &str, value: &str) -> crate::Result<()> {
+    http::HeaderValue::from_str(value)
+        .map(drop)
+        .map_err(|e| Error::Config {
+            message: format!("{setting} is not a valid header value: {e}"),
+        })
 }
 
 /// Emits the six [`ConfigBuilder`] setters on a client builder whose
@@ -198,7 +229,7 @@ mod tests {
 
     #[test]
     fn defaults_are_the_documented_values() {
-        let c = ConfigBuilder::default().build();
+        let c = ConfigBuilder::default().build().unwrap();
         assert_eq!(c.base_url(), "https://api.deadlock-api.com");
         assert_eq!(c.connect_timeout(), Duration::from_secs(10));
         assert_eq!(c.timeout(), Duration::from_secs(60));
@@ -213,9 +244,15 @@ mod tests {
 
     #[test]
     fn trailing_slash_is_stripped() {
-        let c = ConfigBuilder::default().base_url("https://h/").build();
+        let c = ConfigBuilder::default()
+            .base_url("https://h/")
+            .build()
+            .unwrap();
         assert_eq!(c.base_url(), "https://h");
-        let c = ConfigBuilder::default().base_url("https://h///").build();
+        let c = ConfigBuilder::default()
+            .base_url("https://h///")
+            .build()
+            .unwrap();
         assert_eq!(c.base_url(), "https://h");
     }
 
@@ -236,11 +273,34 @@ mod tests {
             .connect_timeout(Duration::from_millis(5))
             .timeout(Duration::from_millis(7))
             .cache(NoCache)
-            .build();
+            .build()
+            .unwrap();
         assert_eq!(c.api_key(), Some("k"));
         assert_eq!(c.user_agent(), "ua/1");
         assert_eq!(c.connect_timeout(), Duration::from_millis(5));
         assert_eq!(c.timeout(), Duration::from_millis(7));
         assert!(c.cache().is_some());
+    }
+
+    #[test]
+    fn build_rejects_invalid_settings() {
+        let cases: [(&str, ConfigBuilder); 4] = [
+            ("user_agent", ConfigBuilder::default().user_agent("dlhl\n")),
+            (
+                "api_key",
+                ConfigBuilder::default().api_key(Some("key\n".into())),
+            ),
+            ("base_url", ConfigBuilder::default().base_url("not a url")),
+            (
+                "base_url",
+                ConfigBuilder::default().base_url("api.deadlock-api.com"),
+            ),
+        ];
+        for (setting, builder) in cases {
+            match builder.build() {
+                Err(Error::Config { message }) => assert!(message.contains(setting), "{message}"),
+                other => panic!("{setting}: {other:?}"),
+            }
+        }
     }
 }

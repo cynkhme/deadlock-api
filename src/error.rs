@@ -10,6 +10,11 @@ pub type Result<T, E = Error> = std::result::Result<T, E>;
 /// Non-2xx statuses map onto their own variants so a caller can match on the
 /// outcome instead of on a number; [`Error::retry_after`] and
 /// [`Error::status`] give the common questions one call each.
+///
+/// New variants may appear in a minor release (`#[non_exhaustive]`). The
+/// fields of the existing variants are part of the API: a consumer may
+/// construct one, for example in a test; adding a field to a variant is a
+/// minor-version change while the crate is at 0.x.
 #[derive(Debug, thiserror::Error)]
 #[non_exhaustive]
 pub enum Error {
@@ -68,6 +73,14 @@ pub enum Error {
         #[source]
         source: serde_json::Error,
     },
+    /// The configuration cannot be used: the base URL has no scheme or host,
+    /// or the user agent or API key is not a valid header value. Raised by
+    /// the builders, never by a request.
+    #[error("invalid configuration: {message}")]
+    Config {
+        /// What was wrong, naming the setting.
+        message: String,
+    },
 }
 
 impl Error {
@@ -94,7 +107,7 @@ impl Error {
             Error::Overloaded { .. } => Some(503),
             Error::NotFound { .. } => Some(404),
             Error::Status { status, .. } => Some(*status),
-            Error::Transport { .. } | Error::Decode { .. } => None,
+            Error::Transport { .. } | Error::Decode { .. } | Error::Config { .. } => None,
         }
     }
 

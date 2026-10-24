@@ -3,7 +3,7 @@
 //! Typed models for match metadata and the core match, player, Steam,
 //! leaderboard and info endpoints; a blocking client (feature `blocking`,
 //! ureq) and an async client (feature `async`, reqwest) over one sans-io
-//! core; and a `Cache` trait so a rerun never re-fetches an immutable
+//! core; and a [`Cache`] trait so a rerun never re-fetches an immutable
 //! match. For the complete generated surface of the API see the official
 //! [`deadlock-api/openapi-clients`](https://github.com/deadlock-api/openapi-clients).
 //!

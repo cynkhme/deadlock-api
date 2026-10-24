@@ -59,7 +59,7 @@ pub(crate) fn to_request<E: Endpoint>(e: &E, cfg: &Config) -> Request<()> {
     }
     builder
         .body(())
-        .expect("a GET with static headers always builds")
+        .expect("the URL and header values were validated by ConfigBuilder::build")
 }
 
 /// Maps a response onto the endpoint's output or an [`Error`].
@@ -67,10 +67,7 @@ pub(crate) fn execute<E: Endpoint>(url: &str, resp: Response<Bytes>) -> Result<E
     let (parts, body) = resp.into_parts();
     let status = parts.status.as_u16();
     if parts.status.is_success() {
-        return E::decode(&body).map_err(|source| Error::Decode {
-            location: url.to_owned(),
-            source,
-        });
+        return decode_at::<E>(url, &body);
     }
     let url = url.to_owned();
     Err(match status {
@@ -116,8 +113,10 @@ pub(crate) fn cache_lookup(cfg: &Config, key: &str) -> Option<Vec<u8>> {
 /// one-off bad body never becomes a permanent decode error. A write error is
 /// logged, not returned: the response is worth more than the cache entry.
 pub(crate) fn cache_store(cfg: &Config, key: &str, body: &[u8]) {
-    let Some(cache) = cfg.cache() else { return };
-    if serde_json::from_slice::<serde::de::IgnoredAny>(body).is_err() {
+    let Some(cache) = cfg.cache() else {
+        return;
+    };
+    if !is_json(body) {
         return;
     }
     if let Err(e) = cache.put(key, body) {
@@ -125,17 +124,28 @@ pub(crate) fn cache_store(cfg: &Config, key: &str, body: &[u8]) {
     }
 }
 
-/// Decodes a cached body; the error names the key, since no URL was requested.
-pub(crate) fn decode_cached<E: Endpoint>(key: &str, body: &[u8]) -> Result<E::Output> {
+/// Decodes a body; `location` is the URL for a response and the cache key for
+/// a cached body, and names the source in the error.
+pub(crate) fn decode_at<E: Endpoint>(location: &str, body: &[u8]) -> Result<E::Output> {
     E::decode(body).map_err(|source| Error::Decode {
-        location: key.to_owned(),
+        location: location.to_owned(),
         source,
     })
+}
+
+/// Whether a body is at least well-formed JSON, without building a tree.
+fn is_json(body: &[u8]) -> bool {
+    serde_json::from_slice::<serde::de::IgnoredAny>(body).is_ok()
 }
 
 /// The synchronous request flow: cache lookup, transport on a miss, cache
 /// store after a 2xx, then decode. Both clients follow this sequence; the
 /// async one re-states it around `await`.
+///
+/// A cached body that is not even JSON was never a server response (a
+/// hand-edited or foreign file), so it is treated as a miss and replaced by
+/// the fresh body; a cached body that is JSON but not the model stays, and
+/// decoding it fails with the key as the location.
 pub(crate) fn run<E, F>(e: &E, cfg: &Config, transport: F) -> Result<E::Output>
 where
     E: Endpoint,
@@ -144,7 +154,10 @@ where
     let key = e.cache_key();
     if let Some(key) = &key {
         if let Some(body) = cache_lookup(cfg, key) {
-            return decode_cached::<E>(key, &body);
+            if is_json(&body) {
+                return decode_at::<E>(key, &body);
+            }
+            log::warn!("cached body for {key} is not JSON, fetching instead");
         }
     }
     let req = to_request(e, cfg);
@@ -217,7 +230,8 @@ mod tests {
     fn request_url_headers_and_query() {
         let cfg = ConfigBuilder::default()
             .api_key(Some("secret".into()))
-            .build();
+            .build()
+            .unwrap();
         let req = to_request(&Ep, &cfg);
         assert_eq!(req.method(), http::Method::GET);
         assert_eq!(
@@ -233,13 +247,16 @@ mod tests {
                 .starts_with("deadlock-api-rs/")
         );
 
-        let req = to_request(&Ep, &ConfigBuilder::default().build());
+        let req = to_request(&Ep, &ConfigBuilder::default().build().unwrap());
         assert!(req.headers().get("x-api-key").is_none());
     }
 
     #[test]
     fn base_url_with_trailing_slash_joins_cleanly() {
-        let cfg = ConfigBuilder::default().base_url("https://h/").build();
+        let cfg = ConfigBuilder::default()
+            .base_url("https://h/")
+            .build()
+            .unwrap();
         assert_eq!(
             to_request(&Ep, &cfg).uri().to_string(),
             "https://h/v1/x?a=1&ids=1%2C2"
@@ -248,7 +265,7 @@ mod tests {
 
     #[test]
     fn ok_body_is_decoded() {
-        let cfg = ConfigBuilder::default().build();
+        let cfg = ConfigBuilder::default().build().unwrap();
         let v = run(&Ep, &cfg, |_| Ok(resp(200, &[], r#"{"k":1}"#))).unwrap();
         assert_eq!(v["k"], 1);
     }
@@ -257,7 +274,7 @@ mod tests {
     fn cache_hit_skips_transport() {
         let cache = MemCache::default();
         cache.put("x.json", br#"{"cached":true}"#).unwrap();
-        let cfg = ConfigBuilder::default().cache(cache).build();
+        let cfg = ConfigBuilder::default().cache(cache).build().unwrap();
         let v = run(&Ep, &cfg, |_| -> crate::Result<Response<Bytes>> {
             panic!("transport must not be called on a cache hit")
         })
@@ -267,7 +284,10 @@ mod tests {
 
     #[test]
     fn miss_stores_the_body_then_decodes() {
-        let cfg = ConfigBuilder::default().cache(MemCache::default()).build();
+        let cfg = ConfigBuilder::default()
+            .cache(MemCache::default())
+            .build()
+            .unwrap();
         run(&Ep, &cfg, |_| Ok(resp(200, &[], r#"{"k":2}"#))).unwrap();
         assert_eq!(
             cfg.cache().unwrap().get("x.json").unwrap().as_deref(),
@@ -277,7 +297,10 @@ mod tests {
 
     #[test]
     fn non_json_200_is_not_cached_and_is_decode_error() {
-        let cfg = ConfigBuilder::default().cache(MemCache::default()).build();
+        let cfg = ConfigBuilder::default()
+            .cache(MemCache::default())
+            .build()
+            .unwrap();
         let err = run(&Ep, &cfg, |_| Ok(resp(200, &[], "<html>"))).unwrap_err();
         assert!(
             matches!(err, Error::Decode { ref location, .. } if location.contains("/v1/x")),
@@ -286,12 +309,23 @@ mod tests {
         assert_eq!(cfg.cache().unwrap().get("x.json").unwrap(), None);
     }
 
+    struct EpU8;
+    impl Endpoint for EpU8 {
+        type Output = u8;
+        fn path(&self) -> String {
+            "/v1/x".into()
+        }
+        fn cache_key(&self) -> Option<String> {
+            Some("x.json".into())
+        }
+    }
+
     #[test]
-    fn cached_garbage_is_decode_error_with_key() {
+    fn cached_json_that_is_not_the_model_is_decode_error_with_key() {
         let cache = MemCache::default();
-        cache.put("x.json", b"nope").unwrap();
-        let cfg = ConfigBuilder::default().cache(cache).build();
-        let err = run(&Ep, &cfg, |_| -> crate::Result<Response<Bytes>> {
+        cache.put("x.json", br#"{"k":1}"#).unwrap();
+        let cfg = ConfigBuilder::default().cache(cache).build().unwrap();
+        let err = run(&EpU8, &cfg, |_| -> crate::Result<Response<Bytes>> {
             panic!("cache hit")
         })
         .unwrap_err();
@@ -302,8 +336,21 @@ mod tests {
     }
 
     #[test]
+    fn cached_non_json_garbage_falls_through_to_a_fetch() {
+        let cache = MemCache::default();
+        cache.put("x.json", b"nope").unwrap();
+        let cfg = ConfigBuilder::default().cache(cache).build().unwrap();
+        let v = run(&Ep, &cfg, |_| Ok(resp(200, &[], r#"{"fresh":true}"#))).unwrap();
+        assert_eq!(v["fresh"], true);
+        assert_eq!(
+            cfg.cache().unwrap().get("x.json").unwrap().as_deref(),
+            Some(&br#"{"fresh":true}"#[..])
+        );
+    }
+
+    #[test]
     fn rate_limited_carries_retry_after() {
-        let cfg = ConfigBuilder::default().build();
+        let cfg = ConfigBuilder::default().build().unwrap();
         let err = run(&Ep, &cfg, |_| Ok(resp(429, &[("retry-after", "7")], ""))).unwrap_err();
         assert_eq!(err.retry_after(), Some(std::time::Duration::from_secs(7)));
         assert_eq!(err.status(), Some(429));
@@ -311,7 +358,7 @@ mod tests {
 
     #[test]
     fn overloaded_503_without_header() {
-        let cfg = ConfigBuilder::default().build();
+        let cfg = ConfigBuilder::default().build().unwrap();
         let err = run(&Ep, &cfg, |_| Ok(resp(503, &[], "busy"))).unwrap_err();
         assert!(
             matches!(
@@ -327,7 +374,7 @@ mod tests {
 
     #[test]
     fn not_found_carries_message() {
-        let cfg = ConfigBuilder::default().build();
+        let cfg = ConfigBuilder::default().build().unwrap();
         let err = run(&Ep, &cfg, |_| {
             Ok(resp(404, &[], r#"{"status":404,"error":"nope"}"#))
         })
@@ -338,7 +385,7 @@ mod tests {
 
     #[test]
     fn other_status_keeps_excerpt_and_message() {
-        let cfg = ConfigBuilder::default().build();
+        let cfg = ConfigBuilder::default().build().unwrap();
         let err = run(&Ep, &cfg, |_| {
             Ok(resp(
                 400,
@@ -364,21 +411,27 @@ mod tests {
 
     #[test]
     fn error_statuses_are_not_cached() {
-        let cfg = ConfigBuilder::default().cache(MemCache::default()).build();
+        let cfg = ConfigBuilder::default()
+            .cache(MemCache::default())
+            .build()
+            .unwrap();
         let _ = run(&Ep, &cfg, |_| Ok(resp(404, &[], "{}")));
         assert_eq!(cfg.cache().unwrap().get("x.json").unwrap(), None);
     }
 
     #[test]
     fn cache_failures_are_swallowed() {
-        let cfg = ConfigBuilder::default().cache(FailingCache).build();
+        let cfg = ConfigBuilder::default()
+            .cache(FailingCache)
+            .build()
+            .unwrap();
         let v = run(&Ep, &cfg, |_| Ok(resp(200, &[], r#"{"k":3}"#))).unwrap();
         assert_eq!(v["k"], 3);
     }
 
     #[test]
     fn transport_error_passes_through() {
-        let cfg = ConfigBuilder::default().build();
+        let cfg = ConfigBuilder::default().build().unwrap();
         let err = run(&Ep, &cfg, |req| {
             Err(Error::Transport {
                 url: req.uri().to_string(),
