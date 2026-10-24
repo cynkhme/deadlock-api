@@ -1,0 +1,7 @@
+{
+  "services": {
+    "clickhouse": true,
+    "postgres": true,
+    "redis": true
+  }
+}

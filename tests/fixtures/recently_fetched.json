@@ -1,0 +1,146 @@
+[
+  {
+    "match_id": 122539002,
+    "start_time": 1792705407,
+    "duration_s": 1616,
+    "match_mode": 1,
+    "game_mode": 1,
+    "average_badge_team0": 0,
+    "average_badge_team1": 0,
+    "average_badge": null,
+    "players": [
+      {
+        "account_id": 1003173192
+      },
+      {
+        "account_id": 441058371
+      },
+      {
+        "account_id": 293046606
+      },
+      {
+        "account_id": 931320759
+      },
+      {
+        "account_id": 123324885
+      },
+      {
+        "account_id": 1873471073
+      },
+      {
+        "account_id": 867597710
+      },
+      {
+        "account_id": 1552722380
+      },
+      {
+        "account_id": 865077432
+      },
+      {
+        "account_id": 323352756
+      },
+      {
+        "account_id": 56383927
+      },
+      {
+        "account_id": 480025603
+      }
+    ]
+  },
+  {
+    "match_id": 123974825,
+    "start_time": 1792876753,
+    "duration_s": 882,
+    "match_mode": 1,
+    "game_mode": 1,
+    "average_badge_team0": 0,
+    "average_badge_team1": 0,
+    "average_badge": null,
+    "players": [
+      {
+        "account_id": 1133038872
+      },
+      {
+        "account_id": 1724217516
+      },
+      {
+        "account_id": 1221536063
+      },
+      {
+        "account_id": 1214505959
+      },
+      {
+        "account_id": 165651352
+      },
+      {
+        "account_id": 215669943
+      },
+      {
+        "account_id": 1550658890
+      },
+      {
+        "account_id": 1092524718
+      },
+      {
+        "account_id": 1045680794
+      },
+      {
+        "account_id": 150842491
+      },
+      {
+        "account_id": 1104925588
+      },
+      {
+        "account_id": 230270013
+      }
+    ]
+  },
+  {
+    "match_id": 123494774,
+    "start_time": 1792821420,
+    "duration_s": 1921,
+    "match_mode": 1,
+    "game_mode": 1,
+    "average_badge_team0": 0,
+    "average_badge_team1": 0,
+    "average_badge": null,
+    "players": [
+      {
+        "account_id": 362620904
+      },
+      {
+        "account_id": 1185956017
+      },
+      {
+        "account_id": 387134566
+      },
+      {
+        "account_id": 850989428
+      },
+      {
+        "account_id": 310823005
+      },
+      {
+        "account_id": 182104627
+      },
+      {
+        "account_id": 1235033839
+      },
+      {
+        "account_id": 403313099
+      },
+      {
+        "account_id": 362312411
+      },
+      {
+        "account_id": 865554290
+      },
+      {
+        "account_id": 352735623
+      },
+      {
+        "account_id": 449944725
+      }
+    ]
+  }
+]

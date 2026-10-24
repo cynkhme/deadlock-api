@@ -1,0 +1,16 @@
+[
+  {
+    "account_id": 4100000001,
+    "personaname": "search-hit-1",
+    "profileurl": "https://example.invalid/id/search-hit-1/",
+    "avatar": "https://example.invalid/avatars/search-hit-1.jpg",
+    "avatarmedium": "https://example.invalid/avatars/search-hit-1_medium.jpg",
+    "avatarfull": "https://example.invalid/avatars/search-hit-1_full.jpg",
+    "realname": null,
+    "countrycode": null,
+    "last_updated": "2026-10-21T18:57:49Z",
+    "friends": [],
+    "matches_played_last_30d": 44,
+    "last_team_avg_badge": null
+  }
+]

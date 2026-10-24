@@ -1,0 +1,270 @@
+{
+  "fetched_matches_per_day": 487713,
+  "table_sizes": {
+    "hero_pair_stats_agg_staging": {
+      "is_view": false,
+      "rows": 309485,
+      "data_compressed_bytes": 18692771,
+      "data_uncompressed_bytes": 49544276
+    },
+    "hero_leaderboard": {
+      "is_view": false,
+      "rows": 74345211,
+      "data_compressed_bytes": 150996893,
+      "data_uncompressed_bytes": 3040721402
+    },
+    "item_cohort_stats_net_worth_agg_v2": {
+      "is_view": false,
+      "rows": 484657912,
+      "data_compressed_bytes": 120731822182,
+      "data_uncompressed_bytes": 170351512812
+    },
+    "item_enemy_stats_agg": {
+      "is_view": false,
+      "rows": 46063064,
+      "data_compressed_bytes": 20932005439,
+      "data_uncompressed_bytes": 25289642893
+    },
+    "demo_player": {
+      "is_view": false,
+      "rows": 6412405,
+      "data_compressed_bytes": 46423709,
+      "data_uncompressed_bytes": 211266898
+    },
+    "item_flow_nodes_agg_staging": {
+      "is_view": false,
+      "rows": 137983,
+      "data_compressed_bytes": 3426562,
+      "data_uncompressed_bytes": 10631909
+    },
+    "items": {
+      "is_view": false,
+      "rows": 609,
+      "data_compressed_bytes": 19257,
+      "data_uncompressed_bytes": 22488
+    },
+    "lane_matchups": {
+      "is_view": false,
+      "rows": 90303984,
+      "data_compressed_bytes": 4780491731,
+      "data_uncompressed_bytes": 21703533559
+    },
+    "game_stats_agg": {
+      "is_view": false,
+      "rows": 45613,
+      "data_compressed_bytes": 320582448,
+      "data_uncompressed_bytes": 422349676
+    },
+    "accounts_to_update": {
+      "is_view": false,
+      "rows": 6561281,
+      "data_compressed_bytes": 87133022,
+      "data_uncompressed_bytes": 103109223
+    },
+    "heroes_staging": {
+      "is_view": false,
+      "rows": 42,
+      "data_compressed_bytes": 1981,
+      "data_uncompressed_bytes": 773
+    },
+    "item_flow_edges_agg": {
+      "is_view": false,
+      "rows": 209855540,
+      "data_compressed_bytes": 1508420731,
+      "data_uncompressed_bytes": 7771939240
+    },
+    "player_performance_curve_agg_v2_staging": {
+      "is_view": false,
+      "rows": 30808,
+      "data_compressed_bytes": 8837226,
+      "data_uncompressed_bytes": 16249123
+    },
+    "player_match_counts30d": {
+      "is_view": true,
+      "rows": 2342908,
+      "data_compressed_bytes": 16340228,
+      "data_uncompressed_bytes": 40722592
+    },
+    "item_stats_agg_v2_staging": {
+      "is_view": false,
+      "rows": 376436,
+      "data_compressed_bytes": 34940287,
+      "data_uncompressed_bytes": 70223636
+    },
+    "game_stats_agg_staging": {
+      "is_view": false,
+      "rows": 68,
+      "data_compressed_bytes": 392102,
+      "data_uncompressed_bytes": 652159
+    },
+    "hero_stats_agg_all_v2": {
+      "is_view": true,
+      "rows": 1439897,
+      "data_compressed_bytes": 105228590,
+      "data_uncompressed_bytes": 205441396
+    },
+    "item_flow_nodes_agg": {
+      "is_view": false,
+      "rows": 17870874,
+      "data_compressed_bytes": 444698073,
+      "data_uncompressed_bytes": 1376879352
+    },
+    "item_cohort_stats_net_worth_agg_v2_staging": {
+      "is_view": false,
+      "rows": 4590867,
+      "data_compressed_bytes": 1287225725,
+      "data_uncompressed_bytes": 1833351442
+    },
+    "item_flow_totals_agg_staging": {
+      "is_view": false,
+      "rows": 67,
+      "data_compressed_bytes": 329472,
+      "data_uncompressed_bytes": 617366
+    },
+    "player_match_stats": {
+      "is_view": false,
+      "rows": 441516044,
+      "data_compressed_bytes": 31645932073,
+      "data_uncompressed_bytes": 68036213056
+    },
+    "active_matches": {
+      "is_view": false,
+      "rows": 333086954,
+      "data_compressed_bytes": 3378046568,
+      "data_uncompressed_bytes": 52879452130
+    },
+    "hero_stats_agg_v2": {
+      "is_view": true,
+      "rows": 167813,
+      "data_compressed_bytes": 12409767,
+      "data_uncompressed_bytes": 26588836
+    },
+    "heroes": {
+      "is_view": false,
+      "rows": 42,
+      "data_compressed_bytes": 1981,
+      "data_uncompressed_bytes": 773
+    },
+    "item_stats_agg_v2": {
+      "is_view": false,
+      "rows": 51441153,
+      "data_compressed_bytes": 4746246381,
+      "data_uncompressed_bytes": 9414751207
+    },
+    "items_staging": {
+      "is_view": false,
+      "rows": 609,
+      "data_compressed_bytes": 19257,
+      "data_uncompressed_bytes": 22488
+    },
+    "item_cohort_stats_time_agg_v2_staging": {
+      "is_view": false,
+      "rows": 4474928,
+      "data_compressed_bytes": 1081330579,
+      "data_uncompressed_bytes": 1500543839
+    },
+    "item_cohort_stats_time_agg_v2": {
+      "is_view": false,
+      "rows": 488532233,
+      "data_compressed_bytes": 122223807549,
+      "data_uncompressed_bytes": 177563402573
+    },
+    "player_match_history": {
+      "is_view": false,
+      "rows": 539003605,
+      "data_compressed_bytes": 11906273856,
+      "data_uncompressed_bytes": 59354364019
+    },
+    "player_performance_curve_agg_v2": {
+      "is_view": false,
+      "rows": 7032465,
+      "data_compressed_bytes": 2019456230,
+      "data_uncompressed_bytes": 3730325595
+    },
+    "item_flow_totals_agg": {
+      "is_view": false,
+      "rows": 7717,
+      "data_compressed_bytes": 43815436,
+      "data_uncompressed_bytes": 72837543
+    },
+    "pending_matches": {
+      "is_view": false,
+      "rows": 37401900,
+      "data_compressed_bytes": 101174790,
+      "data_uncompressed_bytes": 524768911
+    },
+    "item_flow_edges_agg_staging": {
+      "is_view": false,
+      "rows": 1570336,
+      "data_compressed_bytes": 11415172,
+      "data_uncompressed_bytes": 58157227
+    },
+    "request_logs": {
+      "is_view": false,
+      "rows": 105837516,
+      "data_compressed_bytes": 5608371392,
+      "data_uncompressed_bytes": 41840171916
+    },
+    "steam_profiles": {
+      "is_view": false,
+      "rows": 7493631,
+      "data_compressed_bytes": 2777480638,
+      "data_uncompressed_bytes": 5010519940
+    },
+    "cohort_agg_refresh_state": {
+      "is_view": false,
+      "rows": 3063,
+      "data_compressed_bytes": 28004,
+      "data_uncompressed_bytes": 165586
+    },
+    "hero_pair_stats_agg": {
+      "is_view": false,
+      "rows": 127458008,
+      "data_compressed_bytes": 7950009122,
+      "data_uncompressed_bytes": 20404280192
+    },
+    "match_salts": {
+      "is_view": false,
+      "rows": 31095364,
+      "data_compressed_bytes": 470696779,
+      "data_uncompressed_bytes": 1769214985
+    },
+    "item_enemy_stats_agg_staging": {
+      "is_view": false,
+      "rows": 358587,
+      "data_compressed_bytes": 151518667,
+      "data_uncompressed_bytes": 188030558
+    },
+    "player_match_roster": {
+      "is_view": false,
+      "rows": 529213938,
+      "data_compressed_bytes": 25155206804,
+      "data_uncompressed_bytes": 42134673460
+    },
+    "player_card": {
+      "is_view": false,
+      "rows": 4763962,
+      "data_compressed_bytes": 10639416,
+      "data_uncompressed_bytes": 501839723
+    },
+    "steam_profile_observed_names": {
+      "is_view": false,
+      "rows": 4661976,
+      "data_compressed_bytes": 76092055,
+      "data_uncompressed_bytes": 134952434
+    },
+    "match_player": {
+      "is_view": false,
+      "rows": 399611911,
+      "data_compressed_bytes": 1099530551626,
+      "data_uncompressed_bytes": 3951111980362
+    },
+    "leaderboard": {
+      "is_view": false,
+      "rows": 17678011,
+      "data_compressed_bytes": 95505677,
+      "data_uncompressed_bytes": 720624410
+    }
+  },
+  "user_ingested_matches_last24h": 487713
+}

@@ -1,0 +1,25 @@
+[
+  {
+    "account_id": 167576350,
+    "personaname": "player-1",
+    "profileurl": "https://example.invalid/id/player-1/",
+    "avatar": "https://example.invalid/avatars/player-1.jpg",
+    "avatarmedium": "https://example.invalid/avatars/player-1_medium.jpg",
+    "avatarfull": "https://example.invalid/avatars/player-1_full.jpg",
+    "realname": "Player 1",
+    "countrycode": null,
+    "last_updated": "2026-10-19T22:01:03Z",
+    "friends": [
+      {
+        "account_id": 4000001000,
+        "friend_since": "2018-08-03T06:32:54Z"
+      },
+      {
+        "account_id": 4000001001,
+        "friend_since": "2022-06-18T07:55:08Z"
+      }
+    ],
+    "matches_played_last_30d": 128,
+    "last_team_avg_badge": 0
+  }
+]

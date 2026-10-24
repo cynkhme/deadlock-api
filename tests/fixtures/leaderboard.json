@@ -1,0 +1,29 @@
+{
+  "entries": [
+    {
+      "account_name": "player-1",
+      "possible_account_ids": [],
+      "rank": 1,
+      "top_hero_ids": [
+        13
+      ]
+    },
+    {
+      "account_name": "player-2",
+      "possible_account_ids": [
+        1840902834
+      ],
+      "rank": 2,
+      "top_hero_ids": []
+    },
+    {
+      "account_name": "player-3",
+      "possible_account_ids": [
+        1710092569,
+        1061086670
+      ],
+      "rank": 3,
+      "top_hero_ids": []
+    }
+  ]
+}
