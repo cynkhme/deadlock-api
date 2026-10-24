@@ -35,6 +35,6 @@ or 503 was seen.
 
 Live smoke run (2026-10-24,
 `DEADLOCK_API_LIVE=1 cargo test --test live -- --ignored`): 18 of 18 passed
-in 24 s, 19 requests, no 429 or 503; the shape guard found no drift on any
+in 25 s, 19 requests, no 429 or 503; the shape guard found no drift on any
 of the 17 routes it checks, on the full 12-player metadata response or on
 the metadata of a recently fetched match.
