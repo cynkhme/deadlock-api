@@ -16,7 +16,7 @@ include = ["/src", "/tests", "/examples", "/README.md", "/CHANGELOG.md", "/LICEN
 default = ["blocking", "rustls"]
 blocking = ["dep:ureq"]
 async = ["dep:reqwest", "dep:tokio"]
-rustls = ["ureq?/rustls", "reqwest?/rustls"]
+rustls = ["ureq?/rustls", "ureq?/platform-verifier", "reqwest?/rustls"]
 native-tls = ["ureq?/native-tls", "reqwest?/native-tls"]
 fs-cache = []
 

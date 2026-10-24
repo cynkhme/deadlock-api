@@ -59,7 +59,9 @@
 //! - `async`: the asynchronous [`Client`] on reqwest; pulls in tokio.
 //! - `rustls` (default) / `native-tls`: the TLS stack for both clients. With
 //!   both enabled `rustls` wins; disable default features to use `native-tls`
-//!   alone.
+//!   alone. Either way both clients verify certificates against the
+//!   operating system's trust store (on Linux the system CA bundle, or the
+//!   file named by `SSL_CERT_FILE`).
 //! - `fs-cache`: [`FileCache`], a cache that stores one file per response.
 //!
 //! # Minimum supported Rust version

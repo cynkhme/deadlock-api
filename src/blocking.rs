@@ -66,8 +66,12 @@ impl ClientBuilder {
     /// agent or API key is not a valid header value.
     pub fn build(self) -> Result<Client> {
         let config = self.config.build()?;
+        // ureq 3 defaults to RootCerts::WebPki (bundled roots), and with
+        // native-tls it also switches the OS roots off; reqwest trusts the
+        // OS store.
         let tls = ureq::tls::TlsConfig::builder()
             .provider(TLS_PROVIDER)
+            .root_certs(ureq::tls::RootCerts::PlatformVerifier)
             .build();
         let agent = ureq::Agent::config_builder()
             .http_status_as_error(false)
@@ -185,4 +189,19 @@ impl Client {
     }
 
     crate::endpoints::endpoint_methods!(sync);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn tls_trusts_the_platform_store_like_the_async_client() {
+        let api = Client::new().unwrap();
+        let roots = api.agent.config().tls_config().root_certs();
+        assert!(
+            matches!(roots, ureq::tls::RootCerts::PlatformVerifier),
+            "{roots:?}"
+        );
+    }
 }
