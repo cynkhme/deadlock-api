@@ -48,7 +48,8 @@ pub struct Client {
     config: Arc<Config>,
 }
 
-/// Builder for [`Client`]; the setters are those of [`ConfigBuilder`].
+/// Builder for [`Client`]; what it sets is readable afterwards through
+/// [`Client::config`].
 #[derive(Debug, Default)]
 pub struct ClientBuilder {
     config: ConfigBuilder,

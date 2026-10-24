@@ -3,7 +3,7 @@
 
 mod shape;
 
-use deadlock_api::{AccountId, MatchMetadata};
+use deadlock_api::{AbilityStat, AccountId, MatchId, MatchMetadata};
 use shape::compare_shape;
 
 fn fixture(name: &str) -> Vec<u8> {
@@ -17,7 +17,7 @@ fn fixture(name: &str) -> Vec<u8> {
 #[test]
 fn match_metadata_decodes() {
     let m: MatchMetadata = serde_json::from_slice(&fixture("match_metadata.json")).unwrap();
-    assert_eq!(m.match_info.match_id, 122539002);
+    assert_eq!(m.match_info.match_id, MatchId(122539002));
     assert_eq!(m.match_info.duration_s, 1616);
     assert_eq!(m.match_info.players.len(), 2);
     let p = &m.match_info.players[0];
@@ -26,7 +26,8 @@ fn match_metadata_decodes() {
     assert_eq!(p.kills, Some(5));
     assert_eq!(p.mvp_rank, Some(3));
     assert_eq!(m.match_info.players[1].mvp_rank, Some(1));
-    assert_eq!(p.ability_stats[0].ability_id, Some(2521902222));
+    let ability: &AbilityStat = &p.ability_stats[0];
+    assert_eq!(ability.ability_id, Some(2521902222));
     assert_eq!(p.ability_stats[0].ability_value, Some(91));
     assert_eq!(m.match_info.players[1].ability_stats.len(), 1);
     assert_eq!(p.death_details[0].killer_player_slot, Some(4));
@@ -116,8 +117,8 @@ mod other_endpoints {
     use super::fixture;
     use deadlock_api::{
         AccountId, AccountRank, ActiveMatch, ApiInfo, EnemyStats, Health, HeroId, HeroStats,
-        Leaderboard, MatchHistoryEntry, MatchSalts, MateStats, RankDistributionEntry, RankResponse,
-        RecentMatch, Region, SteamProfile,
+        Leaderboard, MatchHistoryEntry, MatchId, MatchSalts, MateStats, RankDistributionEntry,
+        RankResponse, RecentMatch, Region, SteamProfile,
     };
 
     fn decode<T: serde::de::DeserializeOwned>(name: &str) -> T {
@@ -127,7 +128,7 @@ mod other_endpoints {
     #[test]
     fn match_salts_decodes() {
         let s: MatchSalts = decode("match_salts.json");
-        assert_eq!(s.match_id, 122539002);
+        assert_eq!(s.match_id, MatchId(122539002));
         assert_eq!(s.cluster_id, Some(429));
         assert_eq!(s.metadata_salt, Some(1910618982));
         assert_eq!(s.replay_salt, Some(1130965774));
@@ -153,7 +154,7 @@ mod other_endpoints {
     fn recently_fetched_decode() {
         let v: Vec<RecentMatch> = decode("recently_fetched.json");
         assert_eq!(v.len(), 3);
-        assert!(v[0].match_id > 0);
+        assert!(v[0].match_id > MatchId(0));
         assert_eq!(v[0].average_badge, None);
         assert!(!v[0].players.is_empty());
     }
@@ -162,7 +163,7 @@ mod other_endpoints {
     fn match_history_decodes() {
         let v: Vec<MatchHistoryEntry> = decode("match_history.json");
         assert_eq!(v[0].account_id, AccountId(167576350));
-        assert_eq!(v[0].match_id, 123971228);
+        assert_eq!(v[0].match_id, MatchId(123971228));
         assert_eq!(v[0].hero_id, Some(HeroId(80)));
         assert_eq!(v[0].player_kills, Some(7));
         assert_eq!(v[0].brawl_score_team0, None);
@@ -188,6 +189,7 @@ mod other_endpoints {
         assert_eq!(h[0].matches_played, Some(380));
         assert!(h[0].ending_level.unwrap() > 30.0);
         assert_eq!(h[0].matches.len(), 380);
+        assert!(h[0].matches.iter().all(|m: &MatchId| m.0 > 0));
         let m: Vec<MateStats> = decode("mate_stats.json");
         assert_eq!(m[0].mate_id, AccountId(1180548075));
         assert_eq!((m[0].wins, m[0].matches_played), (Some(67), Some(126)));

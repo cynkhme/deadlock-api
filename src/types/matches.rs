@@ -4,7 +4,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::{AccountId, HeroId};
+use crate::{AccountId, HeroId, MatchId};
 
 /// `GET /v1/matches/{id}/salts`: where the match's replay and metadata live.
 ///
@@ -13,7 +13,7 @@ use crate::{AccountId, HeroId};
 #[non_exhaustive]
 pub struct MatchSalts {
     /// The match id.
-    pub match_id: u64,
+    pub match_id: MatchId,
     /// The replay cluster the files are served from.
     #[serde(default)]
     pub cluster_id: Option<u32>,
@@ -55,7 +55,7 @@ pub struct SpectateUrl {
 #[non_exhaustive]
 pub struct ActiveMatch {
     /// The match id.
-    pub match_id: u64,
+    pub match_id: MatchId,
     /// Unix seconds when the match started.
     #[serde(default)]
     pub start_time: Option<u64>,
@@ -152,7 +152,7 @@ pub struct ActiveMatchPlayer {
 #[non_exhaustive]
 pub struct RecentMatch {
     /// The match id.
-    pub match_id: u64,
+    pub match_id: MatchId,
     /// Unix seconds when the match started.
     #[serde(default)]
     pub start_time: Option<u64>,

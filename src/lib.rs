@@ -44,6 +44,15 @@
 //! # Ok(()) }
 //! ```
 //!
+//! # Models
+//!
+//! Every model and query struct is at the crate root. Model fields carry the
+//! server's JSON names unchanged, so the server's documentation applies field
+//! for field; how [`MatchMetadata`] tolerates server drift is documented on
+//! it. Query struct fields are the OpenAPI parameter names, `None` means the
+//! parameter is not sent, and the structs are plain, so
+//! `MatchFilter { min_duration_s: Some(600), ..Default::default() }` works.
+//!
 //! # Features
 //!
 //! - `blocking` (default): the synchronous [`blocking::Client`] on ureq.
@@ -85,14 +94,15 @@ mod endpoint;
 mod endpoints;
 mod error;
 mod ids;
-pub mod types;
+mod types;
 
 pub use cache::Cache;
 #[cfg(feature = "fs-cache")]
 pub use cache::FileCache;
 #[cfg(feature = "async")]
 pub use client::{Client, ClientBuilder};
-pub use config::{Config, ConfigBuilder};
+pub use config::Config;
+pub(crate) use config::ConfigBuilder;
 pub use error::{Error, Result};
 pub use ids::{AccountId, HeroId, MatchId};
 pub use types::filters::{
@@ -102,8 +112,8 @@ pub use types::filters::{
 pub use types::info::{ApiInfo, Health, TableSize};
 pub use types::leaderboard::{Leaderboard, LeaderboardEntry, Region};
 pub use types::match_metadata::{
-    DamageDealer, DamageMatrix, Death, Item, MatchInfo, MatchMetadata, MatchPaths, MidBoss,
-    Objective, Pause, Player, PlayerPath, PlayerStats, Pos, Team,
+    AbilityStat, DamageDealer, DamageMatrix, Death, Item, MatchInfo, MatchMetadata, MatchPaths,
+    MidBoss, Objective, Pause, Player, PlayerPath, PlayerStats, Pos, Team,
 };
 pub use types::matches::{
     ActiveMatch, ActiveMatchPlayer, MatchSalts, RecentMatch, RecentMatchPlayer, SpectateUrl,

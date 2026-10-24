@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::{AccountId, HeroId};
+use crate::{AccountId, HeroId, MatchId};
 
 /// One entry of `GET /v1/players/{id}/match-history`.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -12,7 +12,7 @@ pub struct MatchHistoryEntry {
     /// The player's Steam account id.
     pub account_id: AccountId,
     /// The match id.
-    pub match_id: u64,
+    pub match_id: MatchId,
     /// The hero played.
     #[serde(default)]
     pub hero_id: Option<HeroId>,
@@ -255,7 +255,7 @@ pub struct HeroStats {
     pub mvp_rated_matches: Option<u32>,
     /// The match ids these statistics cover.
     #[serde(default)]
-    pub matches: Vec<u64>,
+    pub matches: Vec<MatchId>,
     /// Permanent buffs taken.
     #[serde(default)]
     pub permanent_buffs: Option<u32>,
@@ -284,7 +284,7 @@ pub struct MateStats {
     pub matches_played: Option<u32>,
     /// The match ids.
     #[serde(default)]
-    pub matches: Vec<u64>,
+    pub matches: Vec<MatchId>,
 }
 
 /// One entry of `GET /v1/players/{id}/enemy-stats`: results against one opponent.
@@ -301,5 +301,5 @@ pub struct EnemyStats {
     pub matches_played: Option<u32>,
     /// The match ids.
     #[serde(default)]
-    pub matches: Vec<u64>,
+    pub matches: Vec<MatchId>,
 }

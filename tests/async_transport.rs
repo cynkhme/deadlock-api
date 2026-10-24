@@ -33,7 +33,7 @@ async fn metadata_is_fetched_once_then_served_from_cache() {
     let first = api.match_metadata(MatchId(42)).await.unwrap();
     let again = api.match_metadata(MatchId(42)).await.unwrap();
 
-    assert_eq!(first.match_info.match_id, 42);
+    assert_eq!(first.match_info.match_id, MatchId(42));
     assert_eq!(again.match_info.players[0].account_id, AccountId(7));
     assert!(dir.join("matches/42/metadata.json").is_file());
     assert_eq!(requests.lock().unwrap().len(), 1);
@@ -57,7 +57,7 @@ async fn cache_put_failure_returns_ok() {
             .unwrap()
             .match_info
             .match_id,
-        42
+        MatchId(42)
     );
     let _ = std::fs::remove_file(&file);
 }

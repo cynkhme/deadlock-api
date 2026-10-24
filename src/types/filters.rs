@@ -1,10 +1,9 @@
-//! Query structs for the routes that take parameters. Field names are the
-//! OpenAPI parameter names; `None` means "not sent".
+//! Query structs for the routes that take parameters.
 //!
 //! These are plain structs on purpose (no `#[non_exhaustive]`), so a caller
 //! can write `MatchFilter { min_duration_s: Some(600), ..Default::default() }`.
 
-use crate::{AccountId, HeroId};
+use crate::{AccountId, HeroId, MatchId};
 
 /// Filters of `GET /v1/players/rank/distribution`.
 #[derive(Debug, Clone, PartialEq, Default)]
@@ -24,9 +23,9 @@ pub struct MatchFilter {
     /// Only matches in (or not in) the new-player pool.
     pub is_new_player_pool: Option<bool>,
     /// Only matches with an id at or above this.
-    pub min_match_id: Option<u64>,
+    pub min_match_id: Option<MatchId>,
     /// Only matches with an id at or below this.
-    pub max_match_id: Option<u64>,
+    pub max_match_id: Option<MatchId>,
 }
 
 impl MatchFilter {
@@ -131,9 +130,9 @@ pub struct HeroStatsQuery {
     /// Only matches with at most this average badge (0–116).
     pub max_average_badge: Option<u32>,
     /// Only matches with an id at or above this.
-    pub min_match_id: Option<u64>,
+    pub min_match_id: Option<MatchId>,
     /// Only matches with an id at or below this.
-    pub max_match_id: Option<u64>,
+    pub max_match_id: Option<MatchId>,
 }
 
 impl HeroStatsQuery {
@@ -179,9 +178,9 @@ pub struct MateStatsQuery {
     /// Only matches at most this long, in seconds.
     pub max_duration_s: Option<u32>,
     /// Only matches with an id at or above this.
-    pub min_match_id: Option<u64>,
+    pub min_match_id: Option<MatchId>,
     /// Only matches with an id at or below this.
-    pub max_match_id: Option<u64>,
+    pub max_match_id: Option<MatchId>,
     /// Only teammates with at least this many shared matches.
     pub min_matches_played: Option<u32>,
     /// Only teammates with at most this many shared matches.
@@ -221,9 +220,9 @@ pub struct EnemyStatsQuery {
     /// Only matches at most this long, in seconds.
     pub max_duration_s: Option<u32>,
     /// Only matches with an id at or above this.
-    pub min_match_id: Option<u64>,
+    pub min_match_id: Option<MatchId>,
     /// Only matches with an id at or below this.
-    pub max_match_id: Option<u64>,
+    pub max_match_id: Option<MatchId>,
     /// Only opponents with at least this many shared matches.
     pub min_matches_played: Option<u32>,
     /// Only opponents with at most this many shared matches.

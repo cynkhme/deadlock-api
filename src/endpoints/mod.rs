@@ -307,7 +307,7 @@ mod tests {
             "https://h/v1/players/7/mate-stats?min_matches_played=5&same_party=true"
         );
         let q = EnemyStatsQuery {
-            max_match_id: Some(99),
+            max_match_id: Some(MatchId(99)),
             ..EnemyStatsQuery::default()
         };
         assert_eq!(

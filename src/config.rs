@@ -1,4 +1,9 @@
-//! Client configuration shared by the blocking and the async client.
+//! Client configuration shared by the blocking and the async client. The
+//! builder is internal: the client builders are the one way to set it.
+//!
+//! ```compile_fail
+//! use deadlock_api::ConfigBuilder;
+//! ```
 
 use std::sync::Arc;
 use std::time::Duration;
@@ -11,7 +16,7 @@ const DEFAULT_TIMEOUT: Duration = Duration::from_secs(60);
 
 /// The settings a client was built with.
 ///
-/// Built by [`ConfigBuilder`]; every client exposes its copy through a
+/// Set through a client builder; every client exposes its copy through a
 /// `config()` method.
 #[derive(Clone)]
 pub struct Config {
@@ -68,9 +73,10 @@ impl Config {
     }
 }
 
-/// Builder for [`Config`]; the client builders expose the same setters.
+/// Builder for [`Config`], held by the client builders, which expose its
+/// setters through `builder_setters!`.
 #[derive(Default)]
-pub struct ConfigBuilder {
+pub(crate) struct ConfigBuilder {
     base_url: Option<String>,
     api_key: Option<String>,
     user_agent: Option<String>,

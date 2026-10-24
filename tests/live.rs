@@ -52,7 +52,7 @@ fn paced<T>(request: impl FnOnce() -> T) -> T {
 fn match_metadata_decodes_with_no_shape_drift() {
     let Some(api) = api() else { return };
     let meta = paced(|| api.match_metadata(MATCH)).unwrap();
-    assert_eq!(meta.match_info.match_id, MATCH.0);
+    assert_eq!(meta.match_info.match_id, MATCH);
     assert_eq!(meta.match_info.players.len(), 12);
 
     let path = format!("/v1/matches/{MATCH}/metadata");
@@ -68,7 +68,7 @@ fn match_metadata_decodes_with_no_shape_drift() {
 #[ignore = "live server; set DEADLOCK_API_LIVE=1"]
 fn match_salts() {
     let Some(api) = api() else { return };
-    assert_eq!(paced(|| api.match_salts(MATCH)).unwrap().match_id, MATCH.0);
+    assert_eq!(paced(|| api.match_salts(MATCH)).unwrap().match_id, MATCH);
 }
 
 #[test]

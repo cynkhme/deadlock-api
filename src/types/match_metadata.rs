@@ -1,24 +1,10 @@
-//! `GET /v1/matches/{id}/metadata`, typed from a real response rather than
-//! the OpenAPI document, which leaves it untyped.
-//!
-//! The server does not document these fields; the types come from one
-//! recorded match (122539002, 2026-10-24). To survive drift, only the fields
-//! a match cannot lack are required; everything else is `Option` or a `Vec`
-//! that defaults to empty, so an unexpected shape in one sub-object costs one
-//! `None`, not the whole decode. The large sub-objects and lists (`stats`,
-//! `items`, `death_details`, `objectives`, `mid_boss`, `match_pauses`,
-//! `match_paths`, `damage_matrix`, `teams`, `ability_stats`) are decoded
-//! leniently: an element or object of an unexpected shape is dropped with a
-//! warning instead of failing the match. Every other list reads `null` as
-//! empty and keeps its elements strict, since a dropped element would shift
-//! the index-aligned path arrays. Scalar fields stay strict, so a changed
-//! type on a plain field is loud. Fields whose structure the sample
-//! does not reveal are kept as [`serde_json::Value`].
+//! `GET /v1/matches/{id}/metadata`; how it is typed is documented on
+//! `MatchMetadata`, the one place a reader of the crate sees it.
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::{AccountId, HeroId};
+use crate::{AccountId, HeroId, MatchId};
 
 /// Deserializers that drop a malformed sub-object or list element with a
 /// warning instead of failing the whole response.
@@ -85,7 +71,23 @@ mod lenient {
     }
 }
 
-/// The response: the match plus the hero selections around it.
+/// The response of `GET /v1/matches/{id}/metadata`: the match plus the hero
+/// selections around it, typed from a real response rather than the OpenAPI
+/// document, which leaves it untyped.
+///
+/// The server does not document these fields; the types come from one
+/// recorded match (122539002, 2026-10-24). To survive drift, only the fields
+/// a match cannot lack are required; everything else is `Option` or a `Vec`
+/// that defaults to empty, so an unexpected shape in one sub-object costs one
+/// `None`, not the whole decode. The large sub-objects and lists (`stats`,
+/// `items`, `death_details`, `objectives`, `mid_boss`, `match_pauses`,
+/// `match_paths`, `damage_matrix`, `teams`, `ability_stats`) are decoded
+/// leniently: an element or object of an unexpected shape is dropped with a
+/// warning instead of failing the match. Every other list reads `null` as
+/// empty and keeps its elements strict, since a dropped element would shift
+/// the index-aligned path arrays. Scalar fields stay strict, so a changed
+/// type on a plain field is loud. Fields whose structure the sample
+/// does not reveal are kept as [`serde_json::Value`].
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct MatchMetadata {
@@ -107,7 +109,7 @@ pub struct MatchMetadata {
 #[non_exhaustive]
 pub struct MatchInfo {
     /// The match id.
-    pub match_id: u64,
+    pub match_id: MatchId,
     /// Match length in seconds.
     pub duration_s: u32,
     /// The twelve players; fewer in custom or abandoned matches.
