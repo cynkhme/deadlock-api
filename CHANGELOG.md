@@ -6,7 +6,7 @@ All notable changes to this crate are listed here. The format follows [Keep a Ch
 
 ### Added
 
-- Typed match metadata (`MatchMetadata`), decoded tolerantly: a malformed sub-object or list element is dropped with a `log` warning instead of failing the match.
+- Typed match metadata (`MatchMetadata`), decoded tolerantly: beyond the few fields a match cannot lack, a missing or `null` field is `None` or an empty list, and a malformed sub-object (paths, damage matrix) or element of the larger lists (stats, items, deaths, abilities, objectives, mid boss, pauses, teams) is dropped with a `log` warning instead of failing the match.
 - 18 typed endpoints for matches, players, Steam profiles, leaderboards and server info.
 - `blocking::Client` on ureq (feature `blocking`, default) and `Client` on reqwest (feature `async`), with the same methods.
 - `get_json` and `get_raw` for any other route.

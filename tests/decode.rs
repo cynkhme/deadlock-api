@@ -246,3 +246,51 @@ mod other_endpoints {
         assert_eq!(unknown.as_path_segment(), "Mars");
     }
 }
+
+/// Every list field of the metadata, set to `null`, decodes as if it were
+/// `[]`; only `players`, which a match cannot lack, stays required.
+#[test]
+fn null_list_decodes_as_an_empty_list() {
+    fn list_pointers(v: &serde_json::Value, at: &str, out: &mut Vec<String>) {
+        match v {
+            serde_json::Value::Object(map) => {
+                for (k, child) in map {
+                    let here = format!("{at}/{k}");
+                    if child.is_array() {
+                        out.push(here.clone());
+                    }
+                    list_pointers(child, &here, out);
+                }
+            }
+            serde_json::Value::Array(items) => {
+                for (i, child) in items.iter().enumerate() {
+                    list_pointers(child, &format!("{at}/{i}"), out);
+                }
+            }
+            _ => {}
+        }
+    }
+    let raw: serde_json::Value = serde_json::from_slice(&fixture("match_metadata.json")).unwrap();
+    let mut pointers = Vec::new();
+    list_pointers(&raw, "", &mut pointers);
+    pointers.retain(|p| p != "/match_info/players");
+    assert!(pointers.len() > 20, "{} list fields found", pointers.len());
+
+    let decode_with = |pointer: &str, value: serde_json::Value| {
+        let mut v = raw.clone();
+        *v.pointer_mut(pointer).unwrap() = value;
+        serde_json::from_value::<MatchMetadata>(v).map(|m| serde_json::to_value(&m).unwrap())
+    };
+    let mut failures = Vec::new();
+    for pointer in &pointers {
+        let empty = decode_with(pointer, serde_json::json!([])).unwrap();
+        match decode_with(pointer, serde_json::Value::Null) {
+            Ok(null) if null == empty => {}
+            // Inside a field kept as `Value` the null is carried through as is.
+            Ok(null) if null.pointer(pointer) == Some(&serde_json::Value::Null) => {}
+            Ok(_) => failures.push(format!("{pointer}: null decodes differently from []")),
+            Err(e) => failures.push(format!("{pointer}: {e}")),
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}

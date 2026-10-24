@@ -9,8 +9,10 @@
 //! `items`, `death_details`, `objectives`, `mid_boss`, `match_pauses`,
 //! `match_paths`, `damage_matrix`, `teams`, `ability_stats`) are decoded
 //! leniently: an element or object of an unexpected shape is dropped with a
-//! warning instead of failing the match. Scalar fields stay strict, so a
-//! changed type on a plain field is loud. Fields whose structure the sample
+//! warning instead of failing the match. Every other list reads `null` as
+//! empty and keeps its elements strict, since a dropped element would shift
+//! the index-aligned path arrays. Scalar fields stay strict, so a changed
+//! type on a plain field is loud. Fields whose structure the sample
 //! does not reveal are kept as [`serde_json::Value`].
 
 use serde::{Deserialize, Serialize};
@@ -43,6 +45,16 @@ mod lenient {
                 Ok(None)
             }
         }
+    }
+
+    /// A list whose elements are decoded strictly, with `null` read as empty:
+    /// the derived `Vec` impl rejects `null`, which would fail the whole match.
+    pub(super) fn null_as_empty<'de, D, T>(d: D) -> Result<Vec<T>, D::Error>
+    where
+        D: Deserializer<'de>,
+        T: Deserialize<'de>,
+    {
+        Ok(Option::<Vec<T>>::deserialize(d)?.unwrap_or_default())
     }
 
     pub(super) fn vec<'de, D, T>(d: D) -> Result<Vec<T>, D::Error>
@@ -86,7 +98,7 @@ pub struct MatchMetadata {
     #[serde(default)]
     pub pregame_hero_ids: Option<Value>,
     /// Heroes banned before the match started; empty in the sample.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub banned_hero_ids: Vec<u32>,
 }
 
@@ -137,7 +149,7 @@ pub struct MatchInfo {
     #[serde(default, deserialize_with = "lenient::vec")]
     pub teams: Vec<Team>,
     /// Empty in the sample; shape unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub team_score: Vec<Value>,
     /// Bit mask of objectives team 0 destroyed.
     #[serde(default)]
@@ -182,19 +194,19 @@ pub struct MatchInfo {
     #[serde(default)]
     pub legacy_objectives_mask: Option<Value>,
     /// Named custom statistics (`{"name", "id"}` entries); semantics unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub custom_user_stats: Vec<Value>,
     /// Empty in the sample; shape unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub extra_messages: Vec<Value>,
     /// Empty in the sample; shape unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub match_tracked_stats: Vec<Value>,
     /// Empty in the sample; shape unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub street_brawl_rounds: Vec<Value>,
     /// Empty in the sample; shape unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub watched_death_replays: Vec<Value>,
 }
 
@@ -261,7 +273,7 @@ pub struct Player {
     #[serde(default, deserialize_with = "lenient::vec")]
     pub ability_stats: Vec<AbilityStat>,
     /// Pings (`{"ping_type", "ping_data", "game_time_s"}` entries); semantics unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub pings: Vec<Value>,
     /// Hero-specific data (`hero_equips`, `hero_xp` in the sample); structure undocumented.
     #[serde(default)]
@@ -276,22 +288,22 @@ pub struct Player {
     #[serde(default)]
     pub earned_holiday_award_2025: Option<Value>,
     /// Shape unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub stats_type_stat: Vec<Value>,
     /// Shape unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub book_rewards: Vec<Value>,
     /// Shape unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub player_tracked_stats: Vec<Value>,
     /// Shape unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub accolades: Vec<Value>,
     /// Shape unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub power_up_buffs: Vec<Value>,
     /// Shape unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub hero_xp_rewards: Vec<Value>,
 }
 
@@ -459,10 +471,10 @@ pub struct PlayerStats {
     #[serde(default)]
     pub heal_lost: Option<u64>,
     /// Souls by source; shape unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub gold_sources: Vec<Value>,
     /// Custom statistics at this time; shape unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub custom_user_stats: Vec<Value>,
 }
 
@@ -617,7 +629,7 @@ pub struct MatchPaths {
     /// Grid cells per world unit range along y.
     pub y_resolution: f64,
     /// One path per player.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub paths: Vec<PlayerPath>,
 }
 
@@ -658,19 +670,19 @@ pub struct PlayerPath {
     /// World y of the last grid cell.
     pub y_max: f64,
     /// Grid x per sample.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub x_pos: Vec<u32>,
     /// Grid y per sample.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub y_pos: Vec<u32>,
     /// Health per sample.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub health: Vec<u32>,
     /// Observed values: `0`. Undocumented upstream.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub combat_type: Vec<u32>,
     /// Observed values: `6`. Undocumented upstream.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub move_type: Vec<u32>,
 }
 
@@ -679,10 +691,10 @@ pub struct PlayerPath {
 #[non_exhaustive]
 pub struct DamageMatrix {
     /// Seconds into the match of each sample.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub sample_time_s: Vec<u32>,
     /// One entry per dealing player.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub damage_dealers: Vec<DamageDealer>,
     /// Names of the damage sources (`source_name`, `stat_type`); shape unknown.
     #[serde(default)]
@@ -697,7 +709,7 @@ pub struct DamageDealer {
     #[serde(default)]
     pub dealer_player_slot: Option<u32>,
     /// Per-source damage (`damage_to_players`, `source_details_index`); shape unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub damage_sources: Vec<Value>,
 }
 
@@ -709,6 +721,6 @@ pub struct Team {
     #[serde(default)]
     pub team: Option<u32>,
     /// Empty in the sample; shape unknown.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "lenient::null_as_empty")]
     pub team_tracked_stats: Vec<Value>,
 }
