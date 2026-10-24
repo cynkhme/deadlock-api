@@ -1,6 +1,6 @@
 #!/bin/sh
 # Re-records tests/fixtures/*.json from the live server. Run by hand from the
-# maintainer's machine: 19 requests against an ingested match and a known
+# maintainer's machine: 17 requests against an ingested match and a known
 # account, which the server does not rate-limit the way it limits metadata of
 # matches it has not ingested yet. Raw responses are kept in $RAW for review.
 set -eu
