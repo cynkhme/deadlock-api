@@ -40,7 +40,8 @@ fn api() -> Client {
 }
 
 /// Runs one request at a time, a second after the previous one, like
-/// `scripts/record-fixtures.sh`, so parallel test threads never burst.
+/// the repository's `scripts/record-fixtures.sh`, so parallel test threads
+/// never burst.
 fn paced<T>(request: impl FnOnce() -> T) -> T {
     static LAST: Mutex<Option<Instant>> = Mutex::new(None);
     let mut last = LAST.lock().unwrap_or_else(|poisoned| poisoned.into_inner());

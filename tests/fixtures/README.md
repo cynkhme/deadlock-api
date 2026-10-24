@@ -4,7 +4,8 @@ Trimmed real responses from api.deadlock-api.com, recorded 2026-10-24 by
 `scripts/record-fixtures.sh` (match 122539002, account 167576350, region
 Europe, hero 2) unless noted. Each file keeps the full shape of one response
 and a few elements per list, so decoding tests see every field without a
-megabyte of data.
+megabyte of data. The scripts named here are in the `scripts/` directory of
+the repository, which the published crate does not include.
 
 | File | Request | Trim |
 |---|---|---|
