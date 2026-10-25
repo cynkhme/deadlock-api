@@ -49,7 +49,7 @@ fn match_metadata_decodes() {
 fn every_fixture_round_trips_without_shape_drift() {
     use deadlock_api::*;
     type Check = fn(&serde_json::Value) -> Vec<String>;
-    let checks: [(&str, Check); 17] = [
+    let checks: [(&str, Check); 23] = [
         ("match_metadata.json", drift::<MatchMetadata>),
         ("match_salts.json", drift::<MatchSalts>),
         ("active_matches.json", drift::<Vec<ActiveMatch>>),
@@ -70,6 +70,12 @@ fn every_fixture_round_trips_without_shape_drift() {
         ("hero_leaderboard.json", drift::<Leaderboard>),
         ("info.json", drift::<ApiInfo>),
         ("health.json", drift::<Health>),
+        ("assets_heroes.json", drift::<Vec<Hero>>),
+        ("assets_items.json", drift::<Vec<AssetItem>>),
+        ("assets_ranks.json", drift::<Vec<Rank>>),
+        ("patches.json", drift::<Vec<Patch>>),
+        ("patch_feed.json", drift::<Vec<FeedItem>>),
+        ("patch_big_days.json", drift::<Vec<String>>),
     ];
     // An error body, not a model.
     let not_models = ["spectate_url_400.json"];
@@ -360,4 +366,95 @@ fn null_list_decodes_as_an_empty_list() {
         }
     }
     assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
+
+#[test]
+fn assets_decode() {
+    use deadlock_api::{AssetItem, Hero, HeroId, ItemId, ItemKind, ItemSlot, Rank};
+    let heroes: Vec<Hero> = serde_json::from_slice(&fixture("assets_heroes.json")).unwrap();
+    assert_eq!(heroes.len(), 3);
+    assert_eq!(
+        (heroes[0].id, heroes[0].name.as_str()),
+        (HeroId(88), "Baba")
+    );
+    assert!(heroes[0].player_selectable && heroes[0].gender.is_some());
+    assert!(heroes[1].player_selectable && heroes[1].gender.is_none());
+    assert!(!heroes[2].player_selectable);
+    assert!(!heroes[0].images.is_empty() && !heroes[0].items.is_empty());
+
+    let items: Vec<AssetItem> = serde_json::from_slice(&fixture("assets_items.json")).unwrap();
+    let count = |kind: ItemKind| {
+        items
+            .iter()
+            .filter(|i| i.kind() == Some(kind.clone()))
+            .count()
+    };
+    assert_eq!(
+        (
+            count(ItemKind::Ability),
+            count(ItemKind::Upgrade),
+            count(ItemKind::Weapon)
+        ),
+        (2, 2, 3)
+    );
+    let upgrade = items
+        .iter()
+        .find_map(|i| match i {
+            AssetItem::Upgrade(u) => Some(u),
+            _ => None,
+        })
+        .unwrap();
+    assert_eq!(upgrade.id, ItemId(1152158042));
+    assert!(matches!(
+        upgrade.item_slot_type,
+        ItemSlot::Weapon | ItemSlot::Vitality | ItemSlot::Spirit
+    ));
+    assert!(upgrade.cost.is_some() && upgrade.item_tier.is_some());
+
+    let ranks: Vec<Rank> = serde_json::from_slice(&fixture("assets_ranks.json")).unwrap();
+    assert_eq!((ranks[0].tier, ranks[0].name.as_str()), (0, "Obscurus"));
+    assert_eq!((ranks[0].images.len(), ranks[1].images.len()), (4, 40));
+}
+
+/// The fixture's items as JSON, with the first upgrade changed by `edit`.
+fn items_with_upgrade(edit: impl FnOnce(&mut serde_json::Value)) -> Vec<serde_json::Value> {
+    let mut items: Vec<serde_json::Value> =
+        serde_json::from_slice(&fixture("assets_items.json")).unwrap();
+    edit(items.iter_mut().find(|i| i["type"] == "upgrade").unwrap());
+    items
+}
+
+#[test]
+fn an_item_of_an_unknown_type_is_kept_whole() {
+    use deadlock_api::{AssetItem, ItemKind};
+    let items = items_with_upgrade(|u| u["type"] = "consumable".into());
+    let raw = items.iter().find(|i| i["type"] == "consumable").unwrap();
+    let item: AssetItem = serde_json::from_value(raw.clone()).unwrap();
+    assert!(matches!(item, AssetItem::Other(_)), "{item:?}");
+    assert_eq!(item.kind(), Some(ItemKind::Unknown("consumable".into())));
+    assert_eq!(item.id().map(|id| u64::from(id.0)), raw["id"].as_u64());
+    assert_eq!(item.class_name(), raw["class_name"].as_str());
+    assert_eq!(item.name(), raw["name"].as_str());
+    assert_eq!(&serde_json::to_value(&item).unwrap(), raw);
+}
+
+#[test]
+fn a_known_item_with_a_mistyped_field_fails_the_list() {
+    let items = items_with_upgrade(|u| u["cost"] = "free".into());
+    let err = serde_json::from_value::<Vec<deadlock_api::AssetItem>>(items.into()).unwrap_err();
+    assert!(err.to_string().contains("invalid type"), "{err}");
+}
+
+#[test]
+fn patches_decode() {
+    use deadlock_api::{FeedItem, Patch};
+    let patches: Vec<Patch> = serde_json::from_slice(&fixture("patches.json")).unwrap();
+    assert_eq!(patches.len(), 2);
+    assert!(patches[0].category.is_some() && !patches[0].guid.text.is_empty());
+    let feed: Vec<FeedItem> = serde_json::from_slice(&fixture("patch_feed.json")).unwrap();
+    let sources: Vec<_> = feed.iter().map(|f| f.source.as_str()).collect();
+    assert_eq!(sources, ["forum", "steam"]);
+    assert!(feed[0].category.is_some() && feed[1].category.is_none());
+    let days: Vec<String> = serde_json::from_slice(&fixture("patch_big_days.json")).unwrap();
+    assert_eq!(days.len(), 18);
 }

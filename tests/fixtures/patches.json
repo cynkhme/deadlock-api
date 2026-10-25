@@ -1,0 +1,36 @@
+[
+  {
+    "title": "09-29-2026",
+    "pub_date": "2026-10-15T03:12:00Z",
+    "link": "https://forums.playdeadlock.com/threads/09-29-2026.166726/",
+    "guid": {
+      "is_perma_link": false,
+      "text": "urn:xenforo:thread:166726"
+    },
+    "author": "invalid@example.com (Yoshi)",
+    "category": {
+      "domain": "https://forums.playdeadlock.com/forums/changelog.10/",
+      "text": "Changelog"
+    },
+    "dc_creator": "Yoshi",
+    "content_encoded": "<div class=\"bbWrapper\"><div class=\"bbCodeBlock bbCodeBlock--unfurl    js-unfurl fauxBlockLink\"\n\t\tdata-unfurl=\"true\" data-result-id=\"11817\" data-result-token=\"1792884109:0d053c1d70138bc7261329eab443ac8",
+    "slash_comments": "3"
+  },
+  {
+    "title": "09-16-2026 Update",
+    "pub_date": "2026-09-16T22:41:46Z",
+    "link": "https://forums.playdeadlock.com/threads/09-16-2026-update.162572/",
+    "guid": {
+      "is_perma_link": false,
+      "text": "urn:xenforo:thread:162572"
+    },
+    "author": "invalid@example.com (Yoshi)",
+    "category": {
+      "domain": "https://forums.playdeadlock.com/forums/changelog.10/",
+      "text": "Changelog"
+    },
+    "dc_creator": "Yoshi",
+    "content_encoded": "<div class=\"bbWrapper\"><div class=\"bbCodeBlock bbCodeBlock--unfurl    js-unfurl fauxBlockLink\"\n\t\tdata-unfurl=\"true\" data-result-id=\"11569\" data-result-token=\"1792884109:18d7ce1113fa89ed6dbd40f71d65000",
+    "slash_comments": "0"
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "source": "forum",
+    "title": "09-29-2026",
+    "pub_date": "2026-10-15T03:12:00Z",
+    "link": "https://forums.playdeadlock.com/threads/09-29-2026.166726/",
+    "guid": {
+      "is_perma_link": false,
+      "text": "urn:xenforo:thread:166726"
+    },
+    "category": {
+      "domain": "https://forums.playdeadlock.com/forums/changelog.10/",
+      "text": "Changelog"
+    },
+    "content": "<div class=\"bbWrapper\"><div class=\"bbCodeBlock bbCodeBlock--unfurl    js-unfurl fauxBlockLink\"\n\t\tdata-unfurl=\"true\" data-result-id=\"11817\" data-result-token=\"1792886313:8b61cc2d070a020167bbcfa0b5985a7"
+  },
+  {
+    "source": "steam",
+    "title": "Shh... This Won't Hurt a Bit.",
+    "pub_date": "2026-10-20T20:59:53Z",
+    "link": "https://store.steampowered.com/news/app/1422450/view/669505296465396778",
+    "guid": {
+      "is_perma_link": true,
+      "text": "https://store.steampowered.com/news/app/1422450/view/669505296465396778"
+    },
+    "content": "<img src=\"https://clan.fastly.steamstatic.com/images/45164767/11ea258a7732d9a48d1f0b679d4aaf7f51292230/english.png\" data-fallback-src=\"https://clan.fastly.steamstatic.com/images/45164767/11ea258a7732d"
+  }
+]

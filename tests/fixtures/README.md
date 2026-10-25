@@ -31,12 +31,24 @@ this data.
 | `hero_leaderboard.json` | `GET /v1/leaderboard/Europe/2` | `entries` to 3, names replaced by `player-<rank>` |
 | `info.json` | `GET /v1/info` | none |
 | `health.json` | `GET /v1/info/health` | none |
+| `assets_heroes.json` | `GET /v1/assets/heroes` (2026-10-25, full 1.9 MB response) | `scripts/trim-assets.sh`: the selectable hero with the most keys, a selectable hero without `gender`, a hero that cannot be selected |
+| `assets_items.json` | `GET /v1/assets/items` (2026-10-25, full 6.4 MB response) | `scripts/trim-assets.sh`: per type, the fewest items that together carry every key any item of that type has (2 abilities, 2 upgrades, 3 weapons) |
+| `assets_ranks.json` | `GET /v1/assets/ranks` (2026-10-25) | `scripts/trim-assets.sh`: tiers 0 and 1 |
+| `patches.json` | `GET /v1/patches` (2026-10-25) | `scripts/trim-assets.sh`: first 2, `content_encoded` cut to 200 characters |
+| `patch_feed.json` | `GET /v2/patches` (2026-10-25) | `scripts/trim-assets.sh`: the first forum post and the first Steam post, `content` cut to 200 characters |
+| `patch_big_days.json` | `GET /v1/patches/big-days` (2026-10-25) | none |
 
 Facts measured while recording (2026-10-24): `account_ids=1,2` and
 `account_ids=1%2C2` return identical bodies; every account-like id in these
 responses fits `u32`; `/v1/leaderboard/europe` answers 400 (`unknown variant
 europe, expected one of Europe, Asia, NAmerica, SAmerica, Oceania`); no 429
 or 503 was seen.
+
+The asset and patch responses were recorded 2026-10-25 in one session of 9
+requests, one per second, all 200 (the six listed above plus
+`/v1/assets/heroes/1`, `/v1/assets/items/1548066885` and
+`/v1/assets/ranks/1`, which only fed the drift check); every item of the
+full `/v1/assets/items` response decoded into a known type.
 
 Live smoke run (2026-10-24,
 `DEADLOCK_API_LIVE=1 cargo test --test live -- --ignored`): 18 of 18 passed

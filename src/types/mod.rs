@@ -7,10 +7,12 @@
 //! use deadlock_api::types::matches::MatchSalts;
 //! ```
 
+pub mod assets;
 pub mod filters;
 pub mod info;
 pub mod leaderboard;
 pub mod match_metadata;
 pub mod matches;
+pub mod patches;
 pub mod players;
 pub mod steam;

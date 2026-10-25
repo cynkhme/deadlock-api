@@ -81,8 +81,22 @@ With either TLS feature, both clients verify the server certificate against the 
 | `hero_leaderboard(Region, HeroId)` | `GET /v1/leaderboard/{region}/{hero_id}` | `Leaderboard` |
 | `info()` | `GET /v1/info` | `ApiInfo` |
 | `health()` | `GET /v1/info/health` | `Health` |
+| `heroes(&HeroesQuery)` | `GET /v1/assets/heroes` | `Vec<Hero>` |
+| `hero(HeroId, &AssetsQuery)` | `GET /v1/assets/heroes/{id}` | `Hero` |
+| `hero_by_name(&str, &AssetsQuery)` | `GET /v1/assets/heroes/by-name/{name}` | `Hero` |
+| `items(&AssetsQuery)` | `GET /v1/assets/items` | `Vec<AssetItem>` |
+| `item(ItemId, &AssetsQuery)` | `GET /v1/assets/items/{id}` | `AssetItem` |
+| `item_by_class_name(&str, &AssetsQuery)` | `GET /v1/assets/items/{class_name}` | `AssetItem` |
+| `hero_items(HeroId, &AssetsQuery)` | `GET /v1/assets/items/by-hero-id/{id}` | `Vec<AssetItem>` |
+| `items_by_slot(ItemSlot, &AssetsQuery)` | `GET /v1/assets/items/by-slot-type/{slot}` | `Vec<AssetItem>` |
+| `items_by_kind(ItemKind, &AssetsQuery)` | `GET /v1/assets/items/by-type/{kind}` | `Vec<AssetItem>` |
+| `ranks(&AssetsQuery)` | `GET /v1/assets/ranks` | `Vec<Rank>` |
+| `rank(u32, &AssetsQuery)` | `GET /v1/assets/ranks/{tier}` | `Rank` |
+| `patches()` | `GET /v1/patches` | `Vec<Patch>` |
+| `patch_feed()` | `GET /v2/patches` | `Vec<FeedItem>` |
+| `patch_big_days()` | `GET /v1/patches/big-days` | `Vec<String>` |
 
-A method that takes a list of ids returns an empty `Vec` for an empty list without sending a request. Model fields carry the server's JSON names unchanged, so the server's own documentation applies field for field.
+A method that takes a list of ids returns an empty `Vec` for an empty list without sending a request. The asset routes are the game client's own data: `AssetItem` is an ability, an upgrade or a weapon, and an item of a type the crate does not know yet decodes as `AssetItem::Other` with its JSON kept whole. A hero or item name goes into the path percent-encoded; an empty name, `.`, `..` or a name with `/` is refused before sending. Model fields carry the server's JSON names unchanged, so the server's own documentation applies field for field.
 
 Any other route goes through `get_json::<T>(path, query)` or `get_raw(path, query)`, which return the decoded body or the raw bytes and bypass the cache. The path starts with `/` and carries no `?` or `#`; query pairs go in `query`.
 
@@ -122,7 +136,7 @@ With `.retry(RetryPolicy::new(3))` on the builder, a client sends a request up t
 
 ## Tests
 
-`cargo test` runs offline, against responses recorded from the live server in `tests/fixtures/`; every recorded success response must decode into its model and serialize back with all of its fields. The smoke tests in `tests/live.rs` request every typed route once on the live server, 19 requests at one per second, and run the same check on each response, so a field the server renames or retypes fails the test instead of decoding to `None`. They are ignored by default and fail without `DEADLOCK_API_LIVE=1`:
+`cargo test` runs offline, against responses recorded from the live server in `tests/fixtures/`; every recorded success response must decode into its model and serialize back with all of its fields. The smoke tests in `tests/live.rs` request every typed route once on the live server, 33 requests at one per second, and run the same check on each response, so a field the server renames or retypes fails the test instead of decoding to `None`. They are ignored by default and fail without `DEADLOCK_API_LIVE=1`:
 
 ```sh
 DEADLOCK_API_LIVE=1 cargo test --test live -- --ignored

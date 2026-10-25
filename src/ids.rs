@@ -49,6 +49,21 @@ id_newtype! {
     HeroId(u32)
 }
 
+id_newtype! {
+    /// An item id (ability, upgrade or weapon) as used by the game and the
+    /// Assets routes. Match metadata carries item ids as `u64`; convert one
+    /// with `ItemId::try_from`.
+    ItemId(u32)
+}
+
+impl TryFrom<u64> for ItemId {
+    type Error = std::num::TryFromIntError;
+
+    fn try_from(value: u64) -> Result<Self, Self::Error> {
+        u32::try_from(value).map(ItemId)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -62,5 +77,14 @@ mod tests {
         );
         assert_eq!(MatchId::from(5u64).to_string(), "5");
         assert_eq!(HeroId::from(3u32), HeroId(3));
+    }
+
+    #[test]
+    fn item_id_converts_from_u64_within_u32() {
+        assert_eq!(
+            ItemId::try_from(4_284_855_775u64),
+            Ok(ItemId(4_284_855_775))
+        );
+        assert!(ItemId::try_from(u64::from(u32::MAX) + 1).is_err());
     }
 }

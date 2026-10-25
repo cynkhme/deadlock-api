@@ -114,8 +114,12 @@ pub use client::{Client, ClientBuilder, Transport, TransportFuture};
 pub use config::Config;
 pub(crate) use config::ConfigBuilder;
 pub use error::{BoxError, Error, Result};
-pub use ids::{AccountId, HeroId, MatchId};
+pub use ids::{AccountId, HeroId, ItemId, MatchId};
 pub use retry::RetryPolicy;
+pub use types::assets::{
+    AssetAbility, AssetItem, AssetUpgrade, AssetWeapon, AssetsQuery, Hero, HeroDescription,
+    HeroesQuery, ItemKind, ItemSlot, Language, Rank,
+};
 pub use types::filters::{
     ActiveMatchesQuery, EnemyStatsQuery, HeroStatsQuery, MatchFilter, MateStatsQuery,
     SteamSearchQuery,
@@ -129,6 +133,7 @@ pub use types::match_metadata::{
 pub use types::matches::{
     ActiveMatch, ActiveMatchPlayer, MatchSalts, RecentMatch, RecentMatchPlayer, SpectateUrl,
 };
+pub use types::patches::{Category, FeedItem, Guid, Patch};
 pub use types::players::{
     AccountRank, EnemyStats, HeroStats, MatchHistoryEntry, MateStats, RankDistributionEntry,
     RankResponse,

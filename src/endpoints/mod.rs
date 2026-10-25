@@ -1,9 +1,11 @@
 //! One struct per route, each implementing [`Endpoint`](crate::endpoint::Endpoint),
 //! and the macro that gives both clients the same convenience methods.
 
+pub(crate) mod assets;
 pub(crate) mod info;
 pub(crate) mod leaderboard;
 pub(crate) mod matches;
+pub(crate) mod patches;
 pub(crate) mod players;
 pub(crate) mod steam;
 
@@ -80,6 +82,48 @@ macro_rules! endpoint_methods {
                 ""
             plain health() -> Health = $crate::endpoints::info::GetHealth;
                 "Which of the server's backing services answer."
+                ""
+            plain heroes(query: &HeroesQuery) -> Vec<Hero> = $crate::endpoints::assets::ListHeroes { query: query.clone() };
+                "Every hero the game client describes, about 1.9 MB uncompressed."
+                "&HeroesQuery::default()"
+            plain hero(id: HeroId, query: &AssetsQuery) -> Hero = $crate::endpoints::assets::GetHero { id, query: query.clone() };
+                "One hero by id."
+                "HeroId(1), &AssetsQuery::default()"
+            plain hero_by_name(name: &str, query: &AssetsQuery) -> Hero = $crate::endpoints::assets::GetHeroByName { name: name.to_owned(), query: query.clone() };
+                "One hero by name. The name is sent as one percent-encoded path segment; an empty name, `.`, `..` or a name containing `/` is refused with `Error::InvalidRequest`."
+                "\"Lady Geist\", &AssetsQuery::default()"
+            plain items(query: &AssetsQuery) -> Vec<AssetItem> = $crate::endpoints::assets::ListItems { query: query.clone() };
+                "Every ability, upgrade and weapon, about 6.4 MB uncompressed: on a slow link enable the `gzip` feature or raise the timeout."
+                "&AssetsQuery::default()"
+            plain item(id: ItemId, query: &AssetsQuery) -> AssetItem = $crate::endpoints::assets::GetItem { id, query: query.clone() };
+                "One item by id."
+                "ItemId(1548066885), &AssetsQuery::default()"
+            plain item_by_class_name(class_name: &str, query: &AssetsQuery) -> AssetItem = $crate::endpoints::assets::GetItemByClassName { class_name: class_name.to_owned(), query: query.clone() };
+                "One item by class name. It shares its route with [`item`](Self::item): the server reads a class name of digits only as an id. The name is sent as one percent-encoded path segment; an empty name, `.`, `..` or a name containing `/` is refused with `Error::InvalidRequest`."
+                "\"upgrade_clip_size\", &AssetsQuery::default()"
+            plain hero_items(hero: HeroId, query: &AssetsQuery) -> Vec<AssetItem> = $crate::endpoints::assets::ListHeroItems { hero, query: query.clone() };
+                "The items of one hero."
+                "HeroId(1), &AssetsQuery::default()"
+            plain items_by_slot(slot: ItemSlot, query: &AssetsQuery) -> Vec<AssetItem> = $crate::endpoints::assets::ListItemsBySlot { slot, query: query.clone() };
+                "The shop items of one column."
+                "ItemSlot::Spirit, &AssetsQuery::default()"
+            plain items_by_kind(kind: ItemKind, query: &AssetsQuery) -> Vec<AssetItem> = $crate::endpoints::assets::ListItemsByKind { kind, query: query.clone() };
+                "The items of one kind."
+                "ItemKind::Weapon, &AssetsQuery::default()"
+            plain ranks(query: &AssetsQuery) -> Vec<Rank> = $crate::endpoints::assets::ListRanks { query: query.clone() };
+                "Every rank tier with its name, colour and badge images."
+                "&AssetsQuery::default()"
+            plain rank(tier: u32, query: &AssetsQuery) -> Rank = $crate::endpoints::assets::GetRank { tier, query: query.clone() };
+                "One rank tier; tier 0 is the unranked `Obscurus`."
+                "1, &AssetsQuery::default()"
+            plain patches() -> Vec<Patch> = $crate::endpoints::patches::ListPatches;
+                "Patch notes from the forum's changelog feed, newest first."
+                ""
+            plain patch_feed() -> Vec<FeedItem> = $crate::endpoints::patches::ListPatchFeed;
+                "Patch notes from the forum and Steam news together."
+                ""
+            plain patch_big_days() -> Vec<String> = $crate::endpoints::patches::ListBigDays;
+                "The dates of the big patches, RFC 3339 strings as the server sends them."
                 ""
         }
     };
@@ -374,5 +418,152 @@ mod tests {
             url(&search),
             "https://h/v1/players/steam-search?search_query=x+y&limit=3"
         );
+    }
+
+    fn rejected<E: Endpoint>(e: &E) -> String {
+        let cfg = ConfigBuilder::default()
+            .base_url("https://h")
+            .build()
+            .unwrap();
+        match to_request(e, &cfg) {
+            Err(crate::Error::InvalidRequest { message, .. }) => message,
+            other => panic!("{:?}", other.map(|r| r.uri().to_string())),
+        }
+    }
+
+    #[test]
+    fn assets_and_patches_paths_and_queries() {
+        use crate::{AssetsQuery, HeroesQuery, ItemId, ItemKind, ItemSlot, Language};
+        let q = AssetsQuery::default();
+        assert_eq!(
+            url(&assets::ListHeroes {
+                query: HeroesQuery::default()
+            }),
+            "https://h/v1/assets/heroes"
+        );
+        let full = HeroesQuery {
+            assets: AssetsQuery {
+                language: Some(Language::Russian),
+                client_version: Some(6027),
+            },
+            only_active: Some(true),
+        };
+        assert_eq!(
+            url(&assets::ListHeroes { query: full }),
+            "https://h/v1/assets/heroes?language=russian&client_version=6027&only_active=true"
+        );
+        assert_eq!(
+            url(&assets::GetHero {
+                id: HeroId(1),
+                query: q.clone()
+            }),
+            "https://h/v1/assets/heroes/1"
+        );
+        assert_eq!(
+            url(&assets::GetHeroByName {
+                name: "Lady Geist".into(),
+                query: q.clone()
+            }),
+            "https://h/v1/assets/heroes/by-name/Lady%20Geist"
+        );
+        assert_eq!(
+            url(&assets::GetHeroByName {
+                name: "Mo & Krill?#%".into(),
+                query: q.clone()
+            }),
+            "https://h/v1/assets/heroes/by-name/Mo%20%26%20Krill%3F%23%25"
+        );
+        assert_eq!(
+            url(&assets::GetHeroByName {
+                name: "Призрак".into(),
+                query: q.clone()
+            }),
+            "https://h/v1/assets/heroes/by-name/%D0%9F%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA"
+        );
+        assert_eq!(
+            url(&assets::ListItems { query: q.clone() }),
+            "https://h/v1/assets/items"
+        );
+        assert_eq!(
+            url(&assets::GetItem {
+                id: ItemId(1548066885),
+                query: q.clone()
+            }),
+            "https://h/v1/assets/items/1548066885"
+        );
+        assert_eq!(
+            url(&assets::GetItemByClassName {
+                class_name: "upgrade_clip_size".into(),
+                query: q.clone()
+            }),
+            "https://h/v1/assets/items/upgrade_clip_size"
+        );
+        assert_eq!(
+            url(&assets::ListHeroItems {
+                hero: HeroId(7),
+                query: q.clone()
+            }),
+            "https://h/v1/assets/items/by-hero-id/7"
+        );
+        assert_eq!(
+            url(&assets::ListItemsBySlot {
+                slot: ItemSlot::Vitality,
+                query: q.clone()
+            }),
+            "https://h/v1/assets/items/by-slot-type/vitality"
+        );
+        assert_eq!(
+            url(&assets::ListItemsByKind {
+                kind: ItemKind::Upgrade,
+                query: q.clone()
+            }),
+            "https://h/v1/assets/items/by-type/upgrade"
+        );
+        assert_eq!(
+            url(&assets::ListRanks { query: q.clone() }),
+            "https://h/v1/assets/ranks"
+        );
+        assert_eq!(
+            url(&assets::GetRank {
+                tier: 11,
+                query: q.clone()
+            }),
+            "https://h/v1/assets/ranks/11"
+        );
+        assert_eq!(url(&patches::ListPatches), "https://h/v1/patches");
+        assert_eq!(url(&patches::ListPatchFeed), "https://h/v2/patches");
+        assert_eq!(url(&patches::ListBigDays), "https://h/v1/patches/big-days");
+    }
+
+    #[test]
+    fn bad_segments_and_versions_are_refused_before_sending() {
+        use crate::{AssetsQuery, ItemKind};
+        let q = AssetsQuery::default();
+        for name in ["", ".", "..", "a/b"] {
+            let message = rejected(&assets::GetHeroByName {
+                name: name.into(),
+                query: q.clone(),
+            });
+            assert!(message.starts_with("the hero name "), "{name:?}: {message}");
+            rejected(&assets::GetItemByClassName {
+                class_name: name.into(),
+                query: q.clone(),
+            });
+        }
+        rejected(&assets::ListItemsByKind {
+            kind: ItemKind::Unknown("../x".into()),
+            query: q.clone(),
+        });
+        let too_new = AssetsQuery {
+            client_version: Some(u32::try_from(i32::MAX).unwrap() + 1),
+            ..AssetsQuery::default()
+        };
+        let message = rejected(&assets::ListItems { query: too_new });
+        assert!(message.contains("int32"), "{message}");
+        let newest = AssetsQuery {
+            client_version: Some(u32::try_from(i32::MAX).unwrap()),
+            ..AssetsQuery::default()
+        };
+        assert!(url(&assets::ListItems { query: newest }).ends_with("client_version=2147483647"));
     }
 }

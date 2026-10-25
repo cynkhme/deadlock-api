@@ -9,6 +9,7 @@ All notable changes to this crate are listed here. The format follows [Keep a Ch
 - The `gzip` feature, off by default: both clients ask for gzip-compressed responses and decompress them.
 - `FileCache::prune_older_than` and `FileCache::prune_to_size`, which remove cached responses by write time and report what they removed as `Pruned`.
 - `blocking::Transport` and `Transport` (with `TransportFuture` and `BoxError`), and `transport` on both client builders: a client can send its requests through your own HTTP client and keeps the cache, the retry policy, the status mapping and the decoding. `http` 1 is now a public dependency.
+- Typed methods for the asset and patch routes on both clients: `heroes`, `hero`, `hero_by_name`, `items`, `item`, `item_by_class_name`, `hero_items`, `items_by_slot`, `items_by_kind`, `ranks`, `rank`, `patches`, `patch_feed` and `patch_big_days`, with the models `Hero`, `HeroDescription`, `AssetItem` (`AssetAbility`, `AssetUpgrade`, `AssetWeapon`, or `Other` for a type the crate does not know), `Rank`, `Patch`, `FeedItem`, `Guid` and `Category`, the queries `AssetsQuery` and `HeroesQuery`, the string enums `Language`, `ItemSlot` and `ItemKind`, and the id `ItemId`.
 - `RetryPolicy` and `retry` on both client builders. Without a policy every request is sent once, as before; with one, a client retries a 503, a 429 with a `Retry-After` up to `max_wait`, and a connection that failed before the request was sent.
 
 ## [0.1.0] - 2026-10-25

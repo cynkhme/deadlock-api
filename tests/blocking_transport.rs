@@ -9,7 +9,7 @@ use std::time::{Duration, Instant};
 use common::scratch;
 use common::{Scripted, server};
 use deadlock_api::blocking::Client;
-use deadlock_api::{AccountId, Error, MatchId, RetryPolicy};
+use deadlock_api::{AccountId, AssetsQuery, Error, HeroesQuery, ItemKind, MatchId, RetryPolicy};
 
 #[cfg(feature = "fs-cache")]
 const METADATA: &str = r#"{"match_info":{"match_id":42,"duration_s":600,"players":[{"account_id":7,"player_slot":1}]}}"#;
@@ -552,4 +552,42 @@ fn custom_transport_responses_are_cached() {
     }
     assert_eq!(seen.lock().unwrap().len(), 1);
     let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn asset_methods_encode_the_path_and_decode_the_recorded_bodies() {
+    let mock = common::Mock::new(vec![
+        (200, JSON, include_str!("fixtures/assets_heroes.json")),
+        (404, &[], ""),
+        (200, JSON, include_str!("fixtures/assets_items.json")),
+    ]);
+    let seen = mock.seen.clone();
+    let api = mocked(mock);
+    let active = HeroesQuery {
+        only_active: Some(true),
+        ..HeroesQuery::default()
+    };
+    assert_eq!(api.heroes(&active).unwrap().len(), 3);
+    let q = AssetsQuery::default();
+    let err = api.hero_by_name("Mo & Krill", &q).unwrap_err();
+    assert!(err.is_not_found(), "{err:?}");
+    let items = api.items_by_kind(ItemKind::Weapon, &q).unwrap();
+    assert_eq!(items.len(), 7);
+    let err = api.hero_by_name("a/b", &q).unwrap_err();
+    assert!(matches!(err, Error::InvalidRequest { .. }), "{err:?}");
+    let uris: Vec<String> = seen
+        .lock()
+        .unwrap()
+        .iter()
+        .map(|r| r.uri().to_string())
+        .collect();
+    let base = common::NOWHERE;
+    assert_eq!(
+        uris,
+        [
+            format!("{base}/v1/assets/heroes?only_active=true"),
+            format!("{base}/v1/assets/heroes/by-name/Mo%20%26%20Krill"),
+            format!("{base}/v1/assets/items/by-type/weapon"),
+        ]
+    );
 }

@@ -199,3 +199,101 @@ fn info() {
 fn health() {
     let _: Health = checked(&api(), "/v1/info/health", &[]);
 }
+
+#[test]
+#[ignore = "live server; set DEADLOCK_API_LIVE=1"]
+fn heroes() {
+    let heroes: Vec<Hero> = checked(&api(), "/v1/assets/heroes", &[]);
+    assert!(heroes.iter().any(|h| h.id == HeroId(1)));
+}
+
+#[test]
+#[ignore = "live server; set DEADLOCK_API_LIVE=1"]
+fn hero() {
+    let hero: Hero = checked(&api(), "/v1/assets/heroes/1", &[]);
+    assert_eq!(hero.id, HeroId(1));
+}
+
+#[test]
+#[ignore = "live server; set DEADLOCK_API_LIVE=1"]
+fn hero_by_name_with_reserved_characters() {
+    let hero: Hero = checked(&api(), "/v1/assets/heroes/by-name/Mo%20%26%20Krill", &[]);
+    assert_eq!(hero.name, "Mo & Krill");
+}
+
+#[test]
+#[ignore = "live server; set DEADLOCK_API_LIVE=1"]
+fn items() {
+    let items: Vec<AssetItem> = checked(&api(), "/v1/assets/items", &[]);
+    assert!(items.iter().all(|i| !matches!(i, AssetItem::Other(_))));
+}
+
+#[test]
+#[ignore = "live server; set DEADLOCK_API_LIVE=1"]
+fn item() {
+    let item: AssetItem = checked(&api(), "/v1/assets/items/1548066885", &[]);
+    assert_eq!(item.id(), Some(ItemId(1548066885)));
+}
+
+#[test]
+#[ignore = "live server; set DEADLOCK_API_LIVE=1"]
+fn item_by_class_name() {
+    let item: AssetItem = checked(&api(), "/v1/assets/items/upgrade_clip_size", &[]);
+    assert_eq!(item.class_name(), Some("upgrade_clip_size"));
+}
+
+#[test]
+#[ignore = "live server; set DEADLOCK_API_LIVE=1"]
+fn hero_items() {
+    let items: Vec<AssetItem> = checked(&api(), "/v1/assets/items/by-hero-id/7", &[]);
+    assert!(!items.is_empty());
+}
+
+#[test]
+#[ignore = "live server; set DEADLOCK_API_LIVE=1"]
+fn items_by_slot() {
+    let items: Vec<AssetItem> = checked(&api(), "/v1/assets/items/by-slot-type/spirit", &[]);
+    assert!(!items.is_empty());
+}
+
+#[test]
+#[ignore = "live server; set DEADLOCK_API_LIVE=1"]
+fn items_by_kind() {
+    let items: Vec<AssetItem> = checked(&api(), "/v1/assets/items/by-type/weapon", &[]);
+    assert!(items.iter().all(|i| matches!(i, AssetItem::Weapon(_))));
+}
+
+#[test]
+#[ignore = "live server; set DEADLOCK_API_LIVE=1"]
+fn ranks() {
+    let ranks: Vec<Rank> = checked(&api(), "/v1/assets/ranks", &[]);
+    assert!(ranks.iter().any(|r| r.tier == 0));
+}
+
+#[test]
+#[ignore = "live server; set DEADLOCK_API_LIVE=1"]
+fn rank() {
+    let rank: Rank = checked(&api(), "/v1/assets/ranks/1", &[]);
+    assert_eq!(rank.tier, 1);
+}
+
+#[test]
+#[ignore = "live server; set DEADLOCK_API_LIVE=1"]
+fn patches() {
+    let patches: Vec<Patch> = checked(&api(), "/v1/patches", &[]);
+    assert!(!patches.is_empty());
+}
+
+#[test]
+#[ignore = "live server; set DEADLOCK_API_LIVE=1"]
+fn patch_feed() {
+    let feed: Vec<FeedItem> = checked(&api(), "/v2/patches", &[]);
+    assert!(!feed.is_empty());
+}
+
+#[test]
+#[ignore = "live server; set DEADLOCK_API_LIVE=1"]
+fn patch_big_days() {
+    let days: Vec<String> = checked(&api(), "/v1/patches/big-days", &[]);
+    assert!(!days.is_empty());
+}

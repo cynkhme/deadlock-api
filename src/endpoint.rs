@@ -24,6 +24,11 @@ pub(crate) trait Endpoint {
         Vec::new()
     }
 
+    /// Why the request cannot be sent, checked before it is built.
+    fn invalid(&self) -> Option<String> {
+        None
+    }
+
     /// The cache key, only for endpoints whose response never changes.
     fn cache_key(&self) -> Option<String> {
         None
@@ -55,6 +60,12 @@ pub(crate) fn url_for<E: Endpoint>(e: &E, cfg: &Config) -> String {
 /// [`Error::InvalidRequest`] when the path (for example a
 /// [`Region::Unknown`](crate::Region::Unknown) segment) does not form a URL.
 pub(crate) fn to_request<E: Endpoint>(e: &E, cfg: &Config) -> Result<Request<()>> {
+    if let Some(message) = e.invalid() {
+        return Err(Error::InvalidRequest {
+            url: format!("{}{}", cfg.base_url(), e.path()),
+            message,
+        });
+    }
     check_path(cfg, &e.path())?;
     build_request(cfg, &url_for(e, cfg))
 }
@@ -98,6 +109,34 @@ fn check_path(cfg: &Config, path: &str) -> Result<()> {
             "the path must start with `/` and carry no `?` or `#`; pass query pairs separately"
                 .into(),
     })
+}
+
+/// `value` as one path segment: every byte outside RFC 3986's unreserved
+/// characters is percent-encoded, so a hero name such as `Lady Geist` or one
+/// with `&` stays a single segment.
+pub(crate) fn path_segment(value: &str) -> String {
+    let mut out = String::with_capacity(value.len());
+    for byte in value.bytes() {
+        if byte.is_ascii_alphanumeric() || matches!(byte, b'-' | b'.' | b'_' | b'~') {
+            out.push(char::from(byte));
+        } else {
+            out.push_str(&format!("%{byte:02X}"));
+        }
+    }
+    out
+}
+
+/// Why `value` cannot be a path segment, if it cannot: empty, `.` and `..`
+/// would change the route, and `/` is refused rather than encoded so a
+/// caller who meant two segments hears about it.
+pub(crate) fn segment_problem(name: &str, value: &str) -> Option<String> {
+    let problem = match value {
+        "" => "is empty",
+        "." | ".." => "is a dot segment",
+        v if v.contains('/') => "contains `/`",
+        _ => return None,
+    };
+    Some(format!("{name} {problem}"))
 }
 
 /// The request for an arbitrary GET, with the same headers as [`to_request`].

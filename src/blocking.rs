@@ -9,10 +9,11 @@ use serde::de::DeserializeOwned;
 use crate::endpoint::{Endpoint, execute_raw, raw_request, raw_url, run};
 use crate::retry::copy_request;
 use crate::{
-    AccountId, AccountRank, ActiveMatch, ActiveMatchesQuery, ApiInfo, BoxError, Config,
-    ConfigBuilder, EnemyStats, EnemyStatsQuery, Error, Health, HeroId, HeroStats, HeroStatsQuery,
-    Leaderboard, MatchFilter, MatchHistoryEntry, MatchId, MatchMetadata, MatchSalts, MateStats,
-    MateStatsQuery, RankDistributionEntry, RankResponse, RecentMatch, Region, Result, RetryPolicy,
+    AccountId, AccountRank, ActiveMatch, ActiveMatchesQuery, ApiInfo, AssetItem, AssetsQuery,
+    BoxError, Config, ConfigBuilder, EnemyStats, EnemyStatsQuery, Error, FeedItem, Health, Hero,
+    HeroId, HeroStats, HeroStatsQuery, HeroesQuery, ItemId, ItemKind, ItemSlot, Leaderboard,
+    MatchFilter, MatchHistoryEntry, MatchId, MatchMetadata, MatchSalts, MateStats, MateStatsQuery,
+    Patch, Rank, RankDistributionEntry, RankResponse, RecentMatch, Region, Result, RetryPolicy,
     SpectateUrl, SteamProfile, SteamSearchQuery,
 };
 
