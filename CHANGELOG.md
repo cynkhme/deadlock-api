@@ -4,6 +4,10 @@ All notable changes to this crate are listed here. The format follows [Keep a Ch
 
 ## [Unreleased]
 
+### Fixed
+
+- The `RetryPolicy` documentation said every failed name lookup is retried. The blocking client retries one only when it timed out or found no address, not when the system resolver failed; the async client retries a failed lookup.
+
 ## [0.1.1] - 2026-10-25
 
 ### Added

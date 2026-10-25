@@ -391,4 +391,16 @@ mod tests {
             source: "not ureq".into(),
         }));
     }
+
+    // ureq 3 passes a failed getaddrinfo on as Error::Io (src/unversioned/resolver.rs),
+    // of a kind std does not name; RFC 6761 reserves .invalid to fail the lookup.
+    #[test]
+    fn a_name_lookup_the_resolver_fails_is_not_unsent() {
+        use std::net::ToSocketAddrs;
+        let lookup = "deadlock-api.invalid:443".to_socket_addrs().unwrap_err();
+        assert!(!ureq_unsent(&Error::Transport {
+            url: "http://deadlock-api.invalid/".into(),
+            source: Box::new(ureq::Error::Io(lookup)),
+        }));
+    }
 }

@@ -19,8 +19,10 @@ use crate::endpoint::retry_after;
 /// status or a body that does not decode. A cache hit sends nothing and is
 /// never retried. With the built-in transports a failed TLS handshake
 /// counts as connecting for the async client, which retries it, and not for
-/// the blocking client, which does not; a custom transport's errors are
-/// never retried.
+/// the blocking client, which does not. The same split holds for a name
+/// lookup that the system resolver fails: the blocking client retries a
+/// lookup only when it timed out or found no address. A custom transport's
+/// errors are never retried.
 ///
 /// The pause before attempt n + 1 is the larger of the server's
 /// `Retry-After` and `base_delay * 2^(n - 1)` capped at `max_delay`. A
