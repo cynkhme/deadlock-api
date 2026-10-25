@@ -31,7 +31,7 @@ jobs:
         features:
           - ""
           - --no-default-features --features async,rustls
-          - --features blocking,async,rustls,fs-cache
+          - --features blocking,async,rustls,fs-cache,gzip
           - --no-default-features --features blocking,native-tls
           - --no-default-features
     steps:
@@ -50,7 +50,7 @@ jobs:
         features:
           - ""
           - --no-default-features --features async,rustls
-          - --features blocking,async,rustls,fs-cache
+          - --features blocking,async,rustls,fs-cache,gzip
           - --no-default-features --features blocking,async,native-tls,fs-cache
     steps:
       - uses: actions/checkout@v6

@@ -66,6 +66,9 @@
 //!   operating system's trust store (on Linux the system CA bundle, or the
 //!   file named by `SSL_CERT_FILE`).
 //! - `fs-cache`: [`FileCache`], a cache that stores one file per response.
+//! - `gzip`: both clients ask for gzip-compressed responses and decompress
+//!   them. It adds `flate2` and, for the async client, reqwest's
+//!   decompression layer to the dependencies.
 //!
 //! # Minimum supported Rust version
 //!

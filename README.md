@@ -53,6 +53,7 @@ An API key is optional; when set, it is sent in the `X-API-KEY` header and never
 | `async` | no | `deadlock_api::Client` on reqwest; pulls in tokio |
 | `native-tls` | no | the platform TLS stack; with `rustls` also enabled, `rustls` wins |
 | `fs-cache` | no | `FileCache`, one file per cached response |
+| `gzip` | no | gzip-compressed responses for both clients; adds `flate2` |
 
 A client feature without a TLS feature is a compile error. For the async client alone: `cargo add deadlock-api --no-default-features --features async,rustls`.
 

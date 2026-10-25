@@ -252,3 +252,21 @@ async fn raw_path_cannot_move_the_request_off_the_base_host() {
         .unwrap_err();
     assert!(matches!(err, Error::InvalidRequest { .. }), "{err:?}");
 }
+
+#[cfg(feature = "gzip")]
+#[tokio::test]
+async fn gzip_is_asked_for_and_decoded() {
+    let (url, requests) = common::server_bytes(vec![(
+        "200 OK",
+        &[
+            ("Content-Type", "application/json"),
+            ("Content-Encoding", "gzip"),
+        ],
+        common::HEALTH_GZIP.to_vec(),
+    )]);
+    let health = client(&url).health().await.unwrap();
+    assert_eq!(health.services.get("redis"), Some(&true));
+    let seen = requests.lock().unwrap();
+    let accept = seen[0].header("accept-encoding").unwrap_or_default();
+    assert!(accept.contains("gzip"), "{accept:?}");
+}

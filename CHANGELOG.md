@@ -2,6 +2,12 @@
 
 All notable changes to this crate are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the crate follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html): while it is at 0.x, a breaking change raises the minor version.
 
+## [Unreleased]
+
+### Added
+
+- The `gzip` feature, off by default: both clients ask for gzip-compressed responses and decompress them.
+
 ## [0.1.0] - 2026-10-25
 
 ### Added
