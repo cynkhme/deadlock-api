@@ -51,6 +51,7 @@ jobs:
           - ""
           - --no-default-features --features async,rustls
           - --features blocking,async,rustls,fs-cache
+          - --no-default-features --features blocking,async,native-tls,fs-cache
     steps:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
