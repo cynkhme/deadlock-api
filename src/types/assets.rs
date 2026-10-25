@@ -32,7 +32,14 @@ macro_rules! string_enum {
                 $variant,
             )*
             /// A value this crate does not know, kept verbatim and sent as is.
+            /// Build values through `From<String>`, which maps a known spelling
+            /// to its own variant: this one holding a known spelling is unequal to it.
             $other(String),
+        }
+
+        #[cfg(test)]
+        impl $name {
+            const KNOWN: &[$name] = &[$($name::$variant),*];
         }
 
         impl $name {
@@ -567,11 +574,67 @@ pub struct Rank {
     /// The display name in the requested language.
     pub name: String,
     /// The rank colour as the server sends it.
-    pub color: String,
+    pub color: Option<String>,
     /// Badge image URLs by name, per subrank and format: 4 for tier 0, 40
     /// for the others in the sample. The images themselves are served by
     /// `GET /v1/assets/ranks/{tier}/{subrank}/image` as PNG or WebP, which
     /// `get_raw` fetches.
     #[serde(default)]
     pub images: BTreeMap<String, String>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn languages_are_the_openapi_spellings_and_round_trip() {
+        // The `language` enum of the OpenAPI document of 2026-10-24.
+        let openapi = [
+            "brazilian",
+            "bulgarian",
+            "czech",
+            "danish",
+            "dutch",
+            "english",
+            "finnish",
+            "french",
+            "german",
+            "greek",
+            "hungarian",
+            "indonesian",
+            "italian",
+            "japanese",
+            "koreana",
+            "latam",
+            "norwegian",
+            "polish",
+            "portuguese",
+            "romanian",
+            "russian",
+            "schinese",
+            "spanish",
+            "swedish",
+            "tchinese",
+            "thai",
+            "turkish",
+            "ukrainian",
+            "vietnamese",
+        ];
+        let known: Vec<&str> = Language::KNOWN.iter().map(Language::as_str).collect();
+        assert_eq!(known, openapi);
+        for language in Language::KNOWN {
+            assert_eq!(&Language::from(language.as_str().to_owned()), language);
+        }
+        for kind in ItemKind::KNOWN {
+            assert_eq!(&ItemKind::from(kind.as_str().to_owned()), kind);
+        }
+        for slot in ItemSlot::KNOWN {
+            assert_eq!(&ItemSlot::from(slot.as_str().to_owned()), slot);
+        }
+        assert_eq!(
+            Language::from("klingon".to_owned()),
+            Language::Other("klingon".into())
+        );
+    }
 }

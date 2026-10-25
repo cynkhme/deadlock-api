@@ -458,3 +458,30 @@ fn patches_decode() {
     let days: Vec<String> = serde_json::from_slice(&fixture("patch_big_days.json")).unwrap();
     assert_eq!(days.len(), 18);
 }
+
+#[test]
+fn a_patch_or_rank_without_its_descriptive_strings_still_decodes() {
+    use deadlock_api::{Patch, Rank};
+    let mut patches: serde_json::Value = serde_json::from_slice(&fixture("patches.json")).unwrap();
+    let first = patches[0].as_object_mut().unwrap();
+    for key in ["author", "dc_creator", "content_encoded", "slash_comments"] {
+        first.remove(key);
+    }
+    first["guid"]
+        .as_object_mut()
+        .unwrap()
+        .remove("is_perma_link");
+    let patches: Vec<Patch> = serde_json::from_value(patches).unwrap();
+    assert_eq!(patches.len(), 2);
+    assert_eq!(
+        (patches[0].author.as_ref(), patches[0].guid.is_perma_link),
+        (None, None)
+    );
+    assert!(patches[1].slash_comments.is_some());
+
+    let mut ranks: serde_json::Value =
+        serde_json::from_slice(&fixture("assets_ranks.json")).unwrap();
+    ranks[0].as_object_mut().unwrap().remove("color");
+    let ranks: Vec<Rank> = serde_json::from_value(ranks).unwrap();
+    assert_eq!((ranks.len(), ranks[0].color.as_ref()), (2, None));
+}

@@ -111,6 +111,10 @@ fn check_path(cfg: &Config, path: &str) -> Result<()> {
     })
 }
 
+/// The largest response body the built-in transports read, 64 MiB: ten
+/// times the 6.4 MB `/v1/assets/items` of the 2026-10-25 sample.
+pub(crate) const MAX_BODY_BYTES: u64 = 64 * 1024 * 1024;
+
 /// `value` as one path segment: every byte outside RFC 3986's unreserved
 /// characters is percent-encoded, so a hero name such as `Lady Geist` or one
 /// with `&` stays a single segment.

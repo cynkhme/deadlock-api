@@ -89,7 +89,8 @@ impl FileCache {
     /// foreign JSON file in the directory is removed like a cached response.
     /// Symbolic links are neither followed nor removed, and directories are
     /// kept even when empty. A file written while the prune runs may be
-    /// removed with the rest. A missing directory prunes nothing.
+    /// removed with the rest. A write time in the future counts as no age,
+    /// so such a file is kept. A missing directory prunes nothing.
     ///
     /// # Errors
     ///
@@ -175,7 +176,8 @@ pub struct Pruned {
 
 #[cfg(feature = "fs-cache")]
 impl Pruned {
-    /// Removes `file` and counts it; false when it could not be removed.
+    /// Removes `file` and counts it; true when the file is gone, also when
+    /// something else removed it first, false when it could not be removed.
     fn remove(&mut self, file: &CachedFile) -> bool {
         match std::fs::remove_file(&file.path) {
             Ok(()) => {
@@ -183,10 +185,9 @@ impl Pruned {
                 self.bytes += file.len;
                 true
             }
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => true,
             Err(e) => {
-                if e.kind() != std::io::ErrorKind::NotFound {
-                    log::warn!("cache prune: cannot remove {}: {e}", file.path.display());
-                }
+                log::warn!("cache prune: cannot remove {}: {e}", file.path.display());
                 false
             }
         }
@@ -516,25 +517,44 @@ mod tests {
 
     #[test]
     fn prune_removes_only_stale_temp_files_of_put() {
-        let dir = scratch("prune-temp");
-        write_aged(&dir, "m/x.json.123.4.tmp", 7, 2 * HOUR);
-        let kept = [
-            "m/y.json.123.5.tmp",
-            "m/z.json.abc.1.tmp",
-            "m/w.txt.1.2.tmp",
-            "notes.txt",
+        let prunes: [fn(&FileCache) -> std::io::Result<Pruned>; 2] = [
+            |c| c.prune_older_than(100 * HOUR),
+            |c| c.prune_to_size(u64::MAX),
         ];
-        write_aged(&dir, kept[0], 1, Duration::ZERO);
-        for rel in &kept[1..] {
-            write_aged(&dir, rel, 1, 2 * HOUR);
+        for prune in prunes {
+            let dir = scratch("prune-temp");
+            write_aged(&dir, "m/x.json.123.4.tmp", 7, 2 * HOUR);
+            let kept = [
+                "m/y.json.123.5.tmp",
+                "m/z.json.abc.1.tmp",
+                "m/w.txt.1.2.tmp",
+                "notes.txt",
+                "notes.tmp",
+            ];
+            write_aged(&dir, kept[0], 1, Duration::ZERO);
+            for rel in &kept[1..] {
+                write_aged(&dir, rel, 1, 2 * HOUR);
+            }
+            let pruned = prune(&FileCache::new(&dir)).unwrap();
+            assert_eq!((pruned.files, pruned.bytes), (1, 7));
+            assert!(!dir.join("m/x.json.123.4.tmp").exists());
+            for rel in kept {
+                assert!(dir.join(rel).is_file(), "{rel}");
+            }
+            let _ = std::fs::remove_dir_all(&dir);
         }
-        let pruned = FileCache::new(&dir).prune_to_size(u64::MAX).unwrap();
-        assert_eq!((pruned.files, pruned.bytes), (1, 7));
-        assert!(!dir.join("m/x.json.123.4.tmp").exists());
-        for rel in kept {
-            assert!(dir.join(rel).is_file(), "{rel}");
-        }
-        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn a_file_removed_by_someone_else_is_gone_but_not_counted() {
+        let gone = CachedFile {
+            path: scratch("prune-gone").join("a.json"),
+            len: 100,
+            modified: SystemTime::now(),
+        };
+        let mut pruned = Pruned::default();
+        assert!(pruned.remove(&gone));
+        assert_eq!(pruned, Pruned::default());
     }
 
     #[test]
@@ -556,10 +576,12 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         std::os::unix::fs::symlink(&outside, dir.join("linked")).unwrap();
         std::os::unix::fs::symlink(outside.join("old.json"), dir.join("l.json")).unwrap();
-        let pruned = FileCache::new(&dir)
-            .prune_older_than(Duration::ZERO)
-            .unwrap();
-        assert_eq!(pruned, Pruned::default());
+        let cache = FileCache::new(&dir);
+        assert_eq!(
+            cache.prune_older_than(Duration::ZERO).unwrap(),
+            Pruned::default()
+        );
+        assert_eq!(cache.prune_to_size(0).unwrap(), Pruned::default());
         assert!(outside.join("old.json").is_file());
         assert!(dir.join("l.json").symlink_metadata().is_ok());
         let _ = std::fs::remove_dir_all(&dir);

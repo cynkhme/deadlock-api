@@ -53,7 +53,7 @@ An API key is optional; when set, it is sent in the `X-API-KEY` header and never
 | `async` | no | `deadlock_api::Client` on reqwest; pulls in tokio |
 | `native-tls` | no | the platform TLS stack; with `rustls` also enabled, `rustls` wins |
 | `fs-cache` | no | `FileCache`, one file per cached response |
-| `gzip` | no | gzip-compressed responses for both clients; adds `flate2` |
+| `gzip` | no | gzip-compressed responses through both clients' built-in transports; adds `flate2`, and reqwest's decompression layer for the async client |
 
 A client feature without a TLS feature is a compile error. For the async client alone: `cargo add deadlock-api --no-default-features --features async,rustls`.
 
@@ -114,7 +114,7 @@ let api = Client::builder().cache(FileCache::new("cache/")).build()?;
 
 ## Your own HTTP client
 
-Each client sends its requests through a `Transport`: `blocking::Transport` for the blocking client, `Transport` for the async one. Pass your own to the builder with `.transport(...)` and ureq or reqwest is not used. The client still builds every request and keeps the cache, the retry policy, the status mapping and the decoding, so a transport that serves recorded responses runs your whole flow in a test without a network. The builder's timeouts do not apply to a custom transport, and its errors come back as `Error::Transport` and are never retried. The async client still needs a tokio runtime, and the `blocking` or `async` feature still compiles ureq or reqwest.
+Each client sends its requests through a `Transport`: `blocking::Transport` for the blocking client, `Transport` for the async one. Pass your own to the builder with `.transport(...)` and ureq or reqwest is not used. The client still builds every request and keeps the cache, the retry policy, the status mapping and the decoding, so a transport that serves recorded responses runs your whole flow in a test without a network. The builder's timeouts, the `gzip` feature, the 64 MiB body limit and the redirect policy belong to the built-in transports and do not apply to a custom one, and its errors come back as `Error::Transport` and are never retried. The async client still needs a tokio runtime, with the time driver when it retries, and the `blocking` or `async` feature still compiles ureq or reqwest.
 
 ## Errors
 
@@ -130,7 +130,7 @@ match api.player_rank(AccountId(167576350)) {
 }
 ```
 
-A 404 is `Error::NotFound`, other statuses are `Error::Status` with the server's error message and the start of the body. Redirects are not followed, so the API key never reaches another host.
+A 404 is `Error::NotFound`, other statuses are `Error::Status` with the server's error message and the start of the body. The built-in transports do not follow redirects, so the API key never reaches another host.
 
 With `.retry(RetryPolicy::new(3))` on the builder, a client sends a request up to three times in all. It retries a 503, a 429 whose `Retry-After` is at most a minute (`max_wait`), and a connection that failed before the request was sent. A 429 without `Retry-After` and a timeout after sending are returned at once, because the server may already have counted the request against its hourly limit. The pauses double from one second up to 30 seconds and never undercut the server's `Retry-After`.
 

@@ -27,8 +27,9 @@ compile_error!("deadlock-api: the `blocking` feature needs `rustls` or `native-t
 /// A blocking client: one connection pool, one [`Config`], one optional cache.
 ///
 /// Cheap to clone (the pool is shared). Build it with [`Client::builder`] or
-/// [`Client::new`] for the defaults. Redirects are not followed: a 3xx comes
-/// back as [`Error::Status`], so the API key is never re-sent to another host.
+/// [`Client::new`] for the defaults. The built-in transport does not follow
+/// redirects: a 3xx comes back as [`Error::Status`], so the API key is never
+/// re-sent to another host.
 ///
 /// # Examples
 ///
@@ -68,8 +69,8 @@ impl std::fmt::Debug for Client {
 /// `User-Agent`) and keeps everything around the exchange: the cache, the
 /// retry policy, the mapping of statuses onto [`Error`] and the decoding. A
 /// transport set with [`ClientBuilder::transport`] replaces ureq, so the
-/// timeouts are its own business, and it should not follow redirects, or the
-/// API key goes along to the other host. Its error becomes
+/// timeouts, gzip and the 64 MiB body limit are its own business, and it
+/// should not follow redirects, or the API key goes along to the other host. Its error becomes
 /// [`Error::Transport`] and is never retried: the client cannot tell whether
 /// the request reached the server.
 ///
@@ -108,13 +109,35 @@ pub trait Transport: Send + Sync {
     fn send(&self, request: Request<()>) -> std::result::Result<Response<Bytes>, BoxError>;
 }
 
+impl<T: Transport + ?Sized> Transport for &T {
+    fn send(&self, request: Request<()>) -> std::result::Result<Response<Bytes>, BoxError> {
+        (**self).send(request)
+    }
+}
+
+impl<T: Transport + ?Sized> Transport for Box<T> {
+    fn send(&self, request: Request<()>) -> std::result::Result<Response<Bytes>, BoxError> {
+        (**self).send(request)
+    }
+}
+
+impl<T: Transport + ?Sized> Transport for Arc<T> {
+    fn send(&self, request: Request<()>) -> std::result::Result<Response<Bytes>, BoxError> {
+        (**self).send(request)
+    }
+}
+
 /// The built-in transport.
 struct Ureq(ureq::Agent);
 
 impl Transport for Ureq {
     fn send(&self, request: Request<()>) -> std::result::Result<Response<Bytes>, BoxError> {
         let mut resp = self.0.run(request)?;
-        let body = resp.body_mut().read_to_vec()?;
+        let body = resp
+            .body_mut()
+            .with_config()
+            .limit(crate::endpoint::MAX_BODY_BYTES)
+            .read_to_vec()?;
         Ok(resp.map(|_| Bytes::from(body)))
     }
 }
@@ -176,9 +199,8 @@ impl ClientBuilder {
 
 /// The ureq agent of a client without a custom transport.
 fn ureq_agent(config: &Config) -> ureq::Agent {
-    // ureq 3 defaults to RootCerts::WebPki (bundled roots), and with
-    // native-tls it also switches the OS roots off; reqwest trusts the
-    // OS store.
+    // ureq 3 defaults to its bundled WebPki roots (and turns the OS roots off
+    // under native-tls); reqwest trusts the OS store, so both use it here.
     let tls = ureq::tls::TlsConfig::builder()
         .provider(TLS_PROVIDER)
         .root_certs(ureq::tls::RootCerts::PlatformVerifier)

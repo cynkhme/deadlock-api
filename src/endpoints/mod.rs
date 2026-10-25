@@ -12,7 +12,7 @@ pub(crate) mod steam;
 /// The `# Errors` section shared by every convenience method.
 macro_rules! errors_doc {
     () => {
-        "# Errors\n\n[`Error::NotFound`](crate::Error::NotFound) when the server has no data for the request; [`Error::RateLimited`](crate::Error::RateLimited) and [`Error::Overloaded`](crate::Error::Overloaded) on 429 and 503, with the server's `Retry-After` when it sent one; [`Error::Status`](crate::Error::Status) on any other non-2xx; [`Error::Transport`](crate::Error::Transport) when no response arrived; [`Error::Decode`](crate::Error::Decode) when the body is not the expected JSON; [`Error::InvalidRequest`](crate::Error::InvalidRequest) when an argument does not form a URL."
+        "# Errors\n\n[`Error::NotFound`](crate::Error::NotFound) when the server has no data for the request; [`Error::RateLimited`](crate::Error::RateLimited) and [`Error::Overloaded`](crate::Error::Overloaded) on 429 and 503, with the server's `Retry-After` when it sent one; [`Error::Status`](crate::Error::Status) on any other non-2xx; [`Error::Transport`](crate::Error::Transport) when no response arrived, or its body exceeds the built-in transport's 64 MiB limit; [`Error::Decode`](crate::Error::Decode) when the body is not the expected JSON; [`Error::InvalidRequest`](crate::Error::InvalidRequest) when an argument does not form a URL."
     };
 }
 pub(crate) use errors_doc;
@@ -84,22 +84,22 @@ macro_rules! endpoint_methods {
                 "Which of the server's backing services answer."
                 ""
             plain heroes(query: &HeroesQuery) -> Vec<Hero> = $crate::endpoints::assets::ListHeroes { query: query.clone() };
-                "Every hero the game client describes, about 1.9 MB uncompressed."
+                "Every hero the game client describes.\n\nThe response was 1.9 MB uncompressed in the 2026-10-25 sample."
                 "&HeroesQuery::default()"
             plain hero(id: HeroId, query: &AssetsQuery) -> Hero = $crate::endpoints::assets::GetHero { id, query: query.clone() };
                 "One hero by id."
                 "HeroId(1), &AssetsQuery::default()"
             plain hero_by_name(name: &str, query: &AssetsQuery) -> Hero = $crate::endpoints::assets::GetHeroByName { name: name.to_owned(), query: query.clone() };
-                "One hero by name. The name is sent as one percent-encoded path segment; an empty name, `.`, `..` or a name containing `/` is refused with `Error::InvalidRequest`."
+                "One hero by name.\n\nThe name is sent as one percent-encoded path segment; an empty name, `.`, `..` or a name containing `/` is refused with `Error::InvalidRequest`."
                 "\"Lady Geist\", &AssetsQuery::default()"
             plain items(query: &AssetsQuery) -> Vec<AssetItem> = $crate::endpoints::assets::ListItems { query: query.clone() };
-                "Every ability, upgrade and weapon, about 6.4 MB uncompressed: on a slow link enable the `gzip` feature or raise the timeout."
+                "Every ability, upgrade and weapon.\n\nThe response was 6.4 MB uncompressed in the 2026-10-25 sample: on a slow link enable the `gzip` feature or raise the timeout."
                 "&AssetsQuery::default()"
             plain item(id: ItemId, query: &AssetsQuery) -> AssetItem = $crate::endpoints::assets::GetItem { id, query: query.clone() };
                 "One item by id."
                 "ItemId(1548066885), &AssetsQuery::default()"
             plain item_by_class_name(class_name: &str, query: &AssetsQuery) -> AssetItem = $crate::endpoints::assets::GetItemByClassName { class_name: class_name.to_owned(), query: query.clone() };
-                "One item by class name. It shares its route with [`item`](Self::item): the server reads a class name of digits only as an id. The name is sent as one percent-encoded path segment; an empty name, `.`, `..` or a name containing `/` is refused with `Error::InvalidRequest`."
+                "One item by class name.\n\nIt shares its route with [`item`](Self::item): the server reads a class name of digits only as an id. The name is sent as one percent-encoded path segment; an empty name, `.`, `..` or a name containing `/` is refused with `Error::InvalidRequest`."
                 "\"upgrade_clip_size\", &AssetsQuery::default()"
             plain hero_items(hero: HeroId, query: &AssetsQuery) -> Vec<AssetItem> = $crate::endpoints::assets::ListHeroItems { hero, query: query.clone() };
                 "The items of one hero."

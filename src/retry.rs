@@ -17,6 +17,9 @@ use crate::endpoint::retry_after;
 /// sent is not retried, since the server may already have counted it against
 /// the hourly limit; neither is a 429 without `Retry-After`, a 404, any other
 /// status or a body that does not decode. A cache hit sends nothing and is
+/// never retried. With the built-in transports a failed TLS handshake
+/// counts as connecting for the async client, which retries it, and not for
+/// the blocking client, which does not; a custom transport's errors are
 /// never retried.
 ///
 /// The pause before attempt n + 1 is the larger of the server's
@@ -24,7 +27,8 @@ use crate::endpoint::retry_after;
 /// `Retry-After` above `max_wait` ends the retries at once, so the caller
 /// gets the error and decides by [`Error::retry_after`]. There is no jitter:
 /// the crate has no random number generator, so clients started together
-/// retry together.
+/// retry together. The async client sleeps on tokio's timer, so its runtime
+/// needs the time driver.
 ///
 /// # Examples
 ///

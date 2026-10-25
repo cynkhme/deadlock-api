@@ -383,20 +383,25 @@ fn rate_limit_beyond_max_wait_returns_at_once() {
 }
 
 #[test]
-fn zero_retry_after_still_pauses_for_the_backoff() {
+fn a_zero_or_past_retry_after_still_pauses_for_the_backoff() {
     let (url, requests) = server(vec![
+        (
+            "429 Too Many Requests",
+            &[("Retry-After", "Wed, 21 Oct 2015 07:28:00 GMT")],
+            "",
+        ),
         ("429 Too Many Requests", &[("Retry-After", "0")], ""),
         HEALTHY,
     ]);
-    let policy = RetryPolicy::new(2).base_delay(Duration::from_millis(200));
+    let policy = RetryPolicy::new(3).base_delay(Duration::from_millis(200));
     let start = Instant::now();
     retrying(&url, policy).health().unwrap();
     assert!(
-        start.elapsed() >= Duration::from_millis(200),
+        start.elapsed() >= Duration::from_millis(600),
         "{:?}",
         start.elapsed()
     );
-    assert_eq!(requests.lock().unwrap().len(), 2);
+    assert_eq!(requests.lock().unwrap().len(), 3);
 }
 
 #[test]
@@ -590,4 +595,37 @@ fn asset_methods_encode_the_path_and_decode_the_recorded_bodies() {
             format!("{base}/v1/assets/items/by-type/weapon"),
         ]
     );
+}
+
+#[test]
+fn a_body_over_64_mib_is_refused_and_one_over_10_mib_is_read() {
+    const MIB: usize = 1024 * 1024;
+    let (url, _) = common::server_bytes(vec![
+        ("200 OK", &[], vec![b'x'; 11 * MIB]),
+        ("200 OK", &[], vec![b'x'; 64 * MIB + 1]),
+    ]);
+    let api = Client::builder().base_url(&url).build().unwrap();
+    assert_eq!(api.get_raw("/v1/x", &[]).unwrap().len(), 11 * MIB);
+    let err = api.get_raw("/v1/x", &[]).unwrap_err();
+    assert!(matches!(err, Error::Transport { .. }), "{err:?}");
+}
+
+#[test]
+fn a_shared_or_boxed_transport_is_a_transport() {
+    let shared = std::sync::Arc::new(common::Mock::new(vec![(200, JSON, r#"{"services":{}}"#)]));
+    let api = Client::builder()
+        .base_url(common::NOWHERE)
+        .transport(shared.clone())
+        .build()
+        .unwrap();
+    api.health().unwrap();
+    assert_eq!(shared.seen.lock().unwrap().len(), 1);
+    let boxed: Box<dyn deadlock_api::blocking::Transport> =
+        Box::new(common::Mock::new(vec![(404, &[], "")]));
+    let api = Client::builder()
+        .base_url(common::NOWHERE)
+        .transport(boxed)
+        .build()
+        .unwrap();
+    assert!(api.health().unwrap_err().is_not_found());
 }

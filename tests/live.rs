@@ -1,9 +1,11 @@
 //! Smoke tests against the live api.deadlock-api.com: every typed route once,
 //! on an ingested match, a match the server fetched recently and a known
-//! account. Each response is fetched raw, decoded into its model and run
-//! through the shape guard, so a field the server renames or retypes fails
-//! the test instead of decoding to `None`. The typed methods' URLs are pinned
-//! offline in `src/endpoints/mod.rs`. They are ignored by default and fail
+//! account. Each response is decoded into its model and run through the
+//! shape guard, so a field the server renames or retypes fails the test
+//! instead of decoding to `None`. The match and player routes are fetched
+//! raw, their typed URLs pinned offline in `src/endpoints/mod.rs`; the Assets
+//! and Patches routes go through the typed method and a transport that
+//! records the body it received. They are ignored by default and fail
 //! unless `DEADLOCK_API_LIVE=1`:
 //!
 //! ```sh
@@ -13,11 +15,13 @@
 
 mod shape;
 
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
-use deadlock_api::blocking::Client;
+use bytes::Bytes;
+use deadlock_api::blocking::{Client, ClientBuilder, Transport};
 use deadlock_api::*;
+use http::{Request, Response};
 use serde::Serialize;
 use serde::de::DeserializeOwned;
 
@@ -25,18 +29,79 @@ const MATCH: MatchId = MatchId(122539002);
 const ACCOUNT: AccountId = AccountId(167576350);
 const ACCOUNT2: AccountId = AccountId(3226752420);
 
-/// The client; panics unless the live tests are switched on, so a run with
-/// `--ignored` but without the variable cannot pass on zero requests.
-fn api() -> Client {
+/// The client builder; panics unless the live tests are switched on, so a
+/// run with `--ignored` but without the variable cannot pass on zero requests.
+fn builder() -> ClientBuilder {
     assert_eq!(
         std::env::var("DEADLOCK_API_LIVE").as_deref(),
         Ok("1"),
         "set DEADLOCK_API_LIVE=1 to run the live tests"
     );
-    Client::builder()
-        .user_agent("deadlock-api-rs/live-tests")
-        .build()
-        .unwrap()
+    Client::builder().user_agent("deadlock-api-rs/live-tests")
+}
+
+fn api() -> Client {
+    builder().build().unwrap()
+}
+
+/// A ureq transport that keeps the last body it received, so a typed call's
+/// response can go through the shape guard.
+struct Recording {
+    agent: ureq::Agent,
+    last: Mutex<Option<Bytes>>,
+}
+
+impl Recording {
+    fn new() -> Self {
+        // The same TLS setup as the built-in transport: the OS trust store.
+        #[cfg(feature = "rustls")]
+        let provider = ureq::tls::TlsProvider::Rustls;
+        #[cfg(not(feature = "rustls"))]
+        let provider = ureq::tls::TlsProvider::NativeTls;
+        let tls = ureq::tls::TlsConfig::builder()
+            .provider(provider)
+            .root_certs(ureq::tls::RootCerts::PlatformVerifier)
+            .build();
+        let agent = ureq::Agent::config_builder()
+            .tls_config(tls)
+            .http_status_as_error(false)
+            .max_redirects(0)
+            .timeout_connect(Some(Duration::from_secs(10)))
+            .timeout_global(Some(Duration::from_secs(60)))
+            .build()
+            .new_agent();
+        Self {
+            agent,
+            last: Mutex::new(None),
+        }
+    }
+}
+
+impl Transport for Recording {
+    fn send(&self, request: Request<()>) -> Result<Response<Bytes>, BoxError> {
+        let mut resp = self.agent.run(request)?;
+        let body = resp
+            .body_mut()
+            .with_config()
+            .limit(64 * 1024 * 1024)
+            .read_to_vec()?;
+        let body = Bytes::from(body);
+        *self.last.lock().unwrap() = Some(body.clone());
+        Ok(resp.map(|_| body))
+    }
+}
+
+/// Makes one typed call, asserts the model carries every field of the body
+/// it decoded from and returns the value.
+fn typed<T: DeserializeOwned + Serialize>(call: impl FnOnce(&Client) -> Result<T>) -> T {
+    let recording = Arc::new(Recording::new());
+    let api = builder().transport(recording.clone()).build().unwrap();
+    let value = paced(|| call(&api)).unwrap();
+    let body = recording.last.lock().unwrap().take().unwrap();
+    let raw: serde_json::Value = serde_json::from_slice(&body).unwrap();
+    let diffs = shape::drift::<T>(&raw);
+    assert!(diffs.is_empty(), "shape drift:\n{}", diffs.join("\n"));
+    value
 }
 
 /// Runs one request at a time, a second after the previous one, like
@@ -203,97 +268,97 @@ fn health() {
 #[test]
 #[ignore = "live server; set DEADLOCK_API_LIVE=1"]
 fn heroes() {
-    let heroes: Vec<Hero> = checked(&api(), "/v1/assets/heroes", &[]);
+    let heroes = typed(|api| api.heroes(&HeroesQuery::default()));
     assert!(heroes.iter().any(|h| h.id == HeroId(1)));
 }
 
 #[test]
 #[ignore = "live server; set DEADLOCK_API_LIVE=1"]
 fn hero() {
-    let hero: Hero = checked(&api(), "/v1/assets/heroes/1", &[]);
+    let hero = typed(|api| api.hero(HeroId(1), &AssetsQuery::default()));
     assert_eq!(hero.id, HeroId(1));
 }
 
 #[test]
 #[ignore = "live server; set DEADLOCK_API_LIVE=1"]
 fn hero_by_name_with_reserved_characters() {
-    let hero: Hero = checked(&api(), "/v1/assets/heroes/by-name/Mo%20%26%20Krill", &[]);
+    let hero = typed(|api| api.hero_by_name("Mo & Krill", &AssetsQuery::default()));
     assert_eq!(hero.name, "Mo & Krill");
 }
 
 #[test]
 #[ignore = "live server; set DEADLOCK_API_LIVE=1"]
 fn items() {
-    let items: Vec<AssetItem> = checked(&api(), "/v1/assets/items", &[]);
+    let items = typed(|api| api.items(&AssetsQuery::default()));
     assert!(items.iter().all(|i| !matches!(i, AssetItem::Other(_))));
 }
 
 #[test]
 #[ignore = "live server; set DEADLOCK_API_LIVE=1"]
 fn item() {
-    let item: AssetItem = checked(&api(), "/v1/assets/items/1548066885", &[]);
+    let item = typed(|api| api.item(ItemId(1548066885), &AssetsQuery::default()));
     assert_eq!(item.id(), Some(ItemId(1548066885)));
 }
 
 #[test]
 #[ignore = "live server; set DEADLOCK_API_LIVE=1"]
 fn item_by_class_name() {
-    let item: AssetItem = checked(&api(), "/v1/assets/items/upgrade_clip_size", &[]);
+    let item = typed(|api| api.item_by_class_name("upgrade_clip_size", &AssetsQuery::default()));
     assert_eq!(item.class_name(), Some("upgrade_clip_size"));
 }
 
 #[test]
 #[ignore = "live server; set DEADLOCK_API_LIVE=1"]
 fn hero_items() {
-    let items: Vec<AssetItem> = checked(&api(), "/v1/assets/items/by-hero-id/7", &[]);
+    let items = typed(|api| api.hero_items(HeroId(7), &AssetsQuery::default()));
     assert!(!items.is_empty());
 }
 
 #[test]
 #[ignore = "live server; set DEADLOCK_API_LIVE=1"]
 fn items_by_slot() {
-    let items: Vec<AssetItem> = checked(&api(), "/v1/assets/items/by-slot-type/spirit", &[]);
+    let items = typed(|api| api.items_by_slot(ItemSlot::Spirit, &AssetsQuery::default()));
     assert!(!items.is_empty());
 }
 
 #[test]
 #[ignore = "live server; set DEADLOCK_API_LIVE=1"]
 fn items_by_kind() {
-    let items: Vec<AssetItem> = checked(&api(), "/v1/assets/items/by-type/weapon", &[]);
+    let items = typed(|api| api.items_by_kind(ItemKind::Weapon, &AssetsQuery::default()));
     assert!(items.iter().all(|i| matches!(i, AssetItem::Weapon(_))));
 }
 
 #[test]
 #[ignore = "live server; set DEADLOCK_API_LIVE=1"]
 fn ranks() {
-    let ranks: Vec<Rank> = checked(&api(), "/v1/assets/ranks", &[]);
+    let ranks = typed(|api| api.ranks(&AssetsQuery::default()));
     assert!(ranks.iter().any(|r| r.tier == 0));
 }
 
 #[test]
 #[ignore = "live server; set DEADLOCK_API_LIVE=1"]
 fn rank() {
-    let rank: Rank = checked(&api(), "/v1/assets/ranks/1", &[]);
+    let rank = typed(|api| api.rank(1, &AssetsQuery::default()));
     assert_eq!(rank.tier, 1);
 }
 
 #[test]
 #[ignore = "live server; set DEADLOCK_API_LIVE=1"]
 fn patches() {
-    let patches: Vec<Patch> = checked(&api(), "/v1/patches", &[]);
+    let patches = typed(Client::patches);
     assert!(!patches.is_empty());
 }
 
 #[test]
 #[ignore = "live server; set DEADLOCK_API_LIVE=1"]
 fn patch_feed() {
-    let feed: Vec<FeedItem> = checked(&api(), "/v2/patches", &[]);
+    let feed = typed(Client::patch_feed);
     assert!(!feed.is_empty());
 }
 
 #[test]
 #[ignore = "live server; set DEADLOCK_API_LIVE=1"]
 fn patch_big_days() {
-    let days: Vec<String> = checked(&api(), "/v1/patches/big-days", &[]);
+    let days = typed(Client::patch_big_days);
     assert!(!days.is_empty());
 }
