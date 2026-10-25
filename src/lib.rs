@@ -56,6 +56,33 @@
 //! parameter is not sent, and the structs are plain, so
 //! `MatchFilter { min_duration_s: Some(600), ..Default::default() }` works.
 //!
+//! A `#[non_exhaustive]` model cannot be built with a struct literal outside
+//! the crate, so a consumer's test builds it from JSON. [`MatchMetadata`]
+//! needs five fields: `match_id`, `duration_s` and `players`, and on each
+//! player `account_id` and `player_slot`. An element of a tolerant list (a
+//! player's `items`, a match's `objectives`) that does not decode is dropped
+//! with a warning, so a test checks the lengths it relies on:
+//!
+//! ```
+//! use deadlock_api::MatchMetadata;
+//! use serde_json::json;
+//!
+//! let meta: MatchMetadata = serde_json::from_value(json!({
+//!     "match_info": {
+//!         "match_id": 42,
+//!         "duration_s": 1800,
+//!         "players": [{
+//!             "account_id": 7,
+//!             "player_slot": 1,
+//!             "items": [{ "item_id": 1548066885 }, { "item_id": "not a number" }]
+//!         }]
+//!     }
+//! }))?;
+//! assert_eq!(meta.match_info.players.len(), 1);
+//! assert_eq!(meta.match_info.players[0].items.len(), 1);
+//! # Ok::<(), serde_json::Error>(())
+//! ```
+//!
 //! # Features
 //!
 //! - `blocking` (default): the synchronous [`blocking::Client`] on ureq.
