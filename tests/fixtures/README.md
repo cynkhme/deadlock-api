@@ -55,3 +55,13 @@ Live smoke run (2026-10-24,
 in 25 s, 19 requests, no 429 or 503; the shape guard found no drift on any
 of the 17 routes it checks, on the full 12-player metadata response or on
 the metadata of a recently fetched match.
+
+Live smoke run (2026-10-25, 15:54:55Z to 15:55:34Z, same command): 32 of 32
+passed in 39 s, 33 requests, no 429 or 503. The 14 Assets and Patches tests
+went through their typed methods, so the server accepted
+`/v1/assets/heroes/by-name/Mo%20%26%20Krill`; the shape guard found no drift
+on any route, including the three item routes without a recorded fixture
+(by hero, by slot, by type). One more request in the same session,
+`GET /v1/info/health` with `Accept-Encoding: gzip`, came back with
+`content-encoding: gzip`, so the `gzip` feature takes effect against this
+server.
