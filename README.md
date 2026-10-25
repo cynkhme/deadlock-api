@@ -98,6 +98,10 @@ let api = Client::builder().cache(FileCache::new("cache/")).build()?;
 
 `FileCache` writes `matches/{id}/metadata.json` under its directory, atomically. It never removes anything by itself; `prune_older_than` and `prune_to_size` remove entries when you call them. Give it a directory of its own: both treat every `*.json` file under it as a cached response. A failed cache read or write is logged through `log` and the request proceeds.
 
+## Your own HTTP client
+
+Each client sends its requests through a `Transport`: `blocking::Transport` for the blocking client, `Transport` for the async one. Pass your own to the builder with `.transport(...)` and ureq or reqwest is not used. The client still builds every request and keeps the cache, the retry policy, the status mapping and the decoding, so a transport that serves recorded responses runs your whole flow in a test without a network. The builder's timeouts do not apply to a custom transport, and its errors come back as `Error::Transport` and are never retried. The async client still needs a tokio runtime, and the `blocking` or `async` feature still compiles ureq or reqwest.
+
 ## Errors
 
 Every method returns `deadlock_api::Result<T>`. A client retries only when its builder was given a `RetryPolicy` (see below). A 429 is `Error::RateLimited` and a 503 is `Error::Overloaded`; both carry the server's `Retry-After`, if it sent one:

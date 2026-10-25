@@ -110,10 +110,10 @@ pub use cache::Cache;
 #[cfg(feature = "fs-cache")]
 pub use cache::{FileCache, Pruned};
 #[cfg(feature = "async")]
-pub use client::{Client, ClientBuilder};
+pub use client::{Client, ClientBuilder, Transport, TransportFuture};
 pub use config::Config;
 pub(crate) use config::ConfigBuilder;
-pub use error::{Error, Result};
+pub use error::{BoxError, Error, Result};
 pub use ids::{AccountId, HeroId, MatchId};
 pub use retry::RetryPolicy;
 pub use types::filters::{

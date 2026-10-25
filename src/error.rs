@@ -5,6 +5,10 @@ use std::time::{Duration, SystemTime};
 /// The crate's result type.
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
+/// The error a custom transport returns; it becomes the source of
+/// [`Error::Transport`].
+pub type BoxError = Box<dyn std::error::Error + Send + Sync>;
+
 /// Everything a request can fail with.
 ///
 /// Non-2xx statuses map onto their own variants so a caller can match on the

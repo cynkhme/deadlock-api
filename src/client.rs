@@ -1,5 +1,7 @@
 //! The asynchronous client, on [reqwest](https://docs.rs/reqwest) and tokio.
 
+use std::future::Future;
+use std::pin::Pin;
 use std::sync::Arc;
 
 use bytes::Bytes;
@@ -12,11 +14,11 @@ use crate::endpoint::{
 };
 use crate::retry::copy_request;
 use crate::{
-    AccountId, AccountRank, ActiveMatch, ActiveMatchesQuery, ApiInfo, Config, ConfigBuilder,
-    EnemyStats, EnemyStatsQuery, Error, Health, HeroId, HeroStats, HeroStatsQuery, Leaderboard,
-    MatchFilter, MatchHistoryEntry, MatchId, MatchMetadata, MatchSalts, MateStats, MateStatsQuery,
-    RankDistributionEntry, RankResponse, RecentMatch, Region, Result, RetryPolicy, SpectateUrl,
-    SteamProfile, SteamSearchQuery,
+    AccountId, AccountRank, ActiveMatch, ActiveMatchesQuery, ApiInfo, BoxError, Config,
+    ConfigBuilder, EnemyStats, EnemyStatsQuery, Error, Health, HeroId, HeroStats, HeroStatsQuery,
+    Leaderboard, MatchFilter, MatchHistoryEntry, MatchId, MatchMetadata, MatchSalts, MateStats,
+    MateStatsQuery, RankDistributionEntry, RankResponse, RecentMatch, Region, Result, RetryPolicy,
+    SpectateUrl, SteamProfile, SteamSearchQuery,
 };
 
 #[cfg(not(any(feature = "rustls", feature = "native-tls")))]
@@ -43,52 +45,168 @@ compile_error!("deadlock-api: the `async` feature needs `rustls` or `native-tls`
 /// println!("{} players", meta.match_info.players.len());
 /// # Ok(()) }
 /// ```
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct Client {
-    http: reqwest::Client,
+    transport: Arc<dyn Transport>,
+    unsent: fn(&Error) -> bool,
     config: Arc<Config>,
     retry: Option<RetryPolicy>,
 }
 
-/// Builder for [`Client`]; what it sets, apart from the retry policy, is
-/// readable afterwards through [`Client::config`].
-#[derive(Debug, Default)]
+impl std::fmt::Debug for Client {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Client")
+            .field("config", &self.config)
+            .field("retry", &self.retry)
+            .finish_non_exhaustive()
+    }
+}
+
+/// The future a [`Transport`] returns.
+pub type TransportFuture<'a> =
+    Pin<Box<dyn Future<Output = std::result::Result<Response<Bytes>, BoxError>> + Send + 'a>>;
+
+/// Sends a request and returns the response with its whole body: the
+/// seam between the async [`Client`] and the HTTP library under it.
+///
+/// The client builds every request (URL, `X-API-KEY`, `Accept`,
+/// `User-Agent`) and keeps everything around the exchange: the cache, the
+/// retry policy, the mapping of statuses onto [`Error`] and the decoding. A
+/// transport set with [`ClientBuilder::transport`] replaces reqwest, so the
+/// timeouts are its own business, and it should not follow redirects, or the
+/// API key goes along to the other host. Its error becomes
+/// [`Error::Transport`] and is never retried: the client cannot tell whether
+/// the request reached the server. The client still needs a tokio runtime:
+/// it calls the cache on tokio's blocking pool and sleeps between retries
+/// on tokio's timer.
+///
+/// A transport that serves recorded responses runs a consumer's whole flow,
+/// cache and decoding included, without a network.
+///
+/// # Examples
+///
+/// ```
+/// use bytes::Bytes;
+/// use deadlock_api::{BoxError, Client, Transport, TransportFuture};
+///
+/// struct Recorded;
+///
+/// impl Transport for Recorded {
+///     fn send(&self, request: http::Request<()>) -> TransportFuture<'_> {
+///         Box::pin(async move {
+///             assert_eq!(request.uri().path(), "/v1/info/health");
+///             let body = r#"{"services":{"clickhouse":true}}"#;
+///             Ok::<_, BoxError>(http::Response::new(Bytes::from(body)))
+///         })
+///     }
+/// }
+///
+/// # #[tokio::main(flavor = "current_thread")]
+/// # async fn main() -> deadlock_api::Result<()> {
+/// let api = Client::builder().transport(Recorded).build()?;
+/// assert_eq!(api.health().await?.services.get("clickhouse"), Some(&true));
+/// # Ok(()) }
+/// ```
+pub trait Transport: Send + Sync {
+    /// Sends `request` and reads the whole response body.
+    ///
+    /// # Errors
+    ///
+    /// Any failure to produce a response; a non-2xx status is a response,
+    /// not an error.
+    fn send(&self, request: Request<()>) -> TransportFuture<'_>;
+}
+
+/// The built-in transport.
+struct Reqwest(reqwest::Client);
+
+impl Transport for Reqwest {
+    fn send(&self, request: Request<()>) -> TransportFuture<'_> {
+        Box::pin(async move {
+            let request = reqwest::Request::try_from(request.map(|()| Vec::<u8>::new()))?;
+            let resp = self.0.execute(request).await?;
+            let mut out = Response::builder().status(resp.status());
+            if let Some(headers) = out.headers_mut() {
+                headers.clone_from(resp.headers());
+            }
+            let body = resp.bytes().await?;
+            Ok(out.body(body)?)
+        })
+    }
+}
+
+/// Builder for [`Client`]; what it sets, apart from the retry policy and the
+/// transport, is readable afterwards through [`Client::config`].
+#[derive(Default)]
 pub struct ClientBuilder {
     config: ConfigBuilder,
     retry: Option<RetryPolicy>,
+    transport: Option<Arc<dyn Transport>>,
+}
+
+impl std::fmt::Debug for ClientBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("ClientBuilder")
+            .field("config", &self.config)
+            .field("retry", &self.retry)
+            .field("custom_transport", &self.transport.is_some())
+            .finish()
+    }
 }
 
 builder_setters!(ClientBuilder);
 
 impl ClientBuilder {
+    /// Sends every request through `transport` instead of reqwest; see
+    /// [`Transport`] for what it takes over. The connection timeout and the
+    /// whole-request timeout then do not apply.
+    pub fn transport(mut self, transport: impl Transport + 'static) -> Self {
+        self.transport = Some(Arc::new(transport));
+        self
+    }
+
     /// Validates the settings and builds the client.
     ///
     /// # Errors
     ///
     /// [`Error::Config`] when the base URL has no scheme or host, or the user
     /// agent or API key is not a valid header value; [`Error::Transport`] when
-    /// reqwest cannot initialise its TLS backend.
+    /// reqwest cannot initialise its TLS backend (never with a custom
+    /// transport).
     pub fn build(self) -> Result<Client> {
         let config = self.config.build()?;
-        let builder = reqwest::Client::builder()
-            .redirect(reqwest::redirect::Policy::none())
-            .user_agent(config.user_agent())
-            .connect_timeout(config.connect_timeout())
-            .timeout(config.timeout());
-        #[cfg(feature = "rustls")]
-        let builder = builder.use_rustls_tls();
-        #[cfg(all(feature = "native-tls", not(feature = "rustls")))]
-        let builder = builder.use_native_tls();
-        let http = builder.build().map_err(|e| Error::Transport {
-            url: config.base_url().to_owned(),
-            source: Box::new(e),
-        })?;
+        let unsent: fn(&Error) -> bool = match self.transport {
+            Some(_) => |_| false,
+            None => reqwest_unsent,
+        };
+        let transport = match self.transport {
+            Some(custom) => custom,
+            None => Arc::new(Reqwest(reqwest_client(&config)?)),
+        };
         Ok(Client {
-            http,
+            transport,
+            unsent,
             config: Arc::new(config),
             retry: self.retry,
         })
     }
+}
+
+/// The reqwest client of a [`Client`] without a custom transport.
+fn reqwest_client(config: &Config) -> Result<reqwest::Client> {
+    let builder = reqwest::Client::builder()
+        .redirect(reqwest::redirect::Policy::none())
+        .user_agent(config.user_agent())
+        .connect_timeout(config.connect_timeout())
+        .timeout(config.timeout());
+    #[cfg(feature = "rustls")]
+    let builder = builder.use_rustls_tls();
+    #[cfg(all(feature = "native-tls", not(feature = "rustls")))]
+    let builder = builder.use_native_tls();
+    builder.build().map_err(|e| Error::Transport {
+        url: config.base_url().to_owned(),
+        source: Box::new(e),
+    })
 }
 
 impl Client {
@@ -212,7 +330,7 @@ impl Client {
         let mut attempts = 1;
         loop {
             let result = self.send_once(copy_request(&req)).await;
-            let Some(pause) = policy.pause(attempts, &result, unsent) else {
+            let Some(pause) = policy.pause(attempts, &result, self.unsent) else {
                 return result;
             };
             log::info!("retrying {} in {pause:?}", req.uri());
@@ -223,29 +341,17 @@ impl Client {
 
     async fn send_once(&self, req: Request<()>) -> Result<Response<Bytes>> {
         let url = req.uri().to_string();
-        let transport_error = |e: reqwest::Error| Error::Transport {
-            url: url.clone(),
-            source: Box::new(e),
-        };
-        let req =
-            reqwest::Request::try_from(req.map(|()| Vec::<u8>::new())).map_err(transport_error)?;
-        let resp = self.http.execute(req).await.map_err(transport_error)?;
-        let mut out = Response::builder().status(resp.status());
-        if let Some(headers) = out.headers_mut() {
-            headers.clone_from(resp.headers());
-        }
-        let body = resp.bytes().await.map_err(transport_error)?;
-        out.body(body).map_err(|e| Error::Transport {
-            url,
-            source: Box::new(e),
-        })
+        self.transport
+            .send(req)
+            .await
+            .map_err(|source| Error::Transport { url, source })
     }
 
     crate::endpoints::endpoint_methods!(async);
 }
 
 /// Whether reqwest failed before the request reached the server.
-fn unsent(error: &Error) -> bool {
+fn reqwest_unsent(error: &Error) -> bool {
     matches!(error, Error::Transport { source, .. }
         if source.downcast_ref::<reqwest::Error>().is_some_and(reqwest::Error::is_connect))
 }

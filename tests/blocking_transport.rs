@@ -451,3 +451,105 @@ fn a_timeout_after_sending_is_not_retried() {
     assert!(matches!(err, Error::Transport { .. }), "{err:?}");
     assert_eq!(requests.lock().unwrap().len(), 1);
 }
+
+fn mocked(mock: common::Mock) -> Client {
+    Client::builder()
+        .base_url(common::NOWHERE)
+        .transport(mock)
+        .build()
+        .unwrap()
+}
+
+#[test]
+fn custom_transport_gets_the_built_request_and_its_response_is_decoded() {
+    let mock = common::Mock::new(vec![(200, JSON, r#"{"services":{"redis":true}}"#)]);
+    let seen = mock.seen.clone();
+    let api = Client::builder()
+        .base_url(common::NOWHERE)
+        .api_key(Some("secret".into()))
+        .user_agent("test-agent/1")
+        .transport(mock)
+        .build()
+        .unwrap();
+    let health = api.health().unwrap();
+    assert_eq!(health.services.get("redis"), Some(&true));
+    let seen = seen.lock().unwrap();
+    assert_eq!(seen.len(), 1);
+    assert_eq!(
+        seen[0].uri().to_string(),
+        format!("{}/v1/info/health", common::NOWHERE)
+    );
+    assert_eq!(seen[0].headers()["x-api-key"], "secret");
+    assert_eq!(seen[0].headers()["user-agent"], "test-agent/1");
+}
+
+#[test]
+fn custom_transport_error_is_transport_and_never_retried() {
+    let mock = common::Mock::new(vec![]);
+    let seen = mock.seen.clone();
+    let api = Client::builder()
+        .base_url(common::NOWHERE)
+        .transport(mock)
+        .retry(quick(3))
+        .build()
+        .unwrap();
+    let err = api.health().unwrap_err();
+    let Error::Transport { source, .. } = &err else {
+        panic!("{err:?}");
+    };
+    assert_eq!(source.to_string(), "mock transport failure");
+    assert_eq!(seen.lock().unwrap().len(), 1);
+}
+
+#[test]
+fn custom_transport_statuses_are_mapped_and_retried() {
+    let mock = common::Mock::new(vec![(503, &[], "busy"), (200, JSON, r#"{"services":{}}"#)]);
+    let seen = mock.seen.clone();
+    let api = Client::builder()
+        .base_url(common::NOWHERE)
+        .transport(mock)
+        .retry(quick(2))
+        .build()
+        .unwrap();
+    api.health().unwrap();
+    assert_eq!(seen.lock().unwrap().len(), 2);
+    let err = mocked(common::Mock::new(vec![(404, &[], "")]))
+        .health()
+        .unwrap_err();
+    assert!(err.is_not_found(), "{err:?}");
+}
+
+#[test]
+fn custom_transport_keeps_the_short_cuts() {
+    let mock = common::Mock::new(vec![(
+        400,
+        JSON,
+        r#"{"status":400,"error":"Match 1 cannot be live"}"#,
+    )]);
+    let seen = mock.seen.clone();
+    let api = mocked(mock);
+    assert!(api.steam_profiles(&[]).unwrap().is_empty());
+    assert_eq!(seen.lock().unwrap().len(), 0);
+    assert_eq!(api.match_spectate_url(MatchId(1)).unwrap(), None);
+    assert_eq!(seen.lock().unwrap().len(), 1);
+}
+
+#[cfg(feature = "fs-cache")]
+#[test]
+fn custom_transport_responses_are_cached() {
+    let dir = scratch("custom-transport-cache");
+    let mock = common::Mock::new(vec![(200, JSON, METADATA)]);
+    let seen = mock.seen.clone();
+    let api = Client::builder()
+        .base_url(common::NOWHERE)
+        .cache(deadlock_api::FileCache::new(&dir))
+        .transport(mock)
+        .build()
+        .unwrap();
+    for _ in 0..2 {
+        let meta = api.match_metadata(MatchId(42)).unwrap();
+        assert_eq!(meta.match_info.match_id, MatchId(42));
+    }
+    assert_eq!(seen.lock().unwrap().len(), 1);
+    let _ = std::fs::remove_dir_all(&dir);
+}

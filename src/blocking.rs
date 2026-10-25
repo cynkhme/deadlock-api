@@ -9,11 +9,11 @@ use serde::de::DeserializeOwned;
 use crate::endpoint::{Endpoint, execute_raw, raw_request, raw_url, run};
 use crate::retry::copy_request;
 use crate::{
-    AccountId, AccountRank, ActiveMatch, ActiveMatchesQuery, ApiInfo, Config, ConfigBuilder,
-    EnemyStats, EnemyStatsQuery, Error, Health, HeroId, HeroStats, HeroStatsQuery, Leaderboard,
-    MatchFilter, MatchHistoryEntry, MatchId, MatchMetadata, MatchSalts, MateStats, MateStatsQuery,
-    RankDistributionEntry, RankResponse, RecentMatch, Region, Result, RetryPolicy, SpectateUrl,
-    SteamProfile, SteamSearchQuery,
+    AccountId, AccountRank, ActiveMatch, ActiveMatchesQuery, ApiInfo, BoxError, Config,
+    ConfigBuilder, EnemyStats, EnemyStatsQuery, Error, Health, HeroId, HeroStats, HeroStatsQuery,
+    Leaderboard, MatchFilter, MatchHistoryEntry, MatchId, MatchMetadata, MatchSalts, MateStats,
+    MateStatsQuery, RankDistributionEntry, RankResponse, RecentMatch, Region, Result, RetryPolicy,
+    SpectateUrl, SteamProfile, SteamSearchQuery,
 };
 
 #[cfg(feature = "rustls")]
@@ -43,24 +43,111 @@ compile_error!("deadlock-api: the `blocking` feature needs `rustls` or `native-t
 /// println!("{} players", meta.match_info.players.len());
 /// # Ok(()) }
 /// ```
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct Client {
-    agent: ureq::Agent,
+    transport: Arc<dyn Transport>,
+    unsent: fn(&Error) -> bool,
     config: Arc<Config>,
     retry: Option<RetryPolicy>,
 }
 
-/// Builder for [`Client`]; what it sets, apart from the retry policy, is
-/// readable afterwards through [`Client::config`].
-#[derive(Debug, Default)]
+impl std::fmt::Debug for Client {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Client")
+            .field("config", &self.config)
+            .field("retry", &self.retry)
+            .finish_non_exhaustive()
+    }
+}
+
+/// Sends a request and returns the response with its whole body: the
+/// seam between the [`Client`] and the HTTP library under it.
+///
+/// The client builds every request (URL, `X-API-KEY`, `Accept`,
+/// `User-Agent`) and keeps everything around the exchange: the cache, the
+/// retry policy, the mapping of statuses onto [`Error`] and the decoding. A
+/// transport set with [`ClientBuilder::transport`] replaces ureq, so the
+/// timeouts are its own business, and it should not follow redirects, or the
+/// API key goes along to the other host. Its error becomes
+/// [`Error::Transport`] and is never retried: the client cannot tell whether
+/// the request reached the server.
+///
+/// A transport that serves recorded responses runs a consumer's whole flow,
+/// cache and decoding included, without a network.
+///
+/// # Examples
+///
+/// ```
+/// use bytes::Bytes;
+/// use deadlock_api::BoxError;
+/// use deadlock_api::blocking::{Client, Transport};
+///
+/// struct Recorded;
+///
+/// impl Transport for Recorded {
+///     fn send(&self, request: http::Request<()>) -> Result<http::Response<Bytes>, BoxError> {
+///         assert_eq!(request.uri().path(), "/v1/info/health");
+///         let body = r#"{"services":{"clickhouse":true}}"#;
+///         Ok(http::Response::new(Bytes::from(body)))
+///     }
+/// }
+///
+/// # fn main() -> deadlock_api::Result<()> {
+/// let api = Client::builder().transport(Recorded).build()?;
+/// assert_eq!(api.health()?.services.get("clickhouse"), Some(&true));
+/// # Ok(()) }
+/// ```
+pub trait Transport: Send + Sync {
+    /// Sends `request` and reads the whole response body.
+    ///
+    /// # Errors
+    ///
+    /// Any failure to produce a response; a non-2xx status is a response,
+    /// not an error.
+    fn send(&self, request: Request<()>) -> std::result::Result<Response<Bytes>, BoxError>;
+}
+
+/// The built-in transport.
+struct Ureq(ureq::Agent);
+
+impl Transport for Ureq {
+    fn send(&self, request: Request<()>) -> std::result::Result<Response<Bytes>, BoxError> {
+        let mut resp = self.0.run(request)?;
+        let body = resp.body_mut().read_to_vec()?;
+        Ok(resp.map(|_| Bytes::from(body)))
+    }
+}
+
+/// Builder for [`Client`]; what it sets, apart from the retry policy and the
+/// transport, is readable afterwards through [`Client::config`].
+#[derive(Default)]
 pub struct ClientBuilder {
     config: ConfigBuilder,
     retry: Option<RetryPolicy>,
+    transport: Option<Arc<dyn Transport>>,
+}
+
+impl std::fmt::Debug for ClientBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("ClientBuilder")
+            .field("config", &self.config)
+            .field("retry", &self.retry)
+            .field("custom_transport", &self.transport.is_some())
+            .finish()
+    }
 }
 
 builder_setters!(ClientBuilder);
 
 impl ClientBuilder {
+    /// Sends every request through `transport` instead of ureq; see
+    /// [`Transport`] for what it takes over. The connection timeout and the
+    /// whole-request timeout then do not apply.
+    pub fn transport(mut self, transport: impl Transport + 'static) -> Self {
+        self.transport = Some(Arc::new(transport));
+        self
+    }
+
     /// Validates the settings and builds the client.
     ///
     /// # Errors
@@ -69,28 +156,41 @@ impl ClientBuilder {
     /// agent or API key is not a valid header value.
     pub fn build(self) -> Result<Client> {
         let config = self.config.build()?;
-        // ureq 3 defaults to RootCerts::WebPki (bundled roots), and with
-        // native-tls it also switches the OS roots off; reqwest trusts the
-        // OS store.
-        let tls = ureq::tls::TlsConfig::builder()
-            .provider(TLS_PROVIDER)
-            .root_certs(ureq::tls::RootCerts::PlatformVerifier)
-            .build();
-        let agent = ureq::Agent::config_builder()
-            .http_status_as_error(false)
-            .max_redirects(0)
-            .timeout_connect(Some(config.connect_timeout()))
-            .timeout_global(Some(config.timeout()))
-            .user_agent(config.user_agent())
-            .tls_config(tls)
-            .build()
-            .new_agent();
+        let unsent: fn(&Error) -> bool = match self.transport {
+            Some(_) => |_| false,
+            None => ureq_unsent,
+        };
+        let transport = match self.transport {
+            Some(custom) => custom,
+            None => Arc::new(Ureq(ureq_agent(&config))),
+        };
         Ok(Client {
-            agent,
+            transport,
+            unsent,
             config: Arc::new(config),
             retry: self.retry,
         })
     }
+}
+
+/// The ureq agent of a client without a custom transport.
+fn ureq_agent(config: &Config) -> ureq::Agent {
+    // ureq 3 defaults to RootCerts::WebPki (bundled roots), and with
+    // native-tls it also switches the OS roots off; reqwest trusts the
+    // OS store.
+    let tls = ureq::tls::TlsConfig::builder()
+        .provider(TLS_PROVIDER)
+        .root_certs(ureq::tls::RootCerts::PlatformVerifier)
+        .build();
+    ureq::Agent::config_builder()
+        .http_status_as_error(false)
+        .max_redirects(0)
+        .timeout_connect(Some(config.connect_timeout()))
+        .timeout_global(Some(config.timeout()))
+        .user_agent(config.user_agent())
+        .tls_config(tls)
+        .build()
+        .new_agent()
 }
 
 impl Client {
@@ -183,7 +283,7 @@ impl Client {
         let mut attempts = 1;
         loop {
             let result = self.send_once(copy_request(&req));
-            let Some(pause) = policy.pause(attempts, &result, unsent) else {
+            let Some(pause) = policy.pause(attempts, &result, self.unsent) else {
                 return result;
             };
             log::info!("retrying {} in {pause:?}", req.uri());
@@ -194,25 +294,16 @@ impl Client {
 
     fn send_once(&self, req: Request<()>) -> Result<Response<Bytes>> {
         let url = req.uri().to_string();
-        let mut resp = self.agent.run(req).map_err(|e| Error::Transport {
-            url: url.clone(),
-            source: Box::new(e),
-        })?;
-        let body = resp
-            .body_mut()
-            .read_to_vec()
-            .map_err(|e| Error::Transport {
-                url,
-                source: Box::new(e),
-            })?;
-        Ok(resp.map(|_| Bytes::from(body)))
+        self.transport
+            .send(req)
+            .map_err(|source| Error::Transport { url, source })
     }
 
     crate::endpoints::endpoint_methods!(sync);
 }
 
 /// Whether ureq failed before the request reached the server.
-fn unsent(error: &Error) -> bool {
+fn ureq_unsent(error: &Error) -> bool {
     let Error::Transport { source, .. } = error else {
         return false;
     };
@@ -238,8 +329,8 @@ mod tests {
 
     #[test]
     fn tls_trusts_the_platform_store_like_the_async_client() {
-        let api = Client::new().unwrap();
-        let roots = api.agent.config().tls_config().root_certs();
+        let agent = ureq_agent(&ConfigBuilder::default().build().unwrap());
+        let roots = agent.config().tls_config().root_certs();
         assert!(
             matches!(roots, ureq::tls::RootCerts::PlatformVerifier),
             "{roots:?}"
@@ -262,7 +353,7 @@ mod tests {
             io(std::io::ErrorKind::HostUnreachable),
             io(std::io::ErrorKind::NetworkUnreachable),
         ] {
-            assert!(unsent(&wrap(e)));
+            assert!(ureq_unsent(&wrap(e)));
         }
         for e in [
             ureq::Error::Timeout(ureq::Timeout::Global),
@@ -270,9 +361,9 @@ mod tests {
             io(std::io::ErrorKind::ConnectionReset),
             io(std::io::ErrorKind::TimedOut),
         ] {
-            assert!(!unsent(&wrap(e)));
+            assert!(!ureq_unsent(&wrap(e)));
         }
-        assert!(!unsent(&Error::Transport {
+        assert!(!ureq_unsent(&Error::Transport {
             url: "http://h/".into(),
             source: "not ureq".into(),
         }));

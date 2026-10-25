@@ -141,3 +141,62 @@ pub fn scratch(name: &str) -> std::path::PathBuf {
     let _ = std::fs::remove_dir_all(&dir);
     dir
 }
+
+/// What a [`Mock`] answers: a status, header pairs and a body.
+pub type MockResponse = (u16, &'static [(&'static str, &'static str)], &'static str);
+
+/// A custom transport that answers scripted responses in order (the last
+/// one repeats), or fails every call, and records the requests it was given.
+pub struct Mock {
+    responses: Vec<MockResponse>,
+    pub seen: Arc<Mutex<Vec<http::Request<()>>>>,
+}
+
+/// A base URL nothing listens on, so a client that bypassed its custom
+/// transport would fail instead of reaching a real server.
+pub const NOWHERE: &str = "http://127.0.0.1:9";
+
+impl Mock {
+    /// A mock answering `responses`; an empty list makes every call fail.
+    pub fn new(responses: Vec<MockResponse>) -> Self {
+        Self {
+            responses,
+            seen: Arc::default(),
+        }
+    }
+
+    fn answer(
+        &self,
+        request: http::Request<()>,
+    ) -> Result<http::Response<bytes::Bytes>, deadlock_api::BoxError> {
+        let mut seen = self.seen.lock().unwrap();
+        seen.push(request);
+        let Some(last) = self.responses.len().checked_sub(1) else {
+            return Err("mock transport failure".into());
+        };
+        let (status, headers, body) = self.responses[(seen.len() - 1).min(last)];
+        let mut resp = http::Response::builder().status(status);
+        for (k, v) in headers {
+            resp = resp.header(*k, *v);
+        }
+        Ok(resp.body(bytes::Bytes::from_static(body.as_bytes()))?)
+    }
+}
+
+#[cfg(feature = "blocking")]
+impl deadlock_api::blocking::Transport for Mock {
+    fn send(
+        &self,
+        request: http::Request<()>,
+    ) -> Result<http::Response<bytes::Bytes>, deadlock_api::BoxError> {
+        self.answer(request)
+    }
+}
+
+#[cfg(feature = "async")]
+impl deadlock_api::Transport for Mock {
+    fn send(&self, request: http::Request<()>) -> deadlock_api::TransportFuture<'_> {
+        let answer = self.answer(request);
+        Box::pin(async move { answer })
+    }
+}
