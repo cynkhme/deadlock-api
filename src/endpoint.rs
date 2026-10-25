@@ -157,7 +157,7 @@ pub(crate) fn execute_raw(url: &str, resp: Response<Bytes>) -> Result<Bytes> {
     })
 }
 
-fn retry_after(headers: &HeaderMap) -> Option<std::time::Duration> {
+pub(crate) fn retry_after(headers: &HeaderMap) -> Option<std::time::Duration> {
     let value = headers.get(header::RETRY_AFTER)?.to_str().ok()?;
     parse_retry_after(value, SystemTime::now())
 }

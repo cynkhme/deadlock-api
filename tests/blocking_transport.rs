@@ -3,13 +3,13 @@
 
 mod common;
 
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 #[cfg(feature = "fs-cache")]
 use common::scratch;
-use common::server;
+use common::{Scripted, server};
 use deadlock_api::blocking::Client;
-use deadlock_api::{AccountId, Error, MatchId};
+use deadlock_api::{AccountId, Error, MatchId, RetryPolicy};
 
 #[cfg(feature = "fs-cache")]
 const METADATA: &str = r#"{"match_info":{"match_id":42,"duration_s":600,"players":[{"account_id":7,"player_slot":1}]}}"#;
@@ -309,4 +309,145 @@ fn gzip_is_asked_for_and_decoded() {
     let seen = requests.lock().unwrap();
     let accept = seen[0].header("accept-encoding").unwrap_or_default();
     assert!(accept.contains("gzip"), "{accept:?}");
+}
+
+fn retrying(url: &str, policy: RetryPolicy) -> Client {
+    Client::builder()
+        .base_url(url)
+        .retry(policy)
+        .build()
+        .unwrap()
+}
+
+fn quick(attempts: u32) -> RetryPolicy {
+    RetryPolicy::new(attempts).base_delay(Duration::from_millis(1))
+}
+
+const BUSY: Scripted = ("503 Service Unavailable", &[], "busy");
+const HEALTHY: Scripted = ("200 OK", JSON, r#"{"services":{}}"#);
+
+#[test]
+fn retry_is_off_by_default() {
+    let (url, requests) = server(vec![BUSY, HEALTHY]);
+    let err = client(&url).health().unwrap_err();
+    assert!(matches!(err, Error::Overloaded { .. }), "{err:?}");
+    assert_eq!(requests.lock().unwrap().len(), 1);
+}
+
+#[test]
+fn overloaded_503_is_retried_until_it_succeeds() {
+    let (url, requests) = server(vec![BUSY, BUSY, HEALTHY]);
+    retrying(&url, quick(3)).health().unwrap();
+    assert_eq!(requests.lock().unwrap().len(), 3);
+}
+
+#[test]
+fn retries_stop_after_max_attempts() {
+    let (url, requests) = server(vec![BUSY, BUSY, HEALTHY]);
+    let err = retrying(&url, quick(2)).health().unwrap_err();
+    assert!(matches!(err, Error::Overloaded { .. }), "{err:?}");
+    assert_eq!(requests.lock().unwrap().len(), 2);
+}
+
+#[test]
+fn not_found_is_not_retried() {
+    let (url, requests) = server(vec![("404 Not Found", &[], ""), HEALTHY]);
+    let err = retrying(&url, quick(3)).health().unwrap_err();
+    assert!(err.is_not_found(), "{err:?}");
+    assert_eq!(requests.lock().unwrap().len(), 1);
+}
+
+#[test]
+fn rate_limit_without_retry_after_is_not_retried() {
+    let (url, requests) = server(vec![("429 Too Many Requests", &[], ""), HEALTHY]);
+    let err = retrying(&url, quick(3)).health().unwrap_err();
+    assert!(matches!(err, Error::RateLimited { .. }), "{err:?}");
+    assert_eq!(requests.lock().unwrap().len(), 1);
+}
+
+#[test]
+fn rate_limit_beyond_max_wait_returns_at_once() {
+    let (url, requests) = server(vec![
+        ("429 Too Many Requests", &[("Retry-After", "120")], ""),
+        HEALTHY,
+    ]);
+    let start = Instant::now();
+    let err = retrying(&url, quick(3)).health().unwrap_err();
+    assert!(
+        start.elapsed() < Duration::from_secs(5),
+        "{:?}",
+        start.elapsed()
+    );
+    assert_eq!(err.retry_after(), Some(Duration::from_secs(120)));
+    assert_eq!(requests.lock().unwrap().len(), 1);
+}
+
+#[test]
+fn zero_retry_after_still_pauses_for_the_backoff() {
+    let (url, requests) = server(vec![
+        ("429 Too Many Requests", &[("Retry-After", "0")], ""),
+        HEALTHY,
+    ]);
+    let policy = RetryPolicy::new(2).base_delay(Duration::from_millis(200));
+    let start = Instant::now();
+    retrying(&url, policy).health().unwrap();
+    assert!(
+        start.elapsed() >= Duration::from_millis(200),
+        "{:?}",
+        start.elapsed()
+    );
+    assert_eq!(requests.lock().unwrap().len(), 2);
+}
+
+#[test]
+fn a_longer_retry_after_is_waited_out() {
+    let (url, requests) = server(vec![
+        ("503 Service Unavailable", &[("Retry-After", "1")], ""),
+        HEALTHY,
+    ]);
+    let start = Instant::now();
+    retrying(&url, quick(2)).health().unwrap();
+    assert!(
+        start.elapsed() >= Duration::from_secs(1),
+        "{:?}",
+        start.elapsed()
+    );
+    assert_eq!(requests.lock().unwrap().len(), 2);
+}
+
+#[test]
+fn get_raw_is_retried() {
+    let (url, requests) = server(vec![BUSY, ("200 OK", &[], "x")]);
+    let body = retrying(&url, quick(2)).get_raw("/v1/x", &[]).unwrap();
+    assert_eq!(&body[..], b"x");
+    assert_eq!(requests.lock().unwrap().len(), 2);
+}
+
+#[test]
+fn a_refused_connection_is_retried() {
+    let policy = RetryPolicy::new(3).base_delay(Duration::from_millis(100));
+    let start = Instant::now();
+    let err = retrying(&common::refused_url(), policy)
+        .health()
+        .unwrap_err();
+    assert!(matches!(err, Error::Transport { .. }), "{err:?}");
+    assert!(
+        start.elapsed() >= Duration::from_millis(300),
+        "{:?}",
+        start.elapsed()
+    );
+}
+
+#[test]
+fn a_timeout_after_sending_is_not_retried() {
+    let (url, requests) = common::silent_server();
+    let api = Client::builder()
+        .base_url(&url)
+        .timeout(Duration::from_millis(300))
+        .retry(quick(3))
+        .build()
+        .unwrap();
+    let err = api.health().unwrap_err();
+    assert!(matches!(err, Error::Transport { .. }), "{err:?}");
+    assert_eq!(requests.lock().unwrap().len(), 1);
 }

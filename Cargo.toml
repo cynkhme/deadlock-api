@@ -32,7 +32,7 @@ log = "0.4"
 httpdate = "1"
 ureq = { version = "3", default-features = false, optional = true }
 reqwest = { version = "0.13", default-features = false, optional = true }
-tokio = { version = "1", features = ["rt"], optional = true }
+tokio = { version = "1", features = ["rt", "time"], optional = true }
 
 [package.metadata.docs.rs]
 all-features = true

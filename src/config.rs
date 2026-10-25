@@ -222,6 +222,13 @@ macro_rules! builder_setters {
                 self.config = self.config.cache(cache);
                 self
             }
+
+            /// Sets when a failed request is sent again; without a policy
+            /// every request is sent once.
+            pub fn retry(mut self, policy: $crate::RetryPolicy) -> Self {
+                self.retry = Some(policy);
+                self
+            }
         }
     };
 }

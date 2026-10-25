@@ -103,6 +103,7 @@ mod endpoint;
 mod endpoints;
 mod error;
 mod ids;
+mod retry;
 mod types;
 
 pub use cache::Cache;
@@ -114,6 +115,7 @@ pub use config::Config;
 pub(crate) use config::ConfigBuilder;
 pub use error::{Error, Result};
 pub use ids::{AccountId, HeroId, MatchId};
+pub use retry::RetryPolicy;
 pub use types::filters::{
     ActiveMatchesQuery, EnemyStatsQuery, HeroStatsQuery, MatchFilter, MateStatsQuery,
     SteamSearchQuery,

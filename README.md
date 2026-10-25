@@ -100,7 +100,7 @@ let api = Client::builder().cache(FileCache::new("cache/")).build()?;
 
 ## Errors
 
-Every method returns `deadlock_api::Result<T>`. The crate does not retry. A 429 is `Error::RateLimited` and a 503 is `Error::Overloaded`; both carry the server's `Retry-After`, if it sent one:
+Every method returns `deadlock_api::Result<T>`. A client retries only when its builder was given a `RetryPolicy` (see below). A 429 is `Error::RateLimited` and a 503 is `Error::Overloaded`; both carry the server's `Retry-After`, if it sent one:
 
 ```rust,ignore
 match api.player_rank(AccountId(167576350)) {
@@ -113,6 +113,8 @@ match api.player_rank(AccountId(167576350)) {
 ```
 
 A 404 is `Error::NotFound`, other statuses are `Error::Status` with the server's error message and the start of the body. Redirects are not followed, so the API key never reaches another host.
+
+With `.retry(RetryPolicy::new(3))` on the builder, a client sends a request up to three times in all. It retries a 503, a 429 whose `Retry-After` is at most a minute (`max_wait`), and a connection that failed before the request was sent. A 429 without `Retry-After` and a timeout after sending are returned at once, because the server may already have counted the request against its hourly limit. The pauses double from one second up to 30 seconds and never undercut the server's `Retry-After`.
 
 ## Tests
 

@@ -10,12 +10,13 @@ use crate::endpoint::{
     Endpoint, cache_lookup, cache_store, decode_at, execute, execute_raw, is_json, raw_request,
     raw_url, to_request,
 };
+use crate::retry::copy_request;
 use crate::{
     AccountId, AccountRank, ActiveMatch, ActiveMatchesQuery, ApiInfo, Config, ConfigBuilder,
     EnemyStats, EnemyStatsQuery, Error, Health, HeroId, HeroStats, HeroStatsQuery, Leaderboard,
     MatchFilter, MatchHistoryEntry, MatchId, MatchMetadata, MatchSalts, MateStats, MateStatsQuery,
-    RankDistributionEntry, RankResponse, RecentMatch, Region, Result, SpectateUrl, SteamProfile,
-    SteamSearchQuery,
+    RankDistributionEntry, RankResponse, RecentMatch, Region, Result, RetryPolicy, SpectateUrl,
+    SteamProfile, SteamSearchQuery,
 };
 
 #[cfg(not(any(feature = "rustls", feature = "native-tls")))]
@@ -46,13 +47,15 @@ compile_error!("deadlock-api: the `async` feature needs `rustls` or `native-tls`
 pub struct Client {
     http: reqwest::Client,
     config: Arc<Config>,
+    retry: Option<RetryPolicy>,
 }
 
-/// Builder for [`Client`]; what it sets is readable afterwards through
-/// [`Client::config`].
+/// Builder for [`Client`]; what it sets, apart from the retry policy, is
+/// readable afterwards through [`Client::config`].
 #[derive(Debug, Default)]
 pub struct ClientBuilder {
     config: ConfigBuilder,
+    retry: Option<RetryPolicy>,
 }
 
 builder_setters!(ClientBuilder);
@@ -83,6 +86,7 @@ impl ClientBuilder {
         Ok(Client {
             http,
             config: Arc::new(config),
+            retry: self.retry,
         })
     }
 }
@@ -202,6 +206,22 @@ impl Client {
     }
 
     async fn transport(&self, req: Request<()>) -> Result<Response<Bytes>> {
+        let Some(policy) = &self.retry else {
+            return self.send_once(req).await;
+        };
+        let mut attempts = 1;
+        loop {
+            let result = self.send_once(copy_request(&req)).await;
+            let Some(pause) = policy.pause(attempts, &result, unsent) else {
+                return result;
+            };
+            log::info!("retrying {} in {pause:?}", req.uri());
+            tokio::time::sleep(pause).await;
+            attempts += 1;
+        }
+    }
+
+    async fn send_once(&self, req: Request<()>) -> Result<Response<Bytes>> {
         let url = req.uri().to_string();
         let transport_error = |e: reqwest::Error| Error::Transport {
             url: url.clone(),
@@ -222,4 +242,10 @@ impl Client {
     }
 
     crate::endpoints::endpoint_methods!(async);
+}
+
+/// Whether reqwest failed before the request reached the server.
+fn unsent(error: &Error) -> bool {
+    matches!(error, Error::Transport { source, .. }
+        if source.downcast_ref::<reqwest::Error>().is_some_and(reqwest::Error::is_connect))
 }

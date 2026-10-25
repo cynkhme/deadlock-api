@@ -7,12 +7,13 @@ use http::{Request, Response};
 use serde::de::DeserializeOwned;
 
 use crate::endpoint::{Endpoint, execute_raw, raw_request, raw_url, run};
+use crate::retry::copy_request;
 use crate::{
     AccountId, AccountRank, ActiveMatch, ActiveMatchesQuery, ApiInfo, Config, ConfigBuilder,
     EnemyStats, EnemyStatsQuery, Error, Health, HeroId, HeroStats, HeroStatsQuery, Leaderboard,
     MatchFilter, MatchHistoryEntry, MatchId, MatchMetadata, MatchSalts, MateStats, MateStatsQuery,
-    RankDistributionEntry, RankResponse, RecentMatch, Region, Result, SpectateUrl, SteamProfile,
-    SteamSearchQuery,
+    RankDistributionEntry, RankResponse, RecentMatch, Region, Result, RetryPolicy, SpectateUrl,
+    SteamProfile, SteamSearchQuery,
 };
 
 #[cfg(feature = "rustls")]
@@ -46,13 +47,15 @@ compile_error!("deadlock-api: the `blocking` feature needs `rustls` or `native-t
 pub struct Client {
     agent: ureq::Agent,
     config: Arc<Config>,
+    retry: Option<RetryPolicy>,
 }
 
-/// Builder for [`Client`]; what it sets is readable afterwards through
-/// [`Client::config`].
+/// Builder for [`Client`]; what it sets, apart from the retry policy, is
+/// readable afterwards through [`Client::config`].
 #[derive(Debug, Default)]
 pub struct ClientBuilder {
     config: ConfigBuilder,
+    retry: Option<RetryPolicy>,
 }
 
 builder_setters!(ClientBuilder);
@@ -85,6 +88,7 @@ impl ClientBuilder {
         Ok(Client {
             agent,
             config: Arc::new(config),
+            retry: self.retry,
         })
     }
 }
@@ -173,6 +177,22 @@ impl Client {
     }
 
     fn transport(&self, req: Request<()>) -> Result<Response<Bytes>> {
+        let Some(policy) = &self.retry else {
+            return self.send_once(req);
+        };
+        let mut attempts = 1;
+        loop {
+            let result = self.send_once(copy_request(&req));
+            let Some(pause) = policy.pause(attempts, &result, unsent) else {
+                return result;
+            };
+            log::info!("retrying {} in {pause:?}", req.uri());
+            std::thread::sleep(pause);
+            attempts += 1;
+        }
+    }
+
+    fn send_once(&self, req: Request<()>) -> Result<Response<Bytes>> {
         let url = req.uri().to_string();
         let mut resp = self.agent.run(req).map_err(|e| Error::Transport {
             url: url.clone(),
@@ -191,6 +211,27 @@ impl Client {
     crate::endpoints::endpoint_methods!(sync);
 }
 
+/// Whether ureq failed before the request reached the server.
+fn unsent(error: &Error) -> bool {
+    let Error::Transport { source, .. } = error else {
+        return false;
+    };
+    match source.downcast_ref::<ureq::Error>() {
+        Some(
+            ureq::Error::HostNotFound
+            | ureq::Error::ConnectionFailed
+            | ureq::Error::Timeout(ureq::Timeout::Resolve | ureq::Timeout::Connect),
+        ) => true,
+        Some(ureq::Error::Io(e)) => matches!(
+            e.kind(),
+            std::io::ErrorKind::ConnectionRefused
+                | std::io::ErrorKind::HostUnreachable
+                | std::io::ErrorKind::NetworkUnreachable
+        ),
+        _ => false,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -203,5 +244,37 @@ mod tests {
             matches!(roots, ureq::tls::RootCerts::PlatformVerifier),
             "{roots:?}"
         );
+    }
+
+    #[test]
+    fn only_failures_before_sending_count_as_unsent() {
+        let wrap = |e: ureq::Error| Error::Transport {
+            url: "http://h/".into(),
+            source: Box::new(e),
+        };
+        let io = |kind: std::io::ErrorKind| ureq::Error::Io(kind.into());
+        for e in [
+            ureq::Error::HostNotFound,
+            ureq::Error::ConnectionFailed,
+            ureq::Error::Timeout(ureq::Timeout::Resolve),
+            ureq::Error::Timeout(ureq::Timeout::Connect),
+            io(std::io::ErrorKind::ConnectionRefused),
+            io(std::io::ErrorKind::HostUnreachable),
+            io(std::io::ErrorKind::NetworkUnreachable),
+        ] {
+            assert!(unsent(&wrap(e)));
+        }
+        for e in [
+            ureq::Error::Timeout(ureq::Timeout::Global),
+            ureq::Error::Timeout(ureq::Timeout::RecvResponse),
+            io(std::io::ErrorKind::ConnectionReset),
+            io(std::io::ErrorKind::TimedOut),
+        ] {
+            assert!(!unsent(&wrap(e)));
+        }
+        assert!(!unsent(&Error::Transport {
+            url: "http://h/".into(),
+            source: "not ureq".into(),
+        }));
     }
 }

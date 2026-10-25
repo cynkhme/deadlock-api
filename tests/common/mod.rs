@@ -105,6 +105,36 @@ pub const HEALTH_GZIP: &[u8] = &[
     73, 47, 2, 201, 66, 248, 69, 169, 41, 153, 80, 78, 109, 45, 0, 1, 224, 187, 104, 61, 0, 0, 0,
 ];
 
+/// Starts a server that reads every request and never answers, keeping each
+/// connection open; returns its root URL plus the requests it received.
+pub fn silent_server() -> (String, Arc<Mutex<Vec<Recorded>>>) {
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let url = format!("http://{}", listener.local_addr().unwrap());
+    let seen = Arc::new(Mutex::new(Vec::new()));
+    let recorded = seen.clone();
+    std::thread::spawn(move || {
+        let mut open = Vec::new();
+        for stream in listener.incoming() {
+            let stream = stream.unwrap();
+            let mut reader = BufReader::new(stream.try_clone().unwrap());
+            let mut line = String::new();
+            let _ = reader.read_line(&mut line);
+            recorded.lock().unwrap().push(Recorded {
+                line: line.trim_end().to_owned(),
+                headers: Vec::new(),
+            });
+            open.push(stream);
+        }
+    });
+    (url, seen)
+}
+
+/// A root URL on a local port nothing listens on, so connecting is refused.
+pub fn refused_url() -> String {
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    format!("http://{}", listener.local_addr().unwrap())
+}
+
 /// A fresh temporary directory path for one test.
 pub fn scratch(name: &str) -> std::path::PathBuf {
     let dir = std::env::temp_dir().join(format!("deadlock-api-{}-{name}", std::process::id()));
