@@ -107,7 +107,7 @@ mod types;
 
 pub use cache::Cache;
 #[cfg(feature = "fs-cache")]
-pub use cache::FileCache;
+pub use cache::{FileCache, Pruned};
 #[cfg(feature = "async")]
 pub use client::{Client, ClientBuilder};
 pub use config::Config;

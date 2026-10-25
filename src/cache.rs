@@ -22,10 +22,13 @@ pub trait Cache: Send + Sync {
 /// key leave one complete file. Use one directory per server: the key does
 /// not contain the host.
 ///
-/// The cache is unbounded and never pruned: only immutable responses are
+/// The cache never removes anything by itself: only immutable responses are
 /// stored, and re-fetching one costs a slot of the server's hourly limit.
-/// The directory is the caller's to prune; implement [`Cache`] for a
-/// bounded policy.
+/// [`prune_older_than`](Self::prune_older_than) and
+/// [`prune_to_size`](Self::prune_to_size) remove entries when called.
+/// They treat every `*.json` file under the directory as an entry, so give
+/// the cache a directory of its own: a foreign JSON file in it is pruned
+/// like a cached response.
 #[cfg(feature = "fs-cache")]
 #[derive(Debug)]
 pub struct FileCache {
@@ -78,6 +81,218 @@ impl FileCache {
         }
         Ok(path)
     }
+
+    /// Removes every entry written longer ago than `age`, and the temporary
+    /// files of writes that failed more than an hour ago.
+    ///
+    /// Entries are the `*.json` files under the directory, at any depth; a
+    /// foreign JSON file in the directory is removed like a cached response.
+    /// Symbolic links are neither followed nor removed, and directories are
+    /// kept even when empty. A file written while the prune runs may be
+    /// removed with the rest. A missing directory prunes nothing.
+    ///
+    /// # Errors
+    ///
+    /// The error from listing the directory when it exists but cannot be
+    /// read. Failures below it, an unreadable subdirectory or a file that
+    /// cannot be removed, are logged and skipped.
+    pub fn prune_older_than(&self, age: std::time::Duration) -> std::io::Result<Pruned> {
+        let Some(scanned) = self.scan()? else {
+            return Ok(Pruned::default());
+        };
+        let now = std::time::SystemTime::now();
+        let mut pruned = Pruned::default();
+        pruned.remove_stale_temps(&scanned.temps, now);
+        for entry in scanned.entries.iter().filter(|e| e.age(now) > age) {
+            pruned.remove(entry);
+        }
+        Ok(pruned)
+    }
+
+    /// Removes the earliest written entries until the entries left take at
+    /// most `max_bytes`, and the temporary files of writes that failed more
+    /// than an hour ago.
+    ///
+    /// The order is by write time, not by last read. What counts as an
+    /// entry, and what is never touched, is as for
+    /// [`prune_older_than`](Self::prune_older_than).
+    ///
+    /// # Errors
+    ///
+    /// As for [`prune_older_than`](Self::prune_older_than).
+    pub fn prune_to_size(&self, max_bytes: u64) -> std::io::Result<Pruned> {
+        let Some(mut scanned) = self.scan()? else {
+            return Ok(Pruned::default());
+        };
+        let mut pruned = Pruned::default();
+        pruned.remove_stale_temps(&scanned.temps, std::time::SystemTime::now());
+        scanned
+            .entries
+            .sort_by(|a, b| (a.modified, &a.path).cmp(&(b.modified, &b.path)));
+        let mut total: u64 = scanned.entries.iter().map(|e| e.len).sum();
+        for entry in &scanned.entries {
+            if total <= max_bytes {
+                break;
+            }
+            if pruned.remove(entry) {
+                total -= entry.len;
+            }
+        }
+        Ok(pruned)
+    }
+
+    /// The entries and temporary files under the directory, or `None` when
+    /// it does not exist.
+    fn scan(&self) -> std::io::Result<Option<Scanned>> {
+        let root = match std::fs::read_dir(&self.dir) {
+            Ok(root) => root,
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+            Err(e) => return Err(e),
+        };
+        let mut scanned = Scanned::default();
+        let mut subdirs = Vec::new();
+        scanned.collect(root, &mut subdirs);
+        while let Some(subdir) = subdirs.pop() {
+            match std::fs::read_dir(&subdir) {
+                Ok(dir) => scanned.collect(dir, &mut subdirs),
+                Err(e) => log::warn!("cache prune: cannot list {}: {e}", subdir.display()),
+            }
+        }
+        Ok(Some(scanned))
+    }
+}
+
+/// What a prune removed.
+#[cfg(feature = "fs-cache")]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[non_exhaustive]
+pub struct Pruned {
+    /// The number of files removed.
+    pub files: u64,
+    /// Their total size in bytes.
+    pub bytes: u64,
+}
+
+#[cfg(feature = "fs-cache")]
+impl Pruned {
+    /// Removes `file` and counts it; false when it could not be removed.
+    fn remove(&mut self, file: &CachedFile) -> bool {
+        match std::fs::remove_file(&file.path) {
+            Ok(()) => {
+                self.files += 1;
+                self.bytes += file.len;
+                true
+            }
+            Err(e) => {
+                if e.kind() != std::io::ErrorKind::NotFound {
+                    log::warn!("cache prune: cannot remove {}: {e}", file.path.display());
+                }
+                false
+            }
+        }
+    }
+
+    fn remove_stale_temps(&mut self, temps: &[CachedFile], now: std::time::SystemTime) {
+        for temp in temps.iter().filter(|t| t.age(now) > STALE_TEMP_AGE) {
+            self.remove(temp);
+        }
+    }
+}
+
+/// Spec §4: a younger temporary file may belong to a write in progress.
+#[cfg(feature = "fs-cache")]
+const STALE_TEMP_AGE: std::time::Duration = std::time::Duration::from_secs(60 * 60);
+
+#[cfg(feature = "fs-cache")]
+#[derive(Default)]
+struct Scanned {
+    entries: Vec<CachedFile>,
+    temps: Vec<CachedFile>,
+}
+
+#[cfg(feature = "fs-cache")]
+impl Scanned {
+    /// Sorts the files of one directory listing into entries and temporary
+    /// files, and queues its subdirectories.
+    fn collect(&mut self, dir: std::fs::ReadDir, subdirs: &mut Vec<std::path::PathBuf>) {
+        for entry in dir {
+            let entry = match entry {
+                Ok(entry) => entry,
+                Err(e) => {
+                    log::warn!("cache prune: cannot list an entry: {e}");
+                    continue;
+                }
+            };
+            let path = entry.path();
+            let meta = match entry.metadata() {
+                Ok(meta) => meta,
+                Err(e) => {
+                    log::warn!("cache prune: cannot stat {}: {e}", path.display());
+                    continue;
+                }
+            };
+            if meta.is_dir() {
+                subdirs.push(path);
+                continue;
+            }
+            if !meta.is_file() {
+                continue;
+            }
+            let Some(name) = path.file_name().and_then(|n| n.to_str()) else {
+                continue;
+            };
+            let files = if name.ends_with(".json") {
+                &mut self.entries
+            } else if is_temp_name(name) {
+                &mut self.temps
+            } else {
+                continue;
+            };
+            match meta.modified() {
+                Ok(modified) => files.push(CachedFile {
+                    path,
+                    len: meta.len(),
+                    modified,
+                }),
+                Err(e) => log::warn!("cache prune: no write time for {}: {e}", path.display()),
+            }
+        }
+    }
+}
+
+#[cfg(feature = "fs-cache")]
+struct CachedFile {
+    path: std::path::PathBuf,
+    len: u64,
+    modified: std::time::SystemTime,
+}
+
+#[cfg(feature = "fs-cache")]
+impl CachedFile {
+    /// Time since the write; zero for a write time in the future.
+    fn age(&self, now: std::time::SystemTime) -> std::time::Duration {
+        now.duration_since(self.modified).unwrap_or_default()
+    }
+}
+
+/// The temporary file [`FileCache::put`] writes before renaming it to `file_name`.
+#[cfg(feature = "fs-cache")]
+fn temp_name(file_name: &str, pid: u32, n: u64) -> String {
+    format!("{file_name}.{pid}.{n}.tmp")
+}
+
+/// Whether `name` is a [`temp_name`] of a `*.json` file.
+#[cfg(feature = "fs-cache")]
+fn is_temp_name(name: &str) -> bool {
+    let digits = |s: &str| !s.is_empty() && s.bytes().all(|b| b.is_ascii_digit());
+    let Some(stem) = name.strip_suffix(".tmp") else {
+        return false;
+    };
+    let mut parts = stem.rsplitn(3, '.');
+    let (Some(n), Some(pid), Some(target)) = (parts.next(), parts.next(), parts.next()) else {
+        return false;
+    };
+    digits(n) && digits(pid) && target.ends_with(".json")
 }
 
 #[cfg(feature = "fs-cache")]
@@ -99,7 +314,7 @@ impl Cache for FileCache {
             .file_name()
             .map(|f| f.to_string_lossy())
             .unwrap_or_default();
-        let tmp = parent.join(format!("{file_name}.{}.{n}.tmp", std::process::id()));
+        let tmp = parent.join(temp_name(&file_name, std::process::id(), n));
         if let Err(e) = std::fs::write(&tmp, body) {
             let _ = std::fs::remove_file(&tmp);
             return Err(e);
@@ -113,7 +328,8 @@ impl Cache for FileCache {
 #[cfg(all(test, feature = "fs-cache"))]
 mod tests {
     use std::io::ErrorKind;
-    use std::path::PathBuf;
+    use std::path::{Path, PathBuf};
+    use std::time::{Duration, SystemTime};
 
     use super::*;
 
@@ -242,5 +458,121 @@ mod tests {
             .collect();
         assert_eq!(names, ["k.json"]);
         let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    const HOUR: Duration = Duration::from_secs(60 * 60);
+
+    /// Writes `len` bytes to `dir/rel` with a write time `age` ago.
+    fn write_aged(dir: &Path, rel: &str, len: usize, age: Duration) {
+        let path = dir.join(rel);
+        std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+        std::fs::write(&path, vec![b'x'; len]).unwrap();
+        std::fs::File::options()
+            .write(true)
+            .open(&path)
+            .unwrap()
+            .set_modified(SystemTime::now() - age)
+            .unwrap();
+    }
+
+    #[test]
+    fn prune_of_a_missing_dir_removes_nothing() {
+        let cache = FileCache::new(scratch("prune-missing"));
+        assert_eq!(
+            cache.prune_older_than(Duration::ZERO).unwrap(),
+            Pruned::default()
+        );
+        assert_eq!(cache.prune_to_size(0).unwrap(), Pruned::default());
+    }
+
+    #[test]
+    fn prune_older_than_removes_only_older_entries_and_keeps_dirs() {
+        let dir = scratch("prune-age");
+        write_aged(&dir, "matches/1/metadata.json", 10, 2 * HOUR);
+        write_aged(&dir, "matches/2/metadata.json", 20, Duration::ZERO);
+        let pruned = FileCache::new(&dir).prune_older_than(HOUR).unwrap();
+        assert_eq!((pruned.files, pruned.bytes), (1, 10));
+        assert!(!dir.join("matches/1/metadata.json").exists());
+        assert!(dir.join("matches/1").is_dir());
+        assert!(dir.join("matches/2/metadata.json").is_file());
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn prune_to_size_removes_the_earliest_written_first() {
+        let dir = scratch("prune-size");
+        write_aged(&dir, "c.json", 100, HOUR);
+        write_aged(&dir, "a.json", 100, 3 * HOUR);
+        write_aged(&dir, "matches/b.json", 100, 2 * HOUR);
+        let cache = FileCache::new(&dir);
+        assert_eq!(cache.prune_to_size(300).unwrap(), Pruned::default());
+        let pruned = cache.prune_to_size(150).unwrap();
+        assert_eq!((pruned.files, pruned.bytes), (2, 200));
+        assert!(!dir.join("a.json").exists());
+        assert!(!dir.join("matches/b.json").exists());
+        assert!(dir.join("c.json").is_file());
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn prune_removes_only_stale_temp_files_of_put() {
+        let dir = scratch("prune-temp");
+        write_aged(&dir, "m/x.json.123.4.tmp", 7, 2 * HOUR);
+        let kept = [
+            "m/y.json.123.5.tmp",
+            "m/z.json.abc.1.tmp",
+            "m/w.txt.1.2.tmp",
+            "notes.txt",
+        ];
+        write_aged(&dir, kept[0], 1, Duration::ZERO);
+        for rel in &kept[1..] {
+            write_aged(&dir, rel, 1, 2 * HOUR);
+        }
+        let pruned = FileCache::new(&dir).prune_to_size(u64::MAX).unwrap();
+        assert_eq!((pruned.files, pruned.bytes), (1, 7));
+        assert!(!dir.join("m/x.json.123.4.tmp").exists());
+        for rel in kept {
+            assert!(dir.join(rel).is_file(), "{rel}");
+        }
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn temp_files_of_put_are_recognised() {
+        assert!(is_temp_name(&temp_name(
+            "metadata.json",
+            std::process::id(),
+            7
+        )));
+        assert!(!is_temp_name(&temp_name("metadata.txt", 1, 7)));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn prune_does_not_follow_or_remove_symlinks() {
+        let dir = scratch("prune-links");
+        let outside = scratch("prune-links-outside");
+        write_aged(&outside, "old.json", 10, 2 * HOUR);
+        std::fs::create_dir_all(&dir).unwrap();
+        std::os::unix::fs::symlink(&outside, dir.join("linked")).unwrap();
+        std::os::unix::fs::symlink(outside.join("old.json"), dir.join("l.json")).unwrap();
+        let pruned = FileCache::new(&dir)
+            .prune_older_than(Duration::ZERO)
+            .unwrap();
+        assert_eq!(pruned, Pruned::default());
+        assert!(outside.join("old.json").is_file());
+        assert!(dir.join("l.json").symlink_metadata().is_ok());
+        let _ = std::fs::remove_dir_all(&dir);
+        let _ = std::fs::remove_dir_all(&outside);
+    }
+
+    #[test]
+    fn prune_of_an_unreadable_dir_is_an_error() {
+        let dir = scratch("prune-file");
+        std::fs::write(&dir, b"not a directory").unwrap();
+        let cache = FileCache::new(&dir);
+        assert!(cache.prune_older_than(Duration::ZERO).is_err());
+        assert!(cache.prune_to_size(0).is_err());
+        let _ = std::fs::remove_file(&dir);
     }
 }

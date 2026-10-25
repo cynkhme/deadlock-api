@@ -96,7 +96,7 @@ use deadlock_api::FileCache;
 let api = Client::builder().cache(FileCache::new("cache/")).build()?;
 ```
 
-`FileCache` writes `matches/{id}/metadata.json` under its directory, atomically. It never prunes; the directory is yours to clean. A failed cache read or write is logged through `log` and the request proceeds.
+`FileCache` writes `matches/{id}/metadata.json` under its directory, atomically. It never removes anything by itself; `prune_older_than` and `prune_to_size` remove entries when you call them. Give it a directory of its own: both treat every `*.json` file under it as a cached response. A failed cache read or write is logged through `log` and the request proceeds.
 
 ## Errors
 

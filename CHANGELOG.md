@@ -7,6 +7,7 @@ All notable changes to this crate are listed here. The format follows [Keep a Ch
 ### Added
 
 - The `gzip` feature, off by default: both clients ask for gzip-compressed responses and decompress them.
+- `FileCache::prune_older_than` and `FileCache::prune_to_size`, which remove cached responses by write time and report what they removed as `Pruned`.
 
 ## [0.1.0] - 2026-10-25
 
