@@ -4,6 +4,8 @@ All notable changes to this crate are listed here. The format follows [Keep a Ch
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-25
+
 ### Added
 
 - The `gzip` feature, off by default: the built-in transports of both clients ask for gzip-compressed responses and decompress them.
@@ -32,4 +34,5 @@ All notable changes to this crate are listed here. The format follows [Keep a Ch
 - TLS through `rustls` (default) or `native-tls`. Both clients verify certificates against the operating system's trust store (on Linux the system CA bundle, or the file named by `SSL_CERT_FILE`). With `rustls` and an empty store, the async client's `build()` and every blocking request fail with `Error::Transport`.
 - Minimum supported Rust version 1.98.
 
+[0.1.1]: https://github.com/cynkhme/deadlock-api/releases/tag/v0.1.1
 [0.1.0]: https://github.com/cynkhme/deadlock-api/releases/tag/v0.1.0
